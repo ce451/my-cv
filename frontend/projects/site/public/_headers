@@ -1,0 +1,35 @@
+# Cloudflare-Pages-Header. Die script-src-Hashes decken die drei Inline-Skripte
+# des Prerenders ab (html.js-Klasse + Angular-Hydration-Bootstrap) und den
+# beasties-onload-Handler ('unsafe-hashes'). Nach Angular-Updates prüft
+# tools/verify-csp.mjs in der CI, ob die Hashes noch stimmen.
+
+/*
+  ! Access-Control-Allow-Origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-qR3LTg2JDV04/drjHDEYjnbqb2+q2UreAtLBeLooP8Q=' 'sha256-VM2mZqyEQZoLzoTrp5EigFvzQ0+f1wSeBuoOn95WHCg=' 'sha256-8sGKvDKC8crv9OBcqEMvqrNDWlm1/80h7NJpJzqOnLI=' 'unsafe-hashes' 'sha256-MhtPZXr7+LpJUY5qtMutB+qWfQtMaPccfe7QXtCcEYc='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), geolocation=(), microphone=()
+
+# Content-gehashte Builds und Fonts ändern sich nie unter gleichem Namen.
+/*.js
+  Cache-Control: public, max-age=31536000, immutable
+/*.css
+  Cache-Control: public, max-age=31536000, immutable
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Stabile Namen, ändern sich selten.
+/favicon.svg
+  Cache-Control: public, max-age=604800
+/favicon.ico
+  Cache-Control: public, max-age=604800
+/apple-touch-icon.png
+  Cache-Control: public, max-age=604800
+/og-image.png
+  Cache-Control: public, max-age=86400
+/portrait-320.webp
+  Cache-Control: public, max-age=86400
+/portrait-640.webp
+  Cache-Control: public, max-age=86400

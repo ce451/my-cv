@@ -30,9 +30,6 @@
               }
             ],
             "styles": [
-              "node_modules/@fontsource-variable/space-grotesk/index.css",
-              "node_modules/@fontsource/ibm-plex-mono/400.css",
-              "node_modules/@fontsource/ibm-plex-mono/500.css",
               "projects/site/src/styles.scss"
             ],
             "server": "projects/site/src/main.server.ts",
@@ -102,7 +99,9 @@
                 "input": "projects/studio/public"
               }
             ],
-            "styles": ["projects/studio/src/styles.scss"]
+            "styles": [
+              "projects/studio/src/styles.scss"
+            ]
           },
           "configurations": {
             "production": {

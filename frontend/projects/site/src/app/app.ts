@@ -1,7 +1,6 @@
 import {
   Component,
   DestroyRef,
-  DOCUMENT,
   NgZone,
   afterNextRender,
   computed,
@@ -11,7 +10,6 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { CV } from './content/cv-data';
-import { buildJsonLd } from './content/schema';
 import { UI } from './ui/ui-text';
 import { Cursor } from './fx/cursor';
 import { Particles } from './fx/particles';
@@ -37,16 +35,8 @@ export class App {
   private readonly router = inject(Router);
 
   constructor() {
-    // Runs during prerender too, so the JSON-LD ends up in the static HTML.
-    const doc = inject(DOCUMENT);
-    if (!doc.getElementById('cv-jsonld')) {
-      const script = doc.createElement('script');
-      script.id = 'cv-jsonld';
-      script.type = 'application/ld+json';
-      script.text = JSON.stringify(buildJsonLd(CV));
-      doc.head.appendChild(script);
-    }
-
+    // Canonical, description, OG tags and JSON-LD come per route from PageHead
+    // (see ui/page-head.ts), called in the page components.
     this.router.events.pipe(takeUntilDestroyed()).subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.onSubpage.set(!event.urlAfterRedirects.split('#')[0].match(/^\/?$/));

@@ -47,6 +47,18 @@ describe('Home', () => {
     expect(hrefs).toEqual(CV.projects.flatMap((p) => p.links));
   });
 
+  it('sets canonical, Open Graph tags and Person JSON-LD in the head', async () => {
+    await render();
+    const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    expect(canonical?.href).toBe('https://elstner.ch/');
+    const ogImage = document.querySelector('meta[property="og:image"]');
+    expect(ogImage?.getAttribute('content')).toBe('https://elstner.ch/og-image.png');
+    const parsed = JSON.parse(document.getElementById('cv-jsonld')?.textContent ?? '{}');
+    expect(parsed['@type']).toBe('ProfilePage');
+    expect(parsed.mainEntity.name).toBe(CV.profile.fullName);
+    expect(parsed.mainEntity.knowsAbout).toContain('Angular');
+  });
+
   // Defense in depth: the structural guarantee lives in the backend publish
   // pipeline (PublishMapperTests). Probes here are generic terms on purpose —
   // real application-only values must never appear in this public repo, not

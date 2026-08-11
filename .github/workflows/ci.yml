@@ -21,6 +21,7 @@ jobs:
       - run: npm ci
       - run: npx ng build content-model
       - run: npx ng build site
+      - run: node tools/verify-csp.mjs
       - run: npx ng build studio
       - run: npm run test:ci
 
@@ -53,6 +54,8 @@ jobs:
       - run: npx ng build content-model
         working-directory: frontend
       - run: npx ng build site
+        working-directory: frontend
+      - run: node tools/verify-csp.mjs
         working-directory: frontend
       # Idempotent: legt das Projekt beim ersten Lauf an, scheitert danach folgenlos.
       - name: Ensure Pages project exists

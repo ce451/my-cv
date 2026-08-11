@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bei neuen Routen erweitern (siehe CLAUDE.md, Code-Wegweiser). -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://elstner.ch/</loc></url>
+  <url><loc>https://elstner.ch/making-of/</loc></url>
+  <url><loc>https://elstner.ch/datenschutz/</loc></url>
+</urlset>

@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { CV } from '../content/cv-data';
+import { buildJsonLd } from '../content/schema';
+import { PageHead } from '../ui/page-head';
 import { Contact } from '../sections/contact';
 import { Education } from '../sections/education';
 import { Hero } from '../sections/hero';
@@ -12,4 +15,15 @@ import { Timeline } from '../sections/timeline';
   imports: [Hero, IntroStats, Timeline, Projects, Skills, Education, Contact],
   templateUrl: './home.html',
 })
-export class Home {}
+export class Home {
+  constructor() {
+    inject(PageHead).apply({
+      path: '/',
+      title: 'Christopher Elstner — Full-Stack Softwareentwickler',
+      description:
+        'Full-Stack Softwareentwickler aus Weiz: Angular, .NET, Java. Über zwölf Jahre Software für Industrie und Gesundheitswesen — von der Anforderung bis zum Support.',
+      ogType: 'profile',
+      jsonLd: buildJsonLd(CV),
+    });
+  }
+}

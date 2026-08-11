@@ -85,6 +85,18 @@ Deploy: Push auf `main` → CI (frontend + backend) → nur bei Grün Deploy auf
 Cloudflare-Pages-Projekt `elstner-cv` → https://elstner.ch (GitHub-Secrets:
 `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`). PRs/Branches deployen nicht.
 
+Sonderdateien in `frontend/projects/site/public/` (landen 1:1 im Deploy-Root):
+`_headers` (Security- und Cache-Header inkl. CSP — die script-src-Hashes decken
+die Inline-Skripte des Prerenders ab; `tools/verify-csp.mjs` prüft das in der CI
+und schlägt nach Angular-Updates an), `_redirects` (www → Apex), `404.html`
+(deaktiviert den Pages-SPA-Fallback → echte 404s), `robots.txt`, `sitemap.xml`,
+`og-image.png`, `fonts/` (Latin-Subsets + OFL.txt; via `@font-face` in
+styles.scss und `preload` in index.html — kein @fontsource mehr).
+
+Neue Route? Dann immer: in `app.routes.ts` eintragen, im Komponenten-Konstruktor
+`PageHead.apply(...)` aufrufen (Canonical/Description/OG/JSON-LD, siehe
+`ui/page-head.ts`), `sitemap.xml` erweitern.
+
 ## Roadmap / Status
 
 - [x] Phase 1 — Fundament: Workspace, Solution, CI, Doku (11.08.2026)
@@ -115,6 +127,16 @@ Cloudflare-Pages-Projekt `elstner-cv` → https://elstner.ch (GitHub-Secrets:
       Projektkarten mit Repo-Links (Schema: Profile.Tagline/Highlights,
       PersonalEntry.Links + Migration); „Firewall" aus den Skills gestrichen;
       /now und /uses entfernt; Timeline-Punkte pixelgenau auf der Linie
+- [x] Phase 7 — Technik-Härtung nach unabhängigem Review (11.08.2026):
+      Open-Graph/Twitter-Tags + og-image (1200×630), Canonical + eigene
+      Description + korrektes JSON-LD pro Route (Person um knowsAbout/
+      hasOccupation/worksFor/@id erweitert; Unterseiten als WebPage),
+      robots.txt + sitemap.xml + echte 404-Seite, www→Apex-Redirect,
+      Security-Header (HSTS, CSP mit Hash-Allowlist + CI-Wächter
+      tools/verify-csp.mjs, frame-ancestors, Permissions-Policy),
+      immutable-Cache für gehashte Assets, Fonts direkt self-hosted mit
+      preload (statt @fontsource, Mono nur noch 400), Kontrastfix --faint
+      (AA), Mobil-Nav mit Sektionslinks, Icons verkleinert
 
 ## Offene Punkte
 
@@ -129,5 +151,10 @@ Cloudflare-Pages-Projekt `elstner-cv` → https://elstner.ch (GitHub-Secrets:
   vorerst Druckdialog).
 - GitHub Actions bei Gelegenheit auf checkout/setup-node v5 (Node-20-Deprecation).
 - Vor breiter Streuung: Impressum-Frage neu bewerten.
+- Aus dem Review vom 11.08.2026 bewusst offen: Content-Feinschliff (wartet auf
+  User-Review), JS-Bundle-Verkleinerung (Effekte lazy laden — größerer Umbau),
+  GitHub-Profil/READMEs befüllen (liegt außerhalb dieses Repos beim User).
+  Volltext der Reviews: NAS, 05_Skills/cv-website-recherche/
+  2026-08-11-unabhaengiges-review.md.
 
 Datenquelle für den Erstimport ist der private Lebenslauf (lokal, außerhalb des Repos).

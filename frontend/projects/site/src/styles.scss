@@ -1,5 +1,28 @@
 /* Globales Stylesheet — Designsystem „Cinematic" (docs/design-system.md).
-   Fonts kommen über angular.json aus @fontsource (self-hosted, DSGVO). */
+   Fonts liegen als Latin-Subsets unter public/fonts/ (self-hosted, DSGVO,
+   Lizenz: fonts/OFL.txt) und werden in index.html vorgeladen. */
+
+@font-face {
+  font-family: 'Space Grotesk Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 300 700;
+  src: url('/fonts/space-grotesk-latin-wght.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('/fonts/ibm-plex-mono-latin-400.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
 
 :root {
   --bg: #0a0d11;
@@ -7,7 +30,8 @@
   --line: rgba(255, 255, 255, 0.09);
   --ink: #e9edf1;
   --muted: #97a2ad;
-  --faint: #5d6771;
+  /* Hell genug für WCAG AA (5,1:1 auf --bg) — auch für Kleintext. */
+  --faint: #7a848e;
   --teal: #3fd0c0;
   --teal-soft: rgba(63, 208, 192, 0.14);
   --amber: #ffb454;
@@ -329,7 +353,11 @@ footer a:hover { color: var(--teal); }
   .timeline { padding-left: 2.2rem; }
   .station::before { left: calc(var(--tl-x) - 2.2rem - 8px); }
   .ghost { display: none; }
-  nav.top .links a { display: none; }
+  /* Kompakte Zweizeilen-Nav: Zeile 1 Brand + PDF, Zeile 2 die Sektionslinks. */
+  nav.top { flex-wrap: wrap; gap: 0.55rem 1.05rem; padding: 0.75rem 1rem; }
+  nav.top .links { display: contents; }
+  nav.top .links a { font-size: 0.8rem; order: 2; }
+  nav.top .pdf { order: 1; margin-left: auto; }
   .portrait-wrap { position: static; margin-bottom: 1.6rem; }
   .portrait { width: 108px; height: 108px; outline-offset: 8px; }
 }

@@ -1,6 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { buildWebPageJsonLd } from '../content/schema';
+import { PageHead } from '../ui/page-head';
 import { UI } from '../ui/ui-text';
+
+const TITLE = 'Datenschutz — Christopher Elstner';
+const DESCRIPTION =
+  'Datenschutzerklärung dieser Website: keine Cookies, kein Tracking, keine externen Dienste; ' +
+  'Hosting über Cloudflare Pages.';
 
 @Component({
   selector: 'app-datenschutz',
@@ -9,4 +16,14 @@ import { UI } from '../ui/ui-text';
 })
 export class Datenschutz {
   protected readonly ui = UI;
+
+  constructor() {
+    inject(PageHead).apply({
+      path: '/datenschutz/',
+      title: TITLE,
+      description: DESCRIPTION,
+      ogType: 'website',
+      jsonLd: buildWebPageJsonLd(TITLE, '/datenschutz/', DESCRIPTION),
+    });
+  }
 }
