@@ -1,13 +1,13 @@
 {
   "meta": {
-    "publishedAt": "2026-08-11T21:41:40.1037571+02:00",
+    "publishedAt": "2026-08-11T21:45:16.2481602+02:00",
     "locale": "de"
   },
   "profile": {
     "fullName": "Christopher Elstner",
     "role": "Senior Full-Stack Softwareentwickler",
     "tagline": "12 Jahre Code, Projekt- und Teamarbeit",
-    "intro": "Seit über zwölf Jahren bin ich mit Begeisterung Softwareentwickler. Ich bin es gewohnt, ein Projekt von Anfang bis Ende zu verantworten, aber auch im Team ein Produkt weiterzuentwickeln: Anforderungen mit dem Kunden abklären, Infrastruktur aufsetzen, entwickeln, in Betrieb nehmen und anschließend im Support begleiten. Kundengespräche führe ich auf Deutsch und Englisch.",
+    "intro": "Zuhören, bauen, ausliefern, dranbleiben — ich übernehme Projekte vom ersten Kundengespräch bis in den laufenden Betrieb, allein verantwortlich oder mitten im Team.",
     "location": "Weiz",
     "highlights": [
       "Angular",

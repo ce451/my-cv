@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CV } from '../content/cv-data';
-import { computeStats, splitIntro } from '../content/cv-format';
+import { computeStats } from '../content/cv-format';
 import { UI } from '../ui/ui-text';
 import { Counter } from '../fx/counter';
 import { Reveal } from '../fx/reveal';
@@ -12,6 +12,7 @@ import { Reveal } from '../fx/reveal';
 })
 export class IntroStats {
   protected readonly ui = UI;
-  protected readonly rest = splitIntro(CV.profile.intro).rest;
+  // The hero shows the tagline, so the full intro belongs to this section.
+  protected readonly intro = CV.profile.intro;
   protected readonly stats = computeStats(CV, new Date());
 }
