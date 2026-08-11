@@ -25,10 +25,11 @@ export const UI = {
   },
   stats: {
     years: 'Jahre Berufserfahrung',
-    technologies: 'Technologien im Projekteinsatz',
+    technologies: 'Technologien im Werkzeugkasten',
     languages: 'Kundengespräche in beiden Sprachen',
   },
   projectLabel: 'Projekt',
+  projectsMore: 'Wie diese Seite entsteht — zum Making-of →',
   contact: {
     lineTop: 'Klingt interessant?',
     lineBottom: 'Dann reden wir.',

@@ -36,11 +36,18 @@ export class Particles {
       if (!ctx) {
         return;
       }
+      let lastWidth = 0;
       const resize = () => {
         const dpr = Math.min(devicePixelRatio || 1, 2);
         canvas.width = innerWidth * dpr;
         canvas.height = innerHeight * dpr;
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        // Mobile browsers fire resize when the URL bar collapses; height-only
+        // changes keep the existing constellation so nothing visibly jumps.
+        if (innerWidth === lastWidth && this.dots.length > 0) {
+          return;
+        }
+        lastWidth = innerWidth;
         const count = Math.min(90, Math.floor(innerWidth / 16));
         this.dots = Array.from({ length: count }, () => ({
           x: Math.random() * innerWidth,

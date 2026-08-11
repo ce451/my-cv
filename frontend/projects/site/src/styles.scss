@@ -236,6 +236,13 @@ html.js .rv.in { opacity: 1; transform: none; }
 }
 .when { font: 500 0.8rem/1.6 var(--mono); color: var(--teal); letter-spacing: 0.08em; }
 .when .dur { color: var(--faint); }
+.when .live {
+  display: inline-block; width: 7px; height: 7px; margin-left: 0.4rem;
+  border-radius: 50%; background: var(--teal);
+  box-shadow: 0 0 10px rgba(63, 208, 192, 0.8);
+  animation: fx-pulse 2.2s ease-in-out infinite;
+}
+@keyframes fx-pulse { 50% { opacity: 0.35; } }
 h3 { margin: 0.4rem 0 0.15rem; font-size: 1.45rem; font-weight: 700; letter-spacing: -0.01em; }
 .org { margin: 0 0 0.8rem; color: var(--muted); }
 .org .note { color: var(--faint); font-size: 0.9rem; }
@@ -281,6 +288,9 @@ h3 { margin: 0.4rem 0 0.15rem; font-size: 1.45rem; font-weight: 700; letter-spac
 .repos a::after { content: ' ↗'; opacity: 0.7; }
 .repos li:hover { border-color: var(--teal); }
 .repos li:hover a { color: #9ef0e6; }
+.projects-more { margin: 1.8rem 0 0; font-size: 0.95rem; }
+.projects-more a { color: var(--muted); text-decoration: none; }
+.projects-more a:hover { color: var(--teal); }
 
 /* ---------- Kenntnisse ---------- */
 .skills .row {
@@ -318,6 +328,8 @@ h3 { margin: 0.4rem 0 0.15rem; font-size: 1.45rem; font-weight: 700; letter-spac
 .contact .big { font-size: clamp(2rem, 6vw, 4rem); font-weight: 700; letter-spacing: -0.03em; margin: 0 0 2.2rem; }
 .contact .big em { font-style: normal; color: var(--teal); }
 .magnetic { display: inline-block; }
+/* Der Magnet-Versatz gleitet ein statt zu springen (siehe fx/magnetic.ts). */
+.magnetic > * { transition: transform 0.35s var(--ease); }
 .cta {
   display: inline-block; text-decoration: none; font-weight: 600; font-size: 1.05rem;
   color: #06231f; background: var(--teal);
@@ -353,11 +365,8 @@ footer a:hover { color: var(--teal); }
   .timeline { padding-left: 2.2rem; }
   .station::before { left: calc(var(--tl-x) - 2.2rem - 8px); }
   .ghost { display: none; }
-  /* Kompakte Zweizeilen-Nav: Zeile 1 Brand + PDF, Zeile 2 die Sektionslinks. */
-  nav.top { flex-wrap: wrap; gap: 0.55rem 1.05rem; padding: 0.75rem 1rem; }
-  nav.top .links { display: contents; }
-  nav.top .links a { font-size: 0.8rem; order: 2; }
-  nav.top .pdf { order: 1; margin-left: auto; }
+  /* Mobil bewusst ohne Kopfleiste — die Seite ist eine reine Scroll-Erzählung. */
+  nav.top { display: none; }
   .portrait-wrap { position: static; margin-bottom: 1.6rem; }
   .portrait { width: 108px; height: 108px; outline-offset: 8px; }
 }
@@ -420,7 +429,7 @@ footer a:hover { color: var(--teal); }
   .portrait { width: 120px; height: 120px; box-shadow: none; outline: none; border-color: var(--line); }
   .section { padding-top: 1.6rem; }
   .card, .stat, .edu-card { box-shadow: none !important; transform: none !important; break-inside: avoid; }
-  .ghost, .tl-progress { display: none; }
+  .ghost, .tl-progress, .when .live { display: none; }
   .station::before { box-shadow: none; }
   .chips li { color: var(--muted); border-color: var(--line); background: none; }
   footer nav { display: none; }

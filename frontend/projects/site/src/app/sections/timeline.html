@@ -6,7 +6,14 @@
       <article class="station" fxReveal>
         <div class="ghost" #ghost aria-hidden="true">{{ year(experience) }}</div>
         <div class="card">
-          <p class="when">{{ period(experience) }} <span class="dur">· {{ duration(experience) }}</span></p>
+          <p class="when">
+            {{ period(experience) }}
+            @if (experience.end) {
+              <span class="dur">· {{ duration(experience) }}</span>
+            } @else {
+              <span class="live" aria-hidden="true"></span>
+            }
+          </p>
           <h3>{{ experience.position }}</h3>
           <p class="org">
             {{ experience.organization }}

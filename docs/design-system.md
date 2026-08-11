@@ -69,8 +69,8 @@ Schrift, Skill-Prozentbalken, Typewriter-Effekte, Template-Icon-Grids.
 | Zähler | Ease-out-cubic, 1.3s, deutsches Dezimalkomma |
 | Tilt-Karten | `rotateX ±7° / rotateY ±9°` + wanderndes Glow-Highlight |
 | Magnetic CTA | Versatz ×0.25/0.35 zur Cursorposition, federnder Rücklauf |
-| Cursor | Punkt + nachlaufender Ring ø 42px (lerp 0.14), wächst über Links auf 66px; Amber-„Planet" (5px) umkreist den Ring in 2.6s; nativer Cursor via `html.cursor-hidden` ausgeblendet; nur Desktop |
-| Nav | Fixed, erscheint ab 55vh Scroll, `backdrop-filter: blur(14px)` |
+| Cursor | Teal-Punkt (8px, wächst über Links auf 14px) + Amber-„Planet" (6px), der auf nachlaufendem Anker (lerp 0.14) mit 22px Radius in 2.6s kreist — bewusst ohne Ring (11.08.2026); nativer Cursor via `html.cursor-hidden` ausgeblendet; nur Desktop |
+| Nav | Fixed, erscheint ab 55vh Scroll, `backdrop-filter: blur(14px)`; mobil (≤760px) bewusst ganz ausgeblendet |
 
 ## Accessibility & Performance
 

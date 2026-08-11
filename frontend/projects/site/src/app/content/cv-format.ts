@@ -51,7 +51,7 @@ export function formatDuration(months: number): string {
 
 export interface CvStats {
   careerYears: number;
-  /** Distinct technologies used across all experience stations. */
+  /** Distinct entries of the skill list (workstyle excluded) — matches what the skills section shows. */
   technologies: number;
   languagesShort: string;
 }
@@ -61,7 +61,9 @@ export function computeStats(cv: PublicCv, now: Date): CvStats {
   const earliestStart = Math.min(...cv.experiences.map((e) => monthIndex(e.start, 1)));
   return {
     careerYears: Math.floor((nowIndex - earliestStart) / 12),
-    technologies: new Set(cv.experiences.flatMap((e) => e.tech)).size,
+    technologies: new Set(
+      cv.skills.filter((s) => s.category !== 'Arbeitsweise').flatMap((s) => s.items),
+    ).size,
     languagesShort: cv.languages.map((l) => l.name.slice(0, 2).toUpperCase()).join(' · '),
   };
 }

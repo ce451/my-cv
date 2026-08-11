@@ -3,42 +3,40 @@ import { FxLoop } from './fx-loop';
 import { hasFinePointer, prefersReducedMotion } from './motion';
 
 /**
- * Custom cursor: dot plus trailing ring with a small orbiting "planet"
- * (desktop only). While active, the native cursor is hidden via a class
- * on <html> (see styles.scss).
+ * Custom cursor: a dot with a small amber "planet" orbiting it on a trailing
+ * anchor (desktop only). While active, the native cursor is hidden via a
+ * class on <html> (see styles.scss).
  */
 @Component({
   selector: 'fx-cursor',
   template: `
     <div class="dot" #dot aria-hidden="true"></div>
-    <div class="ring" #ring aria-hidden="true"><i class="planet"></i></div>
+    <div class="orbit" #ring aria-hidden="true"><i class="planet"></i></div>
   `,
   styles: `
     :host { display: contents; }
-    .dot, .ring {
+    .dot, .orbit {
       position: fixed; top: 0; left: 0; z-index: 60;
-      border-radius: 50%; pointer-events: none;
-      transform: translate(-50%, -50%);
-      display: none;
+      pointer-events: none; display: none;
     }
-    .dot { width: 8px; height: 8px; background: var(--teal); }
-    .ring {
-      width: 42px; height: 42px;
-      border: 1px solid rgba(63, 208, 192, 0.5);
+    .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--teal);
+      transform: translate(-50%, -50%);
       transition: width 0.2s, height 0.2s;
     }
     .planet {
-      position: absolute; top: 50%; left: 50%;
-      width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px;
+      position: absolute; top: 0; left: 0;
+      width: 6px; height: 6px; margin: -3px 0 0 -3px;
       border-radius: 50%; background: var(--amber);
       animation: fx-orbit 2.6s linear infinite;
     }
     @keyframes fx-orbit {
-      from { transform: rotate(0turn) translateX(14px); }
-      to { transform: rotate(1turn) translateX(14px); }
+      from { transform: rotate(0turn) translateX(22px); }
+      to { transform: rotate(1turn) translateX(22px); }
     }
-    :host(.active) .dot, :host(.active) .ring { display: block; }
-    :host(.link) .ring { width: 66px; height: 66px; }
+    :host(.active) .dot, :host(.active) .orbit { display: block; }
+    :host(.link) .dot { width: 14px; height: 14px; }
   `,
 })
 export class Cursor {

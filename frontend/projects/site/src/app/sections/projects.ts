@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { CV } from '../content/cv-data';
 import { UI } from '../ui/ui-text';
 import { Reveal } from '../fx/reveal';
@@ -6,7 +7,7 @@ import { Tilt } from '../fx/tilt';
 
 @Component({
   selector: 'app-projects',
-  imports: [Reveal, Tilt],
+  imports: [Reveal, Tilt, RouterLink],
   templateUrl: './projects.html',
 })
 export class Projects {

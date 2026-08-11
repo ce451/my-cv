@@ -31,6 +31,11 @@ Qualitätsanspruch: Craft statt Spektakel — dieses Repo ist selbst Arbeitsprob
   Sichten auf denselben Datenbestand → das Datenmodell braucht ein Sichtbarkeitsflag.
   **Bewusst kein Impressum** (Entscheidung 11.08.2026); die /datenschutz-Seite bleibt
   minimal und ohne Adresse. Vor breiter Streuung der Seite neu bewerten.
+  **Keine Kundennamen aus Projekten in öffentlichen Ausgaben** (Anweisung
+  11.08.2026): Projektkunden und Projektnamen der Arbeitgeber (z. B. aus der
+  Individualentwicklung) erscheinen weder auf der Website noch im öffentlichen
+  PDF. Eigene Arbeitgeber sind ok; Praktika werden ohne Firmennamen
+  zusammengefasst.
 - **Ton aller sichtbaren Texte:** sachlich und konkret, keine Selbstvermarktungs-Floskeln,
   keine KI-typischen Formulierungen. Zahlen und Fakten statt Adjektive.
 - **Design:** verbindlich ist `docs/design-system.md` — Richtung „Cinematic"
@@ -139,6 +144,17 @@ Neue Route? Dann immer: in `app.routes.ts` eintragen, im Komponenten-Konstruktor
       immutable-Cache für gehashte Assets, Fonts direkt self-hosted mit
       preload (statt @fontsource, Mono nur noch 400), Kontrastfix --faint
       (AA), Mobil-Nav mit Sektionslinks, Icons verkleinert
+- [x] Phase 8 — „Runde Sache" (11.08.2026): Kundenprojekte und Kundennamen
+      komplett entfernt (neue Datenschutz-Regel oben), Rolle öffentlich
+      „Senior Full-Stack Softwareentwickler", neue Tagline („Zwölf Jahre Code,
+      der in Fabriken und Arztpraxen läuft"), Redundanzen gestrafft
+      (DE/EN, Anforderung-bis-Support), Praktika auf eine Zeile ohne Namen,
+      Präsenzdienst raus, HTBLA ausgeschrieben + Matura, Stat-Box zählt
+      jetzt die Kenntnisse-Liste, Making-of von der Projekt-Sektion verlinkt
+      und entschlackt (FamHub/82-KB/0-€ raus, CSP-Zeile rein), laufende
+      Station ohne Dauer mit Puls-Punkt, Cursor nur noch Punkt + Planet
+      (Orbit 22px, ohne Ring), Mobil ganz ohne Kopfleiste, Partikel
+      resize-stabil (URL-Leiste), Magnetic-CTA gleitet statt springt
 
 ## Offene Punkte
 

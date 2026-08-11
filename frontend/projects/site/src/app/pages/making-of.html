@@ -14,7 +14,7 @@
     <p>
       Die öffentliche Seite ist eine statisch vorgerenderte Angular-Anwendung.
       Inhalte pflege ich in einem privaten, nur lokal laufenden Backend
-      („Studio": .NET 10, EF Core, SQLite) und veröffentliche sie als JSON ins
+      („Studio“: .NET 10, EF Core, SQLite) und veröffentliche sie als JSON ins
       Repository; der Site-Build liest ausschließlich diese Datei. Es gibt kein
       öffentliches Laufzeit-Backend, keine Cookies, kein Tracking. Ein
       Sichtbarkeitsflag im Datenmodell trennt, was auf die Website darf und was
@@ -38,15 +38,14 @@
       Gebaut habe ich die Seite mit Claude Code — bewusst als Test, wie weit
       professionelle KI-gestützte Entwicklung trägt: verbindliche Projektregeln
       in einer CLAUDE.md, Architekturentscheidungen als ADRs, phasenweise
-      Commits, Recherche und Entwürfe im Repo nachvollziehbar. Die Gegenprobe
-      ist mein Lernprojekt FamHub, das ich komplett ohne KI von Hand schreibe.
+      Commits, Recherche und Entwürfe im Repo nachvollziehbar.
     </p>
 
     <h2>Eckdaten</h2>
     <ul>
-      <li>Alle Seiten statisch vorgerendert; rund 82 KB initialer Transfer</li>
-      <li>Backend-, Studio- und Site-Tests laufen in jeder CI-Pipeline</li>
-      <li>Hosting über ein CDN, laufende Kosten: 0 €</li>
+      <li>Alle Seiten statisch vorgerendert, keine Requests an Dritt-Server, kein Tracking</li>
+      <li>Site- und Backend-Tests laufen in jeder CI-Pipeline; deployt wird nur bei Grün</li>
+      <li>Strikte Content-Security-Policy — ein CI-Check hält die Hash-Allowlist aktuell</li>
     </ul>
 
     <p>

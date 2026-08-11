@@ -24,12 +24,10 @@ export class Magnetic {
         const dy = event.clientY - rect.top - rect.height / 2;
         target.style.transform = `translate(${dx * 0.25}px, ${dy * 0.35}px)`;
       };
+      // The base transition lives in styles.scss (.magnetic > *): the pull
+      // eases in on the first hover instead of jumping, and eases back out.
       const onLeave = () => {
-        target.style.transition = 'transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)';
         target.style.transform = '';
-        setTimeout(() => {
-          target.style.transition = '';
-        }, 400);
       };
       this.zone.runOutsideAngular(() => {
         host.addEventListener('pointermove', onMove, { passive: true });
