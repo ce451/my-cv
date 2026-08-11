@@ -71,7 +71,7 @@ Site-Struktur unter `frontend/projects/site/src/app/`:
   (Komponenten). Muster überall gleich: Init in `afterNextRender`, Guards für
   SSR/jsdom/reduced-motion/Pointer-Typ, Cleanup über `DestroyRef`.
 - `sections/` — Hero, IntroStats, Timeline, Projects, Skills, Education, Contact;
-  `pages/` — Home (Sektionen) + /now, /uses, /making-of, /datenschutz
+  `pages/` — Home (Sektionen) + /making-of, /datenschutz
 - Styles global in `styles.scss` (Tokens → Bühne → Sektionen → Unterseiten → Print →
   reduced-motion). Reveal-Ausblendung greift nur unter `html.js` (No-JS bleibt lesbar).
 
@@ -105,10 +105,29 @@ Cloudflare-Pages-Projekt `elstner-cv` → https://elstner.ch (GitHub-Secrets:
 - [x] Phase 4b — Unterseiten /now, /uses, /making-of, /datenschutz mit Routing
       (alle Routen prerendert, anchorScrolling, View Transitions); bewusst ohne
       Impressum; Seiteninhalte liegen als Templates im Repo, nicht im Studio
-      (11.08.2026)
-- [x] Phase 5 — Live auf Cloudflare Pages: https://elstner-cv.pages.dev, Deploy nur
-      nach grünem CI (11.08.2026). Offen: einmaliger Dashboard-Klick für die Custom
-      Domain elstner.ch (siehe docs/setup-cloudflare-pages.md) und die neue
-      Kontakt-E-Mail (Studio-Eintrag + Publish, sobald vorhanden)
+      (11.08.2026). /now und /uses in Phase 6 wieder entfernt.
+- [x] Phase 5 — Live auf Cloudflare Pages + Custom Domain https://elstner.ch,
+      Deploy nur nach grünem CI (11.08.2026)
+- [x] Phase 6 — Feinschliff nach User-Feedback (11.08.2026): Hero mit Tagline,
+      Highlights-Zeile und größerem Porträt; CE-Favicon (SVG + ICO + Apple-Touch);
+      Cursor-Ring +25 % mit Amber-„Planet", nativer Cursor versteckt; hellere
+      Partikel; Stat „Technologien im Projekteinsatz" statt Betriebszugehörigkeit;
+      Projektkarten mit Repo-Links (Schema: Profile.Tagline/Highlights,
+      PersonalEntry.Links + Migration); „Firewall" aus den Skills gestrichen;
+      /now und /uses entfernt; Timeline-Punkte pixelgenau auf der Linie
+
+## Offene Punkte
+
+- Neue Kontakt-E-Mail: liefert der User nach → im Studio eintragen, publishen.
+- Öffentliches Lebenslauf-PDF: `~/nas/Beruf/01_Unterlagen/lebenslauf-public.html`
+  ist die fertig bereinigte Vorlage (ohne Bewerbungs-Personaldaten). Headless-
+  Rendering scheitert auf dieser Maschine (Playwright-Chromium rendert keinen
+  Text — Font-Inkompatibilität; Vivaldi-CLI-Print hängt): Der User druckt sie
+  selbst zu PDF, danach als `frontend/projects/site/public/
+  Lebenslauf-Christopher-Elstner.pdf` einchecken und die beiden PDF-Buttons von
+  `window.print()` auf den Download umstellen (Entscheidung 11.08.2026:
+  vorerst Druckdialog).
+- GitHub Actions bei Gelegenheit auf checkout/setup-node v5 (Node-20-Deprecation).
+- Vor breiter Streuung: Impressum-Frage neu bewerten.
 
 Datenquelle für den Erstimport ist der private Lebenslauf (lokal, außerhalb des Repos).

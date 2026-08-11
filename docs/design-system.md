@@ -59,17 +59,17 @@ Schrift, Skill-Prozentbalken, Typewriter-Effekte, Template-Icon-Grids.
 
 | Effekt | Spezifikation |
 |---|---|
-| Partikel-Konstellation | Fixed Canvas, ≤ 90 Punkte (`innerWidth/16`), Verbindungslinien < 130px, Maus-Repulsion 130px, dpr ≤ 2 |
+| Partikel-Konstellation | Fixed Canvas, ≤ 90 Punkte (`innerWidth/16`), Verbindungslinien < 130px, Maus-Repulsion 130px, dpr ≤ 2; Punkte `rgba(132,212,205,.62)`, Linien bis α .16 (bewusst gut sichtbar, 11.08.2026) |
 | Aurora | 2 geblurrte Radialgradienten (Petrol + Amber), 26s/32s alternierende Drift |
 | Filmkorn | SVG-Noise als Data-URI, Opacity 0.05, `mix-blend-mode: overlay` |
 | Hero-Letters | Wortweise Spans, Buchstaben `translateY(115%) rotate(4deg) blur(6px)` → 0, Stagger 35ms |
 | Scroll-Reveal | `.rv` + IntersectionObserver (threshold 0.16), einmalig |
-| Timeline | Statische Spur + Teal-Progress `scaleY(scroll)`, Knoten mit Glow |
+| Timeline | Statische Spur + Teal-Progress `scaleY(scroll)`, Knoten mit Glow; Spur und Knoten zentrieren auf gemeinsamer Achse `--tl-x` (ganzzahlige px) |
 | Geisterjahre | Outline-Text `clamp(5rem,16vw,12rem)`, Parallax-Faktor 0.12, mobil aus |
 | Zähler | Ease-out-cubic, 1.3s, deutsches Dezimalkomma |
 | Tilt-Karten | `rotateX ±7° / rotateY ±9°` + wanderndes Glow-Highlight |
 | Magnetic CTA | Versatz ×0.25/0.35 zur Cursorposition, federnder Rücklauf |
-| Cursor | Punkt + nachlaufender Ring (lerp 0.14), wächst über Links; nur Desktop |
+| Cursor | Punkt + nachlaufender Ring ø 42px (lerp 0.14), wächst über Links auf 66px; Amber-„Planet" (5px) umkreist den Ring in 2.6s; nativer Cursor via `html.cursor-hidden` ausgeblendet; nur Desktop |
 | Nav | Fixed, erscheint ab 55vh Scroll, `backdrop-filter: blur(14px)` |
 
 ## Accessibility & Performance
