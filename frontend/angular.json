@@ -29,7 +29,14 @@
                 "input": "projects/site/public"
               }
             ],
-            "styles": ["projects/site/src/styles.scss"]
+            "styles": [
+              "node_modules/@fontsource-variable/space-grotesk/index.css",
+              "node_modules/@fontsource/ibm-plex-mono/400.css",
+              "node_modules/@fontsource/ibm-plex-mono/500.css",
+              "projects/site/src/styles.scss"
+            ],
+            "server": "projects/site/src/main.server.ts",
+            "outputMode": "static"
           },
           "configurations": {
             "production": {

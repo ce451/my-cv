@@ -1,0 +1,17 @@
+<section class="section" aria-label="Profil">
+  <p class="intro" fxReveal>{{ rest }}</p>
+  <div class="stats">
+    <div class="stat" fxReveal>
+      <div class="num"><span [fxCount]="stats.careerYears">{{ stats.careerYears }}</span><i>+</i></div>
+      <div class="cap">{{ ui.stats.years }}</div>
+    </div>
+    <div class="stat rv-d1" fxReveal>
+      <div class="num"><span [fxCount]="stats.longestTenureYears" [fxCountDecimals]="1">{{ tenureText }}</span></div>
+      <div class="cap">{{ ui.stats.tenure }}</div>
+    </div>
+    <div class="stat rv-d2" fxReveal>
+      <div class="num">{{ stats.languagesShort }}</div>
+      <div class="cap">{{ ui.stats.languages }}</div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,16 @@
+<section class="section contact" id="kontakt">
+  <p class="big" fxReveal>{{ ui.contact.lineTop }}<br /><em>{{ ui.contact.lineBottom }}</em></p>
+  @if (linkedIn?.url; as linkedInUrl) {
+    <span class="rv-d1" fxMagnetic fxReveal>
+      <a class="cta" [href]="linkedInUrl">{{ ui.contact.ctaLinkedIn }}</a>
+    </span>
+  }
+  <p class="alt rv-d2" fxReveal>
+    {{ ui.contact.or }}
+    @if (github?.url; as githubUrl) {
+      <a [href]="githubUrl">{{ ui.contact.github }}</a>
+      ·
+    }
+    <button type="button" class="linklike" (click)="print()">{{ ui.contact.pdf }}</button>
+  </p>
+</section>

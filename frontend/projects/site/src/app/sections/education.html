@@ -1,0 +1,35 @@
+<section class="section" id="ausbildung">
+  <h2 fxReveal><span class="no">04</span>{{ ui.sections.ausbildung }} &amp; {{ ui.sections.praktika }}</h2>
+  <div class="edu-grid">
+    <div class="edu-card" fxReveal>
+      @for (entry of education; track entry.institution) {
+        <p class="when">{{ period(entry) }}</p>
+        <h3>
+          {{ entry.institution }}
+          @if (entry.program) {
+            — {{ entry.program }}
+          }
+        </h3>
+        @if (entry.note) {
+          <p class="sub">{{ entry.note }}</p>
+        }
+      }
+    </div>
+    <div class="edu-card rv-d1" fxReveal>
+      <h3 class="head">{{ ui.sections.praktika }}</h3>
+      <ul>
+        @for (internship of internships; track internship.organization + internship.years) {
+          <li>
+            <span class="y">{{ internship.years }}</span>
+            <span class="t">
+              {{ internship.organization }}
+              @if (internship.note) {
+                · {{ internship.note }}
+              }
+            </span>
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+</section>

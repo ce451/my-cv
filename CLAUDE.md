@@ -21,8 +21,9 @@ Qualitätsanspruch: Craft statt Spektakel — dieses Repo ist selbst Arbeitsprob
 
 ## Verbindliche Regeln
 
-- **Committen: nach jedem Phasenabschluss (stehende Anweisung vom 11.08.2026).
-  Pushen weiterhin nur auf ausdrückliche Anweisung.**
+- **Committen nach jedem Phasenabschluss und danach sofort auf alle Remotes pushen
+  (stehende Anweisung vom 11.08.2026). Zwischen Phasen nicht anhalten, außer es
+  fehlt Input vom User.**
 - **Datenschutz für alle öffentlichen Ausgaben** (Website, öffentliches PDF, Repo):
   Wohnort nur „Weiz" — keine Straße, kein Geburtsdatum, keine Telefonnummer, keine
   private Gmail-Adresse. Kontakt läuft über eine eigene, noch einzurichtende Adresse.
@@ -66,9 +67,11 @@ Qualitätsanspruch: Craft statt Spektakel — dieses Repo ist selbst Arbeitsprob
 - [x] Phase 3a — Designphase: 5 Entwürfe (A–C dokumentenhaft verworfen — User will
       „atemberaubend"; D „Cinematic" gewählt, E Alternative), Designsystem fixiert
       in docs/design-system.md (11.08.2026)
-- [ ] Phase 3b — Site-Umsetzung: Angular-Komponenten nach Designsystem, Effekt-
-      Direktiven, Content aus content/cv.de.json zur Buildzeit, SSG + i18n-Fundament,
-      Print-CSS (eine Quelle → Bildschirm + DACH-konformes PDF), Foto-Einbindung
+- [x] Phase 3b — Site-Umsetzung: Sektions-Komponenten + Effekt-Direktiven nach
+      Designsystem (gemeinsamer rAF-Loop, SSR-/Test-Guards, html.js-Gating,
+      prefers-reduced-motion), Content typisiert aus content/cv.de.json zur Buildzeit
+      mit berechneten Dauern/Statistiken, SSG via outputMode static, self-hosted
+      Fonts, WebP-Porträt, Print-CSS als PDF-Weg v1 (11.08.2026)
 - [ ] Phase 4 — Impressum/DSGVO, schema.org-JSON-LD, /now, /uses, Making-of-Seite
 - [ ] Phase 5 — Cloudflare Pages + elstner.ch, Launch
 

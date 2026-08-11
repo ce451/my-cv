@@ -1,0 +1,12 @@
+<section class="section" id="projekte">
+  <h2 fxReveal><span class="no">02</span>{{ ui.sections.projekte }}</h2>
+  <div class="projects">
+    @for (project of projects; track project.text; let i = $index) {
+      <div fxTilt fxReveal [class.rv-d1]="i === 1">
+        <p class="icon">{{ ui.projectLabel }} {{ index(i) }}</p>
+        <h3>{{ project.title }}</h3>
+        <p>{{ project.text }}</p>
+      </div>
+    }
+  </div>
+</section>

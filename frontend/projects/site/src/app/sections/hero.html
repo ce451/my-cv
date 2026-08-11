@@ -1,0 +1,23 @@
+<header class="hero" id="top">
+  <picture class="portrait-wrap">
+    <source srcset="portrait-320.webp 1x, portrait-640.webp 2x" type="image/webp" />
+    <img
+      class="portrait"
+      src="portrait-640.webp"
+      width="640"
+      height="640"
+      [alt]="ui.portraitAltPrefix + cv.profile.fullName"
+      fetchpriority="high"
+    />
+  </picture>
+  <p class="kicker">{{ cv.profile.role }} · {{ cv.profile.location }}{{ ui.locationSuffix }}</p>
+  <h1 fxLetters>{{ cv.profile.fullName }}</h1>
+  <p class="role">{{ lead }}</p>
+  <div class="meta">
+    @for (contact of contactLinks; track contact.type) {
+      <a [href]="contact.url" rel="me noopener">{{ contact.type }}/{{ contact.label || contact.value }}</a>
+    }
+    <span>{{ techLine }}</span>
+  </div>
+  <div class="scrollcue" aria-hidden="true"></div>
+</header>

@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
+import { CV } from './content/cv-data';
 
 describe('App', () => {
   beforeEach(async () => {
@@ -8,16 +9,35 @@ describe('App', () => {
     }).compileComponents();
   });
 
-  it('should create the app', () => {
+  async function render(): Promise<HTMLElement> {
     const fixture = TestBed.createComponent(App);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    return fixture.nativeElement as HTMLElement;
+  }
+
+  it('renders name and role from the published content', async () => {
+    const compiled = await render();
+    const text = compiled.textContent ?? '';
+    expect(text).toContain(CV.profile.fullName);
+    expect(text).toContain(CV.profile.role);
   });
 
-  it('should render title', async () => {
-    const fixture = TestBed.createComponent(App);
-    await fixture.whenStable();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, site');
+  it('renders one station per published experience', async () => {
+    const compiled = await render();
+    expect(compiled.querySelectorAll('.station').length).toBe(CV.experiences.length);
+  });
+
+  it('renders all skill categories', async () => {
+    const compiled = await render();
+    expect(compiled.querySelectorAll('.skills .row').length).toBe(CV.skills.length);
+  });
+
+  it('contains no application-only data', async () => {
+    const compiled = await render();
+    const text = compiled.textContent ?? '';
+    expect(text).not.toContain('[entfernt]');
+    expect(text).not.toContain('gmail');
+    expect(text).not.toContain('Verheiratet');
   });
 });
