@@ -47,10 +47,14 @@ describe('Home', () => {
     expect(hrefs).toEqual(CV.projects.flatMap((p) => p.links));
   });
 
+  // Defense in depth: the structural guarantee lives in the backend publish
+  // pipeline (PublishMapperTests). Probes here are generic terms on purpose —
+  // real application-only values must never appear in this public repo, not
+  // even inside a negative assertion.
   it('contains no application-only data', async () => {
     const compiled = await render();
     const text = compiled.textContent ?? '';
-    expect(text).not.toContain('[entfernt]');
+    expect(text).not.toContain('gasse');
     expect(text).not.toContain('gmail');
     expect(text).not.toContain('Verheiratet');
   });
