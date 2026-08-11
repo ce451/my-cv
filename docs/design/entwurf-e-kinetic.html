@@ -1,0 +1,331 @@
+<!doctype html>
+<!-- Entwurf E „Kinetic“ — Designstudie mit echten Effekten, nicht die finale Implementierung.
+     Charakter: helle Bühne, laute Riesen-Typografie, Laufband, Sticky-Karten-Deck,
+     Hover-Invertierung, Signal-Orange. -->
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Entwurf E — Kinetic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400;62..125,600;62..125,800;62..125,900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f2efe8;
+    --ink: #141210;
+    --muted: #6f6a61;
+    --faint: #a39d92;
+    --line: #dcd7cc;
+    --accent: #ff4a1f;
+    --sans: "Archivo", "Segoe UI", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--sans); font-size: 1.03rem; line-height: 1.6;
+    overflow-x: hidden;
+  }
+  ::selection { background: #ffd2c4; }
+  a { color: inherit; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  .badge {
+    position: fixed; top: 0.75rem; right: 0.75rem; z-index: 50;
+    font: 500 0.68rem/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase;
+    color: #fff; background: var(--accent); padding: 0.4rem 0.6rem;
+  }
+
+  /* Reveal-Muster */
+  .rv { opacity: 0; transform: translateY(36px); transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1), transform 0.75s cubic-bezier(0.22, 1, 0.36, 1); }
+  .rv.in { opacity: 1; transform: none; }
+  .clip { clip-path: inset(0 0 100% 0); transition: clip-path 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+  .clip.in { clip-path: inset(0 0 -10% 0); }
+
+  /* Hero */
+  .hero { min-height: 100svh; display: flex; flex-direction: column; justify-content: space-between; padding: 1.5rem; }
+  .hero .top { display: flex; justify-content: space-between; align-items: baseline;
+    font: 500 0.8rem/1.5 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .hero .top a { text-decoration: none; }
+  .hero .top a:hover { color: var(--accent); }
+  .giant { margin: 0; font-weight: 900; text-transform: uppercase;
+    font-size: clamp(3.4rem, 14.5vw, 15rem); line-height: 0.86; letter-spacing: -0.035em;
+    font-stretch: 110%; }
+  .giant .row { display: block; overflow: hidden; }
+  .giant .row span { display: inline-block; transform: translateY(105%); animation: up 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+  .giant .row:nth-child(2) span { animation-delay: 0.12s; color: transparent; -webkit-text-stroke: 2.5px var(--ink); }
+  .giant .row:nth-child(2) span:hover { color: var(--accent); -webkit-text-stroke: 2.5px var(--accent); transition: color 0.25s; }
+  @keyframes up { to { transform: translateY(0); } }
+  .hero .bottom { display: flex; justify-content: space-between; align-items: flex-end; gap: 2rem; }
+  .hero .claim { max-width: 30ch; font-size: clamp(1rem, 2vw, 1.3rem); font-weight: 600; line-height: 1.45;
+    opacity: 0; animation: fade 0.8s 0.7s forwards; }
+  .hero .claim em { font-style: normal; color: var(--accent); }
+  .hero .dl { flex: none; opacity: 0; animation: fade 0.8s 0.9s forwards; }
+  @keyframes fade { to { opacity: 1; } }
+  .btn { display: inline-block; text-decoration: none; font-weight: 800; font-size: 0.95rem;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    border: 2px solid var(--ink); padding: 0.9rem 1.4rem;
+    transition: background 0.15s, color 0.15s, transform 0.15s; }
+  .btn:hover { background: var(--ink); color: var(--bg); transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--accent); }
+
+  /* Laufband */
+  .marquee { border-top: 2px solid var(--ink); border-bottom: 2px solid var(--ink);
+    overflow: hidden; white-space: nowrap; padding: 0.8rem 0; background: var(--bg); }
+  .marquee .track { display: inline-block; animation: slide 26s linear infinite; }
+  .marquee:hover .track { animation-play-state: paused; }
+  .marquee span { font-weight: 800; text-transform: uppercase; font-size: 1.15rem; letter-spacing: 0.04em; margin: 0 1.4rem; }
+  .marquee i { font-style: normal; color: var(--accent); }
+  @keyframes slide { to { transform: translateX(-50%); } }
+
+  /* Sektionen */
+  section { max-width: 76rem; margin: 0 auto; padding: 6.5rem 1.5rem 0; }
+  h2 { font-size: clamp(2.2rem, 6vw, 4.2rem); font-weight: 900; text-transform: uppercase;
+    letter-spacing: -0.02em; line-height: 0.95; margin: 0 0 2.5rem; }
+  h2 sup { font: 500 0.9rem/1 var(--mono); color: var(--accent); letter-spacing: 0.1em; vertical-align: super; }
+
+  .intro { font-size: clamp(1.4rem, 3.2vw, 2.3rem); font-weight: 600; line-height: 1.35; letter-spacing: -0.015em; max-width: 28em; margin: 0; }
+  .intro em { font-style: normal; box-shadow: inset 0 -0.35em 0 #ffd2c4; }
+
+  /* Sticky-Deck Werdegang */
+  .deck { display: grid; gap: 1.2rem; }
+  .deal { position: sticky; background: #fbf9f4; border: 2px solid var(--ink);
+    padding: 2rem 2.2rem 2.2rem; box-shadow: 0 -12px 40px -22px rgba(20, 18, 16, 0.4); }
+  .deal:nth-child(1) { top: 5.5rem; }
+  .deal:nth-child(2) { top: 8rem; }
+  .deal:nth-child(3) { top: 10.5rem; }
+  .deal .head { display: flex; align-items: baseline; gap: 1.2rem; flex-wrap: wrap; border-bottom: 2px solid var(--ink); padding-bottom: 0.9rem; margin-bottom: 1.1rem; }
+  .deal .year { font-weight: 900; font-size: clamp(1.8rem, 4.5vw, 3rem); letter-spacing: -0.02em; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .deal h3 { font-size: clamp(1.2rem, 3vw, 1.8rem); font-weight: 800; text-transform: uppercase; margin: 0; letter-spacing: -0.01em; flex: 1; min-width: 14rem; }
+  .deal .when { font: 500 0.78rem/1.6 var(--mono); color: var(--muted); }
+  .deal .org { font-weight: 700; margin: 0 0 0.6rem; }
+  .deal .org .note { font-weight: 400; color: var(--muted); }
+  .deal p.sum { margin: 0 0 0.7rem; max-width: 68ch; }
+  .deal ul { margin: 0 0 1rem; padding-left: 1.15rem; }
+  .deal li { margin-bottom: 0.3rem; max-width: 64ch; }
+  .deal li::marker { color: var(--accent); font-weight: 900; }
+  .tech { font: 500 0.78rem/1.7 var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  .tech b { color: var(--accent); }
+
+  /* Projekte */
+  .projects { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  .project { border: 2px solid var(--ink); padding: 2rem 2.2rem; background: transparent;
+    transition: background 0.18s, color 0.18s; cursor: default; }
+  .project:hover { background: var(--ink); color: var(--bg); }
+  .project:hover .no { color: var(--accent); }
+  .project .no { font: 500 0.8rem/1 var(--mono); color: var(--accent); }
+  .project h3 { font-size: 1.5rem; font-weight: 800; text-transform: uppercase; margin: 0.8rem 0 0.5rem; letter-spacing: -0.01em; }
+  .project p { margin: 0; max-width: 44ch; }
+
+  /* Kenntnisse als große Zeilen */
+  .skillrows { border-top: 2px solid var(--ink); }
+  .skillrow { display: grid; grid-template-columns: 14rem 1fr; gap: 1.5rem;
+    padding: 1.3rem 0.4rem; border-bottom: 2px solid var(--ink); align-items: baseline;
+    transition: background 0.15s, padding-left 0.2s; }
+  .skillrow:hover { background: #fbf9f4; padding-left: 1rem; }
+  .skillrow .cat { font-weight: 900; text-transform: uppercase; font-size: 1.1rem; letter-spacing: -0.01em; }
+  .skillrow:hover .cat { color: var(--accent); }
+  .skillrow .items { color: var(--muted); font-size: 0.98rem; }
+
+  /* Ausbildung */
+  .edu { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  .edu > div { border: 2px solid var(--ink); padding: 1.8rem 2rem; background: #fbf9f4; }
+  .edu h3 { font-size: 1.15rem; font-weight: 800; text-transform: uppercase; margin: 0 0 0.2rem; }
+  .edu .when { font: 500 0.78rem/1.8 var(--mono); color: var(--accent); }
+  .edu .sub { color: var(--muted); font-size: 0.95rem; margin: 0.3rem 0 0; }
+  .edu ul { margin: 0.5rem 0 0; padding: 0; list-style: none; font-size: 0.95rem; }
+  .edu li { display: flex; gap: 1rem; padding: 0.3rem 0; border-bottom: 1px solid var(--line); }
+  .edu li:last-child { border-bottom: 0; }
+  .edu li .y { flex: none; width: 6rem; font: 500 0.78rem/1.8 var(--mono); color: var(--faint); }
+
+  /* Kontakt */
+  .contact { padding-bottom: 3rem; }
+  .contact a.huge { display: block; text-decoration: none;
+    font-size: clamp(2.6rem, 9.5vw, 8rem); font-weight: 900; text-transform: uppercase;
+    letter-spacing: -0.03em; line-height: 0.95;
+    color: transparent; -webkit-text-stroke: 2px var(--ink);
+    transition: color 0.25s; }
+  .contact a.huge:hover { color: var(--accent); -webkit-text-stroke: 2px var(--accent); }
+  .contact .alt { margin-top: 1.6rem; font: 500 0.85rem/1.7 var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .contact .alt a { text-decoration: none; }
+  .contact .alt a:hover { color: var(--accent); }
+
+  footer { border-top: 2px solid var(--ink); margin-top: 4rem; }
+  footer .inner { max-width: 76rem; margin: 0 auto; padding: 1.4rem 1.5rem;
+    display: flex; flex-wrap: wrap; gap: 0.6rem 1.6rem; justify-content: space-between;
+    font: 500 0.75rem/1.7 var(--mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+  footer a { text-decoration: none; }
+  footer a:hover { color: var(--accent); }
+
+  @media (max-width: 760px) {
+    .projects, .edu { grid-template-columns: 1fr; }
+    .skillrow { grid-template-columns: 1fr; gap: 0.25rem; }
+    .deal:nth-child(1), .deal:nth-child(2), .deal:nth-child(3) { top: 4.5rem; position: static; }
+    .hero .bottom { flex-direction: column; align-items: flex-start; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    .rv, .clip { opacity: 1; transform: none; clip-path: none; }
+    .giant .row span { transform: none; }
+    .hero .claim, .hero .dl { opacity: 1; }
+    .marquee .track { animation: none; }
+  }
+</style>
+</head>
+<body>
+<div class="badge">Entwurf E · Kinetic</div>
+
+<header class="hero">
+  <div class="top">
+    <span>Christopher Elstner — Weiz, AT</span>
+    <span><a href="https://www.linkedin.com/in/christopher-elstner/">LinkedIn</a> &nbsp;/&nbsp; <a href="https://github.com/ce451">GitHub</a></span>
+  </div>
+  <h1 class="giant" aria-label="Full-Stack Entwickler">
+    <span class="row"><span>Full-Stack</span></span>
+    <span class="row"><span>Entwickler</span></span>
+  </h1>
+  <div class="bottom">
+    <p class="claim">Zwölf Jahre Software für Industrie und Gesundheitswesen — <em>von der Anforderung bis zum Support.</em></p>
+    <div class="dl"><a class="btn" href="#">Lebenslauf als PDF</a></div>
+  </div>
+</header>
+
+<div class="marquee" aria-hidden="true">
+  <div class="track">
+    <span>Angular <i>✦</i></span><span>.NET <i>✦</i></span><span>C# <i>✦</i></span><span>Java <i>✦</i></span><span>Spring Boot <i>✦</i></span><span>SQL Server <i>✦</i></span><span>MongoDB <i>✦</i></span><span>Docker <i>✦</i></span><span>Linux <i>✦</i></span><span>12+ Jahre <i>✦</i></span>
+    <span>Angular <i>✦</i></span><span>.NET <i>✦</i></span><span>C# <i>✦</i></span><span>Java <i>✦</i></span><span>Spring Boot <i>✦</i></span><span>SQL Server <i>✦</i></span><span>MongoDB <i>✦</i></span><span>Docker <i>✦</i></span><span>Linux <i>✦</i></span><span>12+ Jahre <i>✦</i></span>
+  </div>
+</div>
+
+<section>
+  <p class="intro rv">Ich bin Christopher — ich verantworte Projekte <em>von Anfang bis Ende:</em> Anforderungen klären, Infrastruktur aufsetzen, entwickeln, in Betrieb nehmen und im Support begleiten. Kundengespräche auf Deutsch und Englisch.</p>
+</section>
+
+<section id="werdegang">
+  <h2 class="clip"><sup>01</sup> Werdegang</h2>
+  <div class="deck">
+    <article class="deal">
+      <div class="head">
+        <span class="year">2025</span>
+        <h3>Senior Softwareentwickler</h3>
+        <span class="when">09/2025 – heute · 11 Monate</span>
+      </div>
+      <p class="org">Quentis</p>
+      <p class="sum">Entwicklung von AWEB, einer Software für das österreichische Gesundheitswesen: Ordinations- und Laborinformationssysteme samt Anbindung an die nationale Gesundheitsinfrastruktur.</p>
+      <ul>
+        <li>Anbindung von E-Card-Readern, Labor-, EKG- und Dialysegeräten</li>
+        <li>Außendienst bei Kunden zur Inbetriebnahme von Laborgeräten</li>
+        <li>Anbindung an ELGA und die Sozialversicherungsservices GINA/SS12</li>
+        <li>Dezentrale Peripherieanwendung in AWEB integriert und cloudfähig gemacht; Datenverkehr durch Long-Polling reduziert</li>
+      </ul>
+      <p class="tech"><b>//</b> Angular · Java · Spring Boot · MongoDB · Docker · Linux</p>
+    </article>
+
+    <article class="deal">
+      <div class="head">
+        <span class="year">2015</span>
+        <h3>Senior Full-Stack Entwickler</h3>
+        <span class="when">03/2015 – 08/2025 · 10 Jahre 6 Monate</span>
+      </div>
+      <p class="org">HGS GmbH &amp; Co KG <span class="note">· Einstieg als Junior</span></p>
+      <p class="sum">Individualentwicklung für Industriekunden aus Energietechnik, Anlagenbau, Intralogistik und Automotive. Projekte ab Vertragsabschluss allein verantwortet — Kundenmeetings regelmäßig auf Englisch.</p>
+      <ul>
+        <li>TRAM für Siemens Energy in Weiz: Dokumentation, Lager und Logistik im Großtransformatorenbau</li>
+        <li>Sync Tool für KNAPP, Rosendahl Nextrom und die Stadtgemeinde Weiz: Kontaktsynchronisation aus Entra ID, Datenbanken und One Identity</li>
+        <li>DGE für Andritz: Anwendung zur Generatorberechnung</li>
+      </ul>
+      <p class="tech"><b>//</b> Angular · C# · VB.NET · ASP.NET · WPF · SQL Server · Mendix</p>
+    </article>
+
+    <article class="deal">
+      <div class="head">
+        <span class="year">2014</span>
+        <h3>Junior Softwareentwickler</h3>
+        <span class="when">03/2014 – 03/2015 · 1 Jahr</span>
+      </div>
+      <p class="org">Fb Green Energy <span class="note">· heute Fb Industry Automation</span></p>
+      <p class="sum">Visualisierung von Wasserkraftwerken. Netzwerk- und Serveradministration.</p>
+      <p class="tech"><b>//</b> Java · PHP · JavaScript</p>
+    </article>
+  </div>
+</section>
+
+<section id="projekte">
+  <h2 class="clip"><sup>02</sup> Projekte</h2>
+  <div class="projects">
+    <div class="project rv">
+      <span class="no">P–01 / Hardware + Software</span>
+      <h3>IoT-Luftqualität</h3>
+      <p>Eigene Firmware auf ESP8266 und ESP32, REST-API und Angular-Frontend — Messwerte fürs ganze Haus.</p>
+    </div>
+    <div class="project rv">
+      <span class="no">P–02 / Infrastruktur</span>
+      <h3>Homelab</h3>
+      <p>NAS und mehrere Proxmox-Server mit Docker, automatisierten Backups und Workflow-Automatisierungen.</p>
+    </div>
+  </div>
+</section>
+
+<section id="kenntnisse">
+  <h2 class="clip"><sup>03</sup> Kenntnisse</h2>
+  <div class="skillrows">
+    <div class="skillrow rv"><span class="cat">Arbeitsweise</span><span class="items">Eigenständige Projektverantwortung von der Anforderung bis zum Support · Kundenkontakt DE/EN · Remote-Erfahrung · KI-gestützte Entwicklung</span></div>
+    <div class="skillrow rv"><span class="cat">Backend</span><span class="items">C# · .NET Framework bis .NET (Core) · ASP.NET · Web API · VB.NET · WCF/SOAP · REST · Java · Spring Boot</span></div>
+    <div class="skillrow rv"><span class="cat">Frontend</span><span class="items">Angular · TypeScript · PrimeNG · DevExpress · HTML · CSS · WPF</span></div>
+    <div class="skillrow rv"><span class="cat">Daten</span><span class="items">SQL Server · T-SQL · MongoDB</span></div>
+    <div class="skillrow rv"><span class="cat">Plattform</span><span class="items">Git · Docker · Windows Server · Linux · Entra ID · Mendix</span></div>
+    <div class="skillrow rv"><span class="cat">Infrastruktur</span><span class="items">Serveraufbau und -einrichtung · Firewall</span></div>
+  </div>
+</section>
+
+<section id="ausbildung">
+  <h2 class="clip"><sup>04</sup> Ausbildung</h2>
+  <div class="edu">
+    <div class="rv">
+      <span class="when">2008 – 2013</span>
+      <h3>HTBLA Weiz</h3>
+      <p class="sub">Elektrotechnik und Informationstechnik. Diplomarbeit: Launch Control für ein Bergrennfahrzeug (BMW 320 IRL evo), Softwareentwicklung und SPS-Programmierung mit CoDeSys.</p>
+      <span class="when" style="display:block;margin-top:0.9rem">09/2013 – 02/2014</span>
+      <h3 style="font-size:1rem">Präsenzdienst</h3>
+    </div>
+    <div class="rv">
+      <h3>Praktika</h3>
+      <ul>
+        <li><span class="y">2013</span><span>Salomon Automation · Automatisierungstechnik</span></li>
+        <li><span class="y">2010–2012</span><span>Energie Steiermark · Netzmanagement und Netzbetrieb</span></li>
+        <li><span class="y">2012</span><span>Pentanova · Projektkostenauswertung</span></li>
+        <li><span class="y">2010</span><span>Siemens Transformers Austria, Weiz · F&amp;E</span></li>
+        <li><span class="y">2009, 2011</span><span>Mosdorfer Weiz · Fertigung</span></li>
+        <li><span class="y">2008</span><span>Stadtgemeinde Weiz</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="contact">
+  <h2 class="clip"><sup>05</sup> Kontakt</h2>
+  <a class="huge rv" href="https://www.linkedin.com/in/christopher-elstner/">Reden&nbsp;wir&nbsp;→</a>
+  <p class="alt rv">LinkedIn · <a href="https://github.com/ce451">GitHub</a> · <a href="#">Lebenslauf als PDF</a> · Deutsch / Englisch</p>
+</section>
+
+<footer>
+  <div class="inner">
+    <span>© 2026 Christopher Elstner</span>
+    <span><a href="#">Impressum</a> · <a href="#">Datenschutz</a> · <a href="https://github.com/ce451/my-cv">Quellcode</a></span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.16 });
+  document.querySelectorAll('.rv, .clip').forEach(function (el) { io.observe(el); });
+})();
+</script>
+</body>
+</html>

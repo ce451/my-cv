@@ -30,9 +30,11 @@ Qualitätsanspruch: Craft statt Spektakel — dieses Repo ist selbst Arbeitsprob
   Sichten auf denselben Datenbestand → das Datenmodell braucht ein Sichtbarkeitsflag.
 - **Ton aller sichtbaren Texte:** sachlich und konkret, keine Selbstvermarktungs-Floskeln,
   keine KI-typischen Formulierungen. Zahlen und Fakten statt Adjektive.
-- **Design:** Regeln entstehen in der Designphase in `docs/design-system.md` und gelten
-  dann verbindlich. Ausgeschlossen (Begründung in docs/recherche/): Skill-Prozentbalken,
-  Typewriter-Effekte, generischer Indigo/Inter-Template-Look.
+- **Design:** verbindlich ist `docs/design-system.md` — Richtung „Cinematic"
+  (dunkle Bühne, Teal/Amber, Space Grotesk + IBM Plex Mono, Effekt-Inventar mit
+  Motion-Regeln), entschieden am 11.08.2026. Referenz-Prototyp:
+  `docs/design/entwurf-d-cinematic.html`. Fonts self-hosted (DSGVO).
+  Ausgeschlossen bleiben: Skill-Prozentbalken, Typewriter-Effekte, Indigo/Inter-Look.
 - **Sprachen:** UI-Texte und Doku Deutsch; Code, Kommentare und Commit-Messages Englisch.
 - Commits nach Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`, `refactor:` …).
 
@@ -61,8 +63,12 @@ Qualitätsanspruch: Craft statt Spektakel — dieses Repo ist selbst Arbeitsprob
       API (GET/PUT /api/cv, POST /api/publish) (11.08.2026)
 - [x] Phase 2b — Studio-Editor-UI: Formulare für alle Bereiche, Sortieren/Hinzufügen/
       Entfernen, Speichern via PUT, Publish-Button (11.08.2026)
-- [ ] Phase 3 — Designphase (2–3 Entwürfe zur Auswahl), dann Site-Aufbau mit SSG,
-      i18n und Print-CSS (eine Quelle → Bildschirm + DACH-konformes PDF)
+- [x] Phase 3a — Designphase: 5 Entwürfe (A–C dokumentenhaft verworfen — User will
+      „atemberaubend"; D „Cinematic" gewählt, E Alternative), Designsystem fixiert
+      in docs/design-system.md (11.08.2026)
+- [ ] Phase 3b — Site-Umsetzung: Angular-Komponenten nach Designsystem, Effekt-
+      Direktiven, Content aus content/cv.de.json zur Buildzeit, SSG + i18n-Fundament,
+      Print-CSS (eine Quelle → Bildschirm + DACH-konformes PDF), Foto-Einbindung
 - [ ] Phase 4 — Impressum/DSGVO, schema.org-JSON-LD, /now, /uses, Making-of-Seite
 - [ ] Phase 5 — Cloudflare Pages + elstner.ch, Launch
 

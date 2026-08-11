@@ -1,0 +1,295 @@
+<!doctype html>
+<!-- Entwurf B „Technisch“ — Designstudie, nicht die finale Implementierung.
+     Charakter: Engineering-Ästhetik — sichtbares Raster, Mono-Labels, präzise Spalten,
+     petrolfarbener Akzent mit sparsamem Signal-Detail. -->
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Entwurf B — Technisch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f5f7;
+    --surface: #ffffff;
+    --ink: #16191e;
+    --muted: #5b6472;
+    --faint: #8b93a1;
+    --line: #dfe3e9;
+    --accent: #1f4e5f;
+    --signal: #e4572e;
+    --sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "Cascadia Code", monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  ::selection { background: #d3e2e8; }
+  a { color: inherit; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  .badge {
+    position: fixed; top: 0.75rem; right: 0.75rem;
+    font: 500 0.68rem/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase;
+    color: #fff; background: var(--accent);
+    padding: 0.4rem 0.6rem; z-index: 10; opacity: 0.9;
+  }
+
+  .frame {
+    max-width: 72rem; margin: 0 auto; padding: 0 1.25rem;
+    display: grid; grid-template-columns: 17rem 1fr; gap: 3.5rem;
+  }
+
+  /* Meta-Leiste links */
+  .rail {
+    position: sticky; top: 0; align-self: start;
+    padding: 3.5rem 0 2rem;
+  }
+  .rail h1 { font-size: 1.7rem; line-height: 1.2; font-weight: 600; margin: 0 0 0.2rem; }
+  .rail .role { color: var(--muted); margin: 0 0 1.75rem; }
+  .rail .label {
+    font: 500 0.68rem/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--faint); margin: 1.5rem 0 0.5rem;
+  }
+  .rail dl { margin: 0; font-size: 0.95rem; }
+  .rail dd { margin: 0 0 0.3rem; }
+  .rail a { text-decoration: none; border-bottom: 1px solid var(--line); }
+  .rail a:hover { border-color: var(--signal); }
+  .facts { list-style: none; margin: 0; padding: 0; font-size: 0.95rem; }
+  .facts li { padding: 0.35rem 0; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 1rem; }
+  .facts li span:last-child { font-family: var(--mono); font-size: 0.85rem; color: var(--muted); white-space: nowrap; }
+  .rail .btn {
+    display: block; text-align: center; text-decoration: none; margin-top: 1.75rem;
+    font: 500 0.9rem/1 var(--sans);
+    background: var(--accent); color: #fff; border: 0;
+    padding: 0.8rem 1rem;
+  }
+  .rail .btn:hover { background: #17404e; }
+  .rail nav { margin-top: 1.75rem; display: grid; gap: 0.4rem; }
+  .rail nav a {
+    font: 400 0.85rem/1.4 var(--mono); color: var(--muted);
+    text-decoration: none; border: 0;
+  }
+  .rail nav a::before { content: "→ "; color: var(--signal); }
+  .rail nav a:hover { color: var(--ink); }
+
+  /* Inhalt rechts */
+  .content { padding: 3.5rem 0 4rem; min-width: 0; }
+  .intro-panel {
+    background: var(--surface); border: 1px solid var(--line);
+    padding: 1.75rem 2rem; margin-bottom: 3rem;
+    background-image: repeating-linear-gradient(0deg, transparent 0 23px, rgba(31, 78, 95, 0.05) 23px 24px);
+  }
+  .intro-panel p { margin: 0; font-size: 1.12rem; line-height: 1.7; max-width: 60ch; }
+
+  h2 {
+    font: 500 0.72rem/1 var(--mono); letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--accent);
+    display: flex; align-items: center; gap: 1rem;
+    margin: 3rem 0 1.5rem;
+  }
+  h2::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+  /* Werdegang: Datumsspalte + Inhalt */
+  .entry {
+    display: grid; grid-template-columns: 10.5rem 1fr; gap: 1.5rem;
+    padding: 1.5rem 0; border-top: 1px solid var(--line);
+  }
+  .entry:first-of-type { border-top: 0; padding-top: 0; }
+  .when { font-family: var(--mono); font-size: 0.85rem; color: var(--muted); }
+  .when .dur { display: block; color: var(--faint); margin-top: 0.15rem; }
+  .when::before {
+    content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    border: 2px solid var(--signal); margin-right: 0.55rem; vertical-align: 1px;
+  }
+  h3 { font-size: 1.18rem; font-weight: 600; margin: 0 0 0.1rem; }
+  .org { color: var(--muted); margin: 0 0 0.6rem; font-size: 0.97rem; }
+  .org .note { color: var(--faint); }
+  .body p { margin: 0 0 0.6rem; max-width: 62ch; }
+  .body ul { margin: 0 0 0.7rem; padding-left: 1.1rem; }
+  .body li { margin-bottom: 0.3rem; max-width: 60ch; }
+  .body li::marker { color: var(--signal); }
+  .tech { font-family: var(--mono); font-size: 0.8rem; color: var(--accent); letter-spacing: 0.01em; }
+
+  /* Kenntnisse als präzise Tabelle */
+  .skilltable { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--line); }
+  .skilltable th, .skilltable td { text-align: left; padding: 0.7rem 1rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .skilltable tr:last-child th, .skilltable tr:last-child td { border-bottom: 0; }
+  .skilltable th {
+    font: 500 0.7rem/1.8 var(--mono); letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); width: 9rem; font-weight: 500;
+  }
+  .skilltable td { font-size: 0.97rem; }
+
+  /* Projekte */
+  .projects { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .project { background: var(--surface); border: 1px solid var(--line); padding: 1.25rem 1.5rem; }
+  .project h3 { font-size: 1.05rem; }
+  .project p { margin: 0.4rem 0 0; font-size: 0.95rem; color: var(--muted); }
+
+  /* Ausbildung / Praktika */
+  .rows { border: 1px solid var(--line); background: var(--surface); }
+  .rows > div { display: grid; grid-template-columns: 10.5rem 1fr; gap: 1.5rem; padding: 0.75rem 1rem; border-bottom: 1px solid var(--line); }
+  .rows > div:last-child { border-bottom: 0; }
+  .rows .when::before { display: none; }
+  .rows .what strong { font-weight: 600; }
+  .rows .what span { color: var(--muted); }
+  .rows .what .sub { display: block; font-size: 0.92rem; margin-top: 0.15rem; }
+
+  footer {
+    border-top: 1px solid var(--line); margin-top: 4rem; padding: 1.25rem 0 0;
+    font-family: var(--mono); font-size: 0.78rem; color: var(--faint);
+    display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; justify-content: space-between;
+  }
+  footer a { text-decoration: none; }
+  footer a:hover { color: var(--accent); }
+
+  @media (max-width: 900px) {
+    .frame { display: block; }
+    .rail { position: static; padding-bottom: 0; }
+    .rail nav { display: none; }
+    .entry, .rows > div { grid-template-columns: 1fr; gap: 0.35rem; }
+    .projects { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="badge">Entwurf B · Technisch</div>
+<div class="frame">
+
+<aside class="rail">
+  <h1>Christopher Elstner</h1>
+  <p class="role">Full-Stack Softwareentwickler</p>
+
+  <p class="label">Eckdaten</p>
+  <ul class="facts">
+    <li><span>Erfahrung</span><span>12+ Jahre</span></li>
+    <li><span>Standort</span><span>Weiz, AT</span></li>
+    <li><span>Sprachen</span><span>DE · EN</span></li>
+    <li><span>Schwerpunkt</span><span>Angular · .NET</span></li>
+  </ul>
+
+  <p class="label">Kontakt</p>
+  <dl>
+    <dd><a href="https://www.linkedin.com/in/christopher-elstner/">LinkedIn · christopher-elstner</a></dd>
+    <dd><a href="https://github.com/ce451">GitHub · ce451</a></dd>
+  </dl>
+
+  <a class="btn" href="#">Lebenslauf als PDF</a>
+
+  <nav>
+    <a href="#werdegang">Werdegang</a>
+    <a href="#projekte">Projekte</a>
+    <a href="#kenntnisse">Kenntnisse</a>
+    <a href="#ausbildung">Ausbildung</a>
+  </nav>
+</aside>
+
+<main class="content">
+  <div class="intro-panel">
+    <p>Seit über zwölf Jahren bin ich mit Begeisterung Softwareentwickler. Ich bin es gewohnt, ein Projekt von Anfang bis Ende zu verantworten, aber auch im Team ein Produkt weiterzuentwickeln: Anforderungen mit dem Kunden abklären, Infrastruktur aufsetzen, entwickeln, in Betrieb nehmen und anschließend im Support begleiten.</p>
+  </div>
+
+  <h2 id="werdegang">Werdegang</h2>
+
+  <article class="entry">
+    <div class="when">09/2025 – heute<span class="dur">11 Monate</span></div>
+    <div class="body">
+      <h3>Senior Softwareentwickler</h3>
+      <p class="org">Quentis</p>
+      <p>Entwicklung von AWEB, einer Software für das österreichische Gesundheitswesen: Ordinations- und Laborinformationssysteme samt Anbindung an die nationale Gesundheitsinfrastruktur.</p>
+      <ul>
+        <li>Anbindung von E-Card-Readern, Labor-, EKG- und Dialysegeräten</li>
+        <li>Außendienst bei Kunden zur Inbetriebnahme von Laborgeräten</li>
+        <li>Anbindung an ELGA und die Sozialversicherungsservices GINA/SS12</li>
+        <li>Dezentrale Peripherieanwendung in AWEB integriert und cloudfähig gemacht; Datenverkehr durch Long-Polling reduziert</li>
+      </ul>
+      <p class="tech">Angular · Java · Spring Boot · MongoDB · Docker · Linux</p>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="when">03/2015 – 08/2025<span class="dur">10 Jahre 6 Monate</span></div>
+    <div class="body">
+      <h3>Senior Full-Stack Softwareentwickler</h3>
+      <p class="org">HGS GmbH &amp; Co KG <span class="note">· Einstieg als Junior</span></p>
+      <p>Individualentwicklung für Industriekunden aus Energietechnik, Anlagenbau, Intralogistik und Automotive. Projekte ab Vertragsabschluss allein verantwortet, von der ersten Anforderung bis zum laufenden Support. Kundenmeetings regelmäßig auf Englisch.</p>
+      <ul>
+        <li>TRAM für Siemens Energy in Weiz: Dokumentation, Lager und Logistik im Großtransformatorenbau — im Einsatz auch bei Dienstleistern und Zulieferern</li>
+        <li>Sync Tool für KNAPP, Rosendahl Nextrom und die Stadtgemeinde Weiz: Kontaktsynchronisation aus Entra ID, Datenbanken und One Identity</li>
+        <li>DGE für Andritz: Anwendung zur Generatorberechnung</li>
+      </ul>
+      <p class="tech">Angular · C# · VB.NET · ASP.NET · WPF · WCF · SQL Server · Mendix · Windows Server</p>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="when">03/2014 – 03/2015<span class="dur">1 Jahr</span></div>
+    <div class="body">
+      <h3>Junior Softwareentwickler</h3>
+      <p class="org">Fb Green Energy <span class="note">· heute Fb Industry Automation</span></p>
+      <p>Visualisierung von Wasserkraftwerken. Netzwerk- und Serveradministration.</p>
+      <p class="tech">Java · PHP · JavaScript</p>
+    </div>
+  </article>
+
+  <h2 id="projekte">Private Projekte</h2>
+  <div class="projects">
+    <div class="project">
+      <h3>IoT-Luftqualitätsmessung</h3>
+      <p>Eigene Firmware auf ESP8266 und ESP32, REST-API und Angular-Frontend.</p>
+    </div>
+    <div class="project">
+      <h3>Homelab</h3>
+      <p>NAS und mehrere Proxmox-Server mit Docker, automatisierten Backups und Workflow-Automatisierungen.</p>
+    </div>
+  </div>
+
+  <h2 id="kenntnisse">Kenntnisse</h2>
+  <table class="skilltable">
+    <tr><th>Arbeitsweise</th><td>Eigenständige Projektverantwortung von der Anforderung bis zum Support, Kundenkontakt auf Deutsch und Englisch, Remote-Erfahrung, KI-gestützte Entwicklung</td></tr>
+    <tr><th>Backend</th><td>C#, .NET Framework bis .NET (Core), ASP.NET, Web API, VB.NET, WCF/SOAP, REST, Java, Spring Boot</td></tr>
+    <tr><th>Frontend</th><td>Angular, TypeScript, PrimeNG, DevExpress, HTML, CSS, WPF</td></tr>
+    <tr><th>Daten</th><td>SQL Server, T-SQL, MongoDB</td></tr>
+    <tr><th>Plattform</th><td>Git, Docker, Windows Server, Linux, Entra ID, Mendix</td></tr>
+    <tr><th>Infrastruktur</th><td>Serveraufbau und -einrichtung, Firewall</td></tr>
+  </table>
+
+  <h2 id="ausbildung">Ausbildung &amp; Praktika</h2>
+  <div class="rows">
+    <div>
+      <span class="when">2008 – 2013</span>
+      <span class="what"><strong>HTBLA Weiz</strong> <span>· Elektrotechnik und Informationstechnik</span>
+        <span class="sub">Diplomarbeit: Launch Control für ein Bergrennfahrzeug (BMW 320 IRL evo), Softwareentwicklung und SPS-Programmierung mit CoDeSys</span></span>
+    </div>
+    <div><span class="when">09/2013 – 02/2014</span><span class="what"><strong>Präsenzdienst</strong></span></div>
+    <div><span class="when">2013</span><span class="what"><strong>Salomon Automation</strong> <span>· Automatisierungstechnik (heute SSI Schäfer IT Solutions)</span></span></div>
+    <div><span class="when">2010 – 2012</span><span class="what"><strong>Energie Steiermark</strong> <span>· Netzmanagement und Netzbetrieb</span></span></div>
+    <div><span class="when">2012</span><span class="what"><strong>Pentanova</strong> <span>· Projektkostenauswertung</span></span></div>
+    <div><span class="when">2010</span><span class="what"><strong>Siemens Transformers Austria, Weiz</strong> <span>· Forschung und Entwicklung (heute Siemens Energy)</span></span></div>
+    <div><span class="when">2009, 2011</span><span class="what"><strong>Mosdorfer Weiz</strong> <span>· Fertigung</span></span></div>
+    <div><span class="when">2008</span><span class="what"><strong>Stadtgemeinde Weiz</strong></span></div>
+  </div>
+
+  <footer>
+    <span>© 2026 Christopher Elstner</span>
+    <span>
+      <a href="#">Impressum</a> ·
+      <a href="#">Datenschutz</a> ·
+      <a href="https://github.com/ce451/my-cv">Quellcode dieser Seite</a>
+    </span>
+  </footer>
+</main>
+
+</div>
+</body>
+</html>
