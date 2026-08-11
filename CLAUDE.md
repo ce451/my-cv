@@ -80,6 +80,9 @@ Qualitätsanspruch: Craft statt Spektakel — dieses Repo ist selbst Arbeitsprob
       (alle Routen prerendert, anchorScrolling, View Transitions); bewusst ohne
       Impressum; Seiteninhalte liegen als Templates im Repo, nicht im Studio
       (11.08.2026)
-- [ ] Phase 5 — Cloudflare Pages + elstner.ch, Launch
+- [x] Phase 5 — Live auf Cloudflare Pages: https://elstner-cv.pages.dev, Deploy nur
+      nach grünem CI (11.08.2026). Offen: einmaliger Dashboard-Klick für die Custom
+      Domain elstner.ch (siehe docs/setup-cloudflare-pages.md) und die neue
+      Kontakt-E-Mail (Studio-Eintrag + Publish, sobald vorhanden)
 
 Datenquelle für den Erstimport ist der private Lebenslauf (lokal, außerhalb des Repos).
