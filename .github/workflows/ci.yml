@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npx ng build site
+      - run: npx ng build studio
+      - run: npm run test:ci
+
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - run: dotnet build --configuration Release
+      - run: dotnet test --configuration Release --no-build
+
+  # ---- DEPLOY: einkommentieren, sobald die Cloudflare-Secrets existieren. ----
+  # ---- Anleitung: docs/setup-cloudflare-pages.md ----
+  # deploy:
+  #   needs: [frontend, backend]
+  #   if: github.ref == 'refs/heads/main'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version-file: .nvmrc
+  #         cache: npm
+  #         cache-dependency-path: frontend/package-lock.json
+  #     - run: npm ci
+  #       working-directory: frontend
+  #     - run: npx ng build site
+  #       working-directory: frontend
+  #     - uses: cloudflare/wrangler-action@v3
+  #       with:
+  #         apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  #         accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+  #         command: pages deploy frontend/dist/site/browser --project-name=my-cv
