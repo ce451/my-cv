@@ -59,7 +59,8 @@ Qualitätsanspruch: Craft statt Spektakel — dieses Repo ist selbst Arbeitsprob
 - [x] Phase 1 — Fundament: Workspace, Solution, CI, Doku (11.08.2026)
 - [x] Phase 2a — Datenmodell mit Sichtbarkeitsflag, SQLite, Seed-Import, Publish-Pipeline,
       API (GET/PUT /api/cv, POST /api/publish) (11.08.2026)
-- [ ] Phase 2b — Studio-Editor-UI (Formulare für alle Bereiche, Speichern via PUT)
+- [x] Phase 2b — Studio-Editor-UI: Formulare für alle Bereiche, Sortieren/Hinzufügen/
+      Entfernen, Speichern via PUT, Publish-Button (11.08.2026)
 - [ ] Phase 3 — Designphase (2–3 Entwürfe zur Auswahl), dann Site-Aufbau mit SSG,
       i18n und Print-CSS (eine Quelle → Bildschirm + DACH-konformes PDF)
 - [ ] Phase 4 — Impressum/DSGVO, schema.org-JSON-LD, /now, /uses, Making-of-Seite

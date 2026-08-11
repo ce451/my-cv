@@ -1,0 +1,189 @@
+@if (draft(); as d) {
+  <section class="card">
+    <h3>Profil</h3>
+    <div class="row">
+      <label>Name <input [(ngModel)]="d.profile.fullName" /></label>
+      <label>Rolle <input [(ngModel)]="d.profile.role" /></label>
+    </div>
+    <label>Intro <textarea rows="4" [(ngModel)]="d.profile.intro"></textarea></label>
+    <div class="row">
+      <label>Ort (öffentlich) <input [(ngModel)]="d.profile.locationPublic" /></label>
+      <label>Adresse (nur Bewerbung) <input [(ngModel)]="d.profile.addressFull" /></label>
+      <label>Geburtsdatum (nur Bewerbung) <input [(ngModel)]="d.profile.birthDate" placeholder="JJJJ-MM-TT" /></label>
+    </div>
+
+    <h4>Kontakte</h4>
+    @for (c of d.profile.contacts; track $index; let i = $index) {
+      <div class="entry">
+        <div class="row">
+          <label>Typ
+            <select [(ngModel)]="c.type">
+              <option value="email">E-Mail</option>
+              <option value="phone">Telefon</option>
+              <option value="linkedin">LinkedIn</option>
+              <option value="github">GitHub</option>
+              <option value="web">Web</option>
+            </select>
+          </label>
+          <label>Label <input [(ngModel)]="c.label" /></label>
+          <label>Wert <input [(ngModel)]="c.value" /></label>
+          <label>URL <input [(ngModel)]="c.url" /></label>
+          <label>Sichtbarkeit
+            <select [(ngModel)]="c.visibility">
+              <option value="Public">öffentlich</option>
+              <option value="ApplicationOnly">nur Bewerbung</option>
+            </select>
+          </label>
+          <span class="actions">
+            <button type="button" (click)="move(d.profile.contacts, i, -1)" [disabled]="i === 0">↑</button>
+            <button type="button" (click)="move(d.profile.contacts, i, 1)" [disabled]="i === d.profile.contacts.length - 1">↓</button>
+            <button type="button" class="danger" (click)="remove(d.profile.contacts, i)">✕</button>
+          </span>
+        </div>
+      </div>
+    }
+    <button type="button" (click)="addContact(d.profile.contacts)">Kontakt hinzufügen</button>
+  </section>
+
+  <section class="card">
+    <h3>Berufserfahrung</h3>
+    @for (e of d.experiences; track $index; let i = $index) {
+      <div class="entry">
+        <div class="entry-head">
+          <strong>{{ e.organization || 'Neue Station' }}</strong>
+          <span class="spacer"></span>
+          <button type="button" (click)="move(d.experiences, i, -1)" [disabled]="i === 0">↑</button>
+          <button type="button" (click)="move(d.experiences, i, 1)" [disabled]="i === d.experiences.length - 1">↓</button>
+          <button type="button" class="danger" (click)="remove(d.experiences, i)">Entfernen</button>
+        </div>
+        <div class="row">
+          <label>Von <input [(ngModel)]="e.start" placeholder="2025-09" /></label>
+          <label>Bis <input [(ngModel)]="e.end" placeholder="leer = heute" /></label>
+        </div>
+        <div class="row">
+          <label>Position <input [(ngModel)]="e.position" /></label>
+          <label>Zusatz <input [(ngModel)]="e.positionNote" placeholder="z. B. Einstieg als Junior" /></label>
+        </div>
+        <div class="row">
+          <label>Firma <input [(ngModel)]="e.organization" /></label>
+          <label>Zusatz <input [(ngModel)]="e.organizationNote" placeholder="z. B. heute …" /></label>
+        </div>
+        <label>Beschreibung <textarea rows="3" [(ngModel)]="e.summary"></textarea></label>
+        <label>Punkte (einer pro Zeile)
+          <textarea rows="4" [ngModel]="joinLines(e.bullets)" (ngModelChange)="e.bullets = splitLines($event)"></textarea>
+        </label>
+        <label>Technologien (kommagetrennt)
+          <input [ngModel]="joinComma(e.tech)" (ngModelChange)="e.tech = splitComma($event)" />
+        </label>
+      </div>
+    }
+    <button type="button" (click)="addExperience(d.experiences)">Station hinzufügen</button>
+  </section>
+
+  <section class="card">
+    <h3>Ausbildung</h3>
+    @for (e of d.education; track $index; let i = $index) {
+      <div class="entry">
+        <div class="row">
+          <label>Von <input [(ngModel)]="e.start" /></label>
+          <label>Bis <input [(ngModel)]="e.end" /></label>
+          <label>Institution <input [(ngModel)]="e.institution" /></label>
+          <label>Richtung <input [(ngModel)]="e.program" /></label>
+          <span class="actions">
+            <button type="button" (click)="move(d.education, i, -1)" [disabled]="i === 0">↑</button>
+            <button type="button" (click)="move(d.education, i, 1)" [disabled]="i === d.education.length - 1">↓</button>
+            <button type="button" class="danger" (click)="remove(d.education, i)">✕</button>
+          </span>
+        </div>
+        <label>Anmerkung <textarea rows="2" [(ngModel)]="e.note"></textarea></label>
+      </div>
+    }
+    <button type="button" (click)="addEducation(d.education)">Eintrag hinzufügen</button>
+  </section>
+
+  <section class="card">
+    <h3>Praktika</h3>
+    @for (p of d.internships; track $index; let i = $index) {
+      <div class="entry">
+        <div class="row">
+          <label>Jahre <input [(ngModel)]="p.years" placeholder="2010, 2011" /></label>
+          <label>Organisation <input [(ngModel)]="p.organization" /></label>
+          <label>Anmerkung <input [(ngModel)]="p.note" /></label>
+          <span class="actions">
+            <button type="button" (click)="move(d.internships, i, -1)" [disabled]="i === 0">↑</button>
+            <button type="button" (click)="move(d.internships, i, 1)" [disabled]="i === d.internships.length - 1">↓</button>
+            <button type="button" class="danger" (click)="remove(d.internships, i)">✕</button>
+          </span>
+        </div>
+      </div>
+    }
+    <button type="button" (click)="addInternship(d.internships)">Praktikum hinzufügen</button>
+  </section>
+
+  <section class="card">
+    <h3>Kenntnisse</h3>
+    @for (s of d.skills; track $index; let i = $index) {
+      <div class="entry">
+        <div class="row">
+          <label>Kategorie <input [(ngModel)]="s.category" /></label>
+          <span class="actions">
+            <button type="button" (click)="move(d.skills, i, -1)" [disabled]="i === 0">↑</button>
+            <button type="button" (click)="move(d.skills, i, 1)" [disabled]="i === d.skills.length - 1">↓</button>
+            <button type="button" class="danger" (click)="remove(d.skills, i)">✕</button>
+          </span>
+        </div>
+        <label>Einträge (einer pro Zeile)
+          <textarea rows="3" [ngModel]="joinLines(s.items)" (ngModelChange)="s.items = splitLines($event)"></textarea>
+        </label>
+      </div>
+    }
+    <button type="button" (click)="addSkill(d.skills)">Kategorie hinzufügen</button>
+  </section>
+
+  <section class="card">
+    <h3>Sprachen</h3>
+    @for (l of d.languages; track $index; let i = $index) {
+      <div class="entry">
+        <div class="row">
+          <label>Sprache <input [(ngModel)]="l.name" /></label>
+          <label>Niveau <input [(ngModel)]="l.level" /></label>
+          <span class="actions">
+            <button type="button" (click)="move(d.languages, i, -1)" [disabled]="i === 0">↑</button>
+            <button type="button" (click)="move(d.languages, i, 1)" [disabled]="i === d.languages.length - 1">↓</button>
+            <button type="button" class="danger" (click)="remove(d.languages, i)">✕</button>
+          </span>
+        </div>
+      </div>
+    }
+    <button type="button" (click)="addLanguage(d.languages)">Sprache hinzufügen</button>
+  </section>
+
+  <section class="card">
+    <h3>Persönliches</h3>
+    <p class="section-hint">Öffentliche Einträge erscheinen auf der Website als Projekte; „nur Bewerbung" bleibt im PDF.</p>
+    @for (p of d.personal; track $index; let i = $index) {
+      <div class="entry">
+        <div class="row">
+          <label>Titel <input [(ngModel)]="p.label" /></label>
+          <label>Sichtbarkeit
+            <select [(ngModel)]="p.visibility">
+              <option value="Public">öffentlich</option>
+              <option value="ApplicationOnly">nur Bewerbung</option>
+            </select>
+          </label>
+          <span class="actions">
+            <button type="button" (click)="move(d.personal, i, -1)" [disabled]="i === 0">↑</button>
+            <button type="button" (click)="move(d.personal, i, 1)" [disabled]="i === d.personal.length - 1">↓</button>
+            <button type="button" class="danger" (click)="remove(d.personal, i)">✕</button>
+          </span>
+        </div>
+        <label>Text <textarea rows="2" [(ngModel)]="p.text"></textarea></label>
+      </div>
+    }
+    <button type="button" (click)="addPersonal(d.personal)">Eintrag hinzufügen</button>
+  </section>
+
+  <div class="savebar">
+    <button type="button" class="primary" (click)="submit()">Speichern</button>
+  </div>
+}

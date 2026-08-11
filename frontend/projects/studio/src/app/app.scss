@@ -5,9 +5,19 @@
 }
 
 main {
-  max-width: 40rem;
-  margin: 3rem auto;
+  max-width: 52rem;
+  margin: 2rem auto 4rem;
   padding: 0 1rem;
+}
+
+.topbar {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+
+  .spacer {
+    flex: 1;
+  }
 }
 
 .status {

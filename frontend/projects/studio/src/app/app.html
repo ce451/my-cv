@@ -1,35 +1,31 @@
 <main>
-  <h1>Studio</h1>
-  <p class="status">
-    API: <span [class]="apiStatus()">{{ apiStatus() }}</span>
-  </p>
+  <header class="topbar">
+    <h1>Studio</h1>
+    <p class="status">
+      API: <span [class]="apiStatus()">{{ apiStatus() }}</span>
+    </p>
+    <span class="spacer"></span>
+    @if (cv()) {
+      <button type="button" (click)="publish()">Publish nach content/</button>
+    }
+  </header>
+
+  @if (saved()) {
+    <p class="ok">Gespeichert.</p>
+  }
+  @if (publishedFile(); as file) {
+    <p class="ok">Veröffentlicht: {{ file }}</p>
+  }
+  @if (error(); as err) {
+    <p class="error">{{ err }}</p>
+  }
 
   @if (cv(); as doc) {
-    <section>
-      <h2>{{ doc.profile.fullName }} — {{ doc.profile.role }}</h2>
-      <ul>
-        <li>{{ doc.experiences.length }} berufliche Stationen</li>
-        <li>{{ doc.education.length }} Ausbildungseinträge</li>
-        <li>{{ doc.internships.length }} Praktika</li>
-        <li>{{ doc.skills.length }} Skill-Kategorien</li>
-        <li>{{ doc.languages.length }} Sprachen</li>
-        <li>{{ doc.personal.length }} persönliche Einträge</li>
-      </ul>
-      <button type="button" (click)="publish()">Publish nach content/</button>
-      @if (publishedFile(); as file) {
-        <p class="ok">Veröffentlicht: {{ file }}</p>
-      }
-    </section>
+    <app-cv-editor [doc]="doc" (save)="saveCv($event)" />
   } @else if (apiStatus() === 'offline') {
     <p class="error">
       Studio-API nicht erreichbar — starten mit:
       <code>cd backend &amp;&amp; dotnet run --project Studio.Api</code>
     </p>
   }
-
-  @if (error(); as err) {
-    <p class="error">{{ err }}</p>
-  }
-
-  <p class="hint">Editor-Formulare folgen (Phase 2b).</p>
 </main>
