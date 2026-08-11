@@ -88,10 +88,12 @@ Cloudflare-Pages-Projekt `elstner-cv` → https://elstner.ch (GitHub-Secrets:
 Sonderdateien in `frontend/projects/site/public/` (landen 1:1 im Deploy-Root):
 `_headers` (Security- und Cache-Header inkl. CSP — die script-src-Hashes decken
 die Inline-Skripte des Prerenders ab; `tools/verify-csp.mjs` prüft das in der CI
-und schlägt nach Angular-Updates an), `_redirects` (www → Apex), `404.html`
-(deaktiviert den Pages-SPA-Fallback → echte 404s), `robots.txt`, `sitemap.xml`,
-`og-image.png`, `fonts/` (Latin-Subsets + OFL.txt; via `@font-face` in
-styles.scss und `preload` in index.html — kein @fontsource mehr).
+und schlägt nach Angular-Updates an), `404.html` (deaktiviert den
+Pages-SPA-Fallback → echte 404s), `robots.txt`, `sitemap.xml`, `og-image.png`,
+`fonts/` (Latin-Subsets + OFL.txt; via `@font-face` in styles.scss und
+`preload` in index.html — kein @fontsource mehr). Host-Redirects (www → Apex)
+kann Pages-`_redirects` NICHT — das geht nur als Redirect Rule auf Zone-Ebene
+im Dashboard (Kontrast: Canonical-Tags fangen das SEO-seitig bereits ab).
 
 Neue Route? Dann immer: in `app.routes.ts` eintragen, im Komponenten-Konstruktor
 `PageHead.apply(...)` aufrufen (Canonical/Description/OG/JSON-LD, siehe
@@ -131,7 +133,7 @@ Neue Route? Dann immer: in `app.routes.ts` eintragen, im Komponenten-Konstruktor
       Open-Graph/Twitter-Tags + og-image (1200×630), Canonical + eigene
       Description + korrektes JSON-LD pro Route (Person um knowsAbout/
       hasOccupation/worksFor/@id erweitert; Unterseiten als WebPage),
-      robots.txt + sitemap.xml + echte 404-Seite, www→Apex-Redirect,
+      robots.txt + sitemap.xml + echte 404-Seite,
       Security-Header (HSTS, CSP mit Hash-Allowlist + CI-Wächter
       tools/verify-csp.mjs, frame-ancestors, Permissions-Policy),
       immutable-Cache für gehashte Assets, Fonts direkt self-hosted mit
@@ -153,7 +155,10 @@ Neue Route? Dann immer: in `app.routes.ts` eintragen, im Komponenten-Konstruktor
 - Vor breiter Streuung: Impressum-Frage neu bewerten.
 - Aus dem Review vom 11.08.2026 bewusst offen: Content-Feinschliff (wartet auf
   User-Review), JS-Bundle-Verkleinerung (Effekte lazy laden — größerer Umbau),
-  GitHub-Profil/READMEs befüllen (liegt außerhalb dieses Repos beim User).
+  GitHub-Profil/READMEs befüllen (liegt außerhalb dieses Repos beim User),
+  www→Apex-301 als Redirect Rule im Cloudflare-Dashboard (1 Klick beim User —
+  Vorlage „Redirect from WWW to Root"; bis dahin neutralisieren die
+  Canonical-Tags das Duplikat).
   Volltext der Reviews: NAS, 05_Skills/cv-website-recherche/
   2026-08-11-unabhaengiges-review.md.
 
