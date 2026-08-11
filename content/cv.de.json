@@ -1,13 +1,20 @@
 {
   "meta": {
-    "publishedAt": "2026-08-11T13:25:58.2975284+02:00",
+    "publishedAt": "2026-08-11T15:50:55.7630443+02:00",
     "locale": "de"
   },
   "profile": {
     "fullName": "Christopher Elstner",
     "role": "Full-Stack Softwareentwickler",
+    "tagline": "Seit über zwölf Jahren begeisterter Softwareentwickler",
     "intro": "Seit über zwölf Jahren bin ich mit Begeisterung Softwareentwickler. Ich bin es gewohnt, ein Projekt von Anfang bis Ende zu verantworten, aber auch im Team ein Produkt weiterzuentwickeln: Anforderungen mit dem Kunden abklären, Infrastruktur aufsetzen, entwickeln, in Betrieb nehmen und anschließend im Support begleiten. Kundengespräche führe ich auf Deutsch und Englisch.",
     "location": "Weiz",
+    "highlights": [
+      "Angular",
+      ".NET",
+      "SQL",
+      "KI-gestützte Entwicklung"
+    ],
     "contacts": [
       {
         "type": "linkedin",
@@ -195,8 +202,7 @@
     {
       "category": "Infrastruktur",
       "items": [
-        "Serveraufbau und -einrichtung",
-        "Firewall"
+        "Serveraufbau und -einrichtung"
       ]
     }
   ],
@@ -213,11 +219,25 @@
   "projects": [
     {
       "title": "IoT-Luftqualitätsmessung",
-      "text": "IoT-Luftqualitätsmessung für Zuhause mit eigener Firmware auf ESP8266, ESP32, REST-API und Angular-Frontend"
+      "text": "IoT-Luftqualitätsmessung für Zuhause mit eigener Firmware auf ESP8266, ESP32, REST-API und Angular-Frontend",
+      "links": [
+        "https://github.com/ce451/airquality-iot",
+        "https://github.com/ce451/airquality-api",
+        "https://github.com/ce451/airquality-ui",
+        "https://github.com/ce451/airquality-widget"
+      ]
     },
     {
       "title": "Homelab",
-      "text": "Homelab aus NAS und mehreren Proxmox-Servern mit Docker, automatisierten Backups und Workflow-Automatisierungen"
+      "text": "Homelab aus NAS und mehreren Proxmox-Servern mit Docker, automatisierten Backups und Workflow-Automatisierungen",
+      "links": []
+    },
+    {
+      "title": "CV-Website",
+      "text": "Diese Website: statisch generiertes Angular-Frontend, privates .NET-Backend zur Inhaltspflege, Deploy über GitHub Actions auf Cloudflare Pages. KI-gestützt entwickelt mit Claude Code.",
+      "links": [
+        "https://github.com/ce451/my-cv"
+      ]
     }
   ]
 }
