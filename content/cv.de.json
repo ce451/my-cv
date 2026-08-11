@@ -1,12 +1,12 @@
 {
   "meta": {
-    "publishedAt": "2026-08-11T15:50:55.7630443+02:00",
+    "publishedAt": "2026-08-11T21:04:39.4610375+02:00",
     "locale": "de"
   },
   "profile": {
     "fullName": "Christopher Elstner",
-    "role": "Full-Stack Softwareentwickler",
-    "tagline": "Seit über zwölf Jahren begeisterter Softwareentwickler",
+    "role": "Senior Full-Stack Softwareentwickler",
+    "tagline": "Zwölf Jahre Code, der in Fabriken und Arztpraxen läuft",
     "intro": "Seit über zwölf Jahren bin ich mit Begeisterung Softwareentwickler. Ich bin es gewohnt, ein Projekt von Anfang bis Ende zu verantworten, aber auch im Team ein Produkt weiterzuentwickeln: Anforderungen mit dem Kunden abklären, Infrastruktur aufsetzen, entwickeln, in Betrieb nehmen und anschließend im Support begleiten. Kundengespräche führe ich auf Deutsch und Englisch.",
     "location": "Weiz",
     "highlights": [
@@ -40,10 +40,10 @@
       "organizationNote": null,
       "summary": "Entwicklung von AWEB, einer Software für das österreichische Gesundheitswesen: Ordinations- und Laborinformationssysteme samt Anbindung an die nationale Gesundheitsinfrastruktur.",
       "bullets": [
-        "Anbindung von E-Card Readern, Labor-, EKG- und Dialysegeräten, uvm.",
+        "Anbindung von e-card-Lesegeräten, Labor-, EKG- und Dialysegeräten",
         "Außendienst bei Kunden zur Inbetriebnahme von Laborgeräten",
         "Anbindung an ELGA und die Sozialversicherungsservices GINA/SS12",
-        "Prozessoptimierungen: Bisher beim Kunden dezentral betriebene Peripherieanwendung in AWEB integriert und cloudfähig gemacht. Reduktion von Datenverkehr durch Long-Polling."
+        "Prozessoptimierungen: Zuvor beim Kunden dezentral betriebene Peripherieanwendung in AWEB integriert und cloudfähig gemacht. Reduktion von Datenverkehr durch Long-Polling."
       ],
       "tech": [
         "Angular",
@@ -61,12 +61,8 @@
       "positionNote": "Einstieg als Junior",
       "organization": "HGS GmbH & Co KG",
       "organizationNote": null,
-      "summary": "Individualentwicklung für Industriekunden aus Energietechnik, Anlagenbau, Intralogistik und Automotive. Ich habe Projekte ab Vertragsabschluss allein verantwortet, von der ersten Anforderung bis zum laufenden Support. Kundenmeetings regelmäßig auf Englisch.",
-      "bullets": [
-        "TRAM für Siemens Energy in Weiz: Dokumentation, Lager und Logistik im Großtransformatorenbau. Im Einsatz auch bei Dienstleistern und Zulieferern.",
-        "Sync Tool für KNAPP, Rosendahl Nextrom und Stadtgemeinde Weiz: Kontaktsynchronisation aus Entra ID, Datenbanken und One Identity.",
-        "DGE für Andritz: Anwendung zur Generatorberechnung."
-      ],
+      "summary": "Individualentwicklung für Industriekunden aus Energietechnik, Anlagenbau, Intralogistik und Automotive — Projekte ab Vertragsabschluss allein verantwortet.",
+      "bullets": [],
       "tech": [
         "Angular",
         "C#",
@@ -99,56 +95,23 @@
     {
       "start": "2008",
       "end": "2013",
-      "institution": "HTBLA Weiz",
+      "institution": "HTBLA Weiz (Höhere Technische Lehranstalt)",
       "program": "Elektrotechnik und Informationstechnik",
-      "note": "Diplomarbeit: Launch Control für ein Bergrennfahrzeug (BMW 320 IRL evo), Aufgabenbereich Softwareentwicklung, SPS-Programmierung mit CoDeSys"
-    },
-    {
-      "start": "2013-09",
-      "end": "2014-02",
-      "institution": "Präsenzdienst",
-      "program": null,
-      "note": null
+      "note": "Abschluss mit Matura. Diplomarbeit: Launch Control für ein Bergrennfahrzeug (BMW 320 IRL evo) — Softwareentwicklung, SPS-Programmierung mit CoDeSys"
     }
   ],
   "internships": [
     {
-      "years": "2013",
-      "organization": "Salomon Automation",
-      "note": "Automatisierungstechnik (heute SSI Schäfer IT Solutions)"
-    },
-    {
-      "years": "2010, 2011, 2012",
-      "organization": "Energie Steiermark",
-      "note": "Netzmanagement und Netzbetrieb"
-    },
-    {
-      "years": "2012",
-      "organization": "Pentanova",
-      "note": "Projektkostenauswertung"
-    },
-    {
-      "years": "2010",
-      "organization": "Siemens Transformers Austria Standort Weiz",
-      "note": "Forschung und Entwicklung (heute Siemens Energy)"
-    },
-    {
-      "years": "2009, 2011",
-      "organization": "Mosdorfer Weiz",
-      "note": "Fertigung"
-    },
-    {
-      "years": "2008",
-      "organization": "Stadtgemeinde Weiz",
-      "note": null
+      "years": "2008 – 2013",
+      "organization": "Ferialpraktika",
+      "note": "Automatisierungstechnik, Energiewirtschaft, Fertigung, Forschung & Entwicklung"
     }
   ],
   "skills": [
     {
       "category": "Arbeitsweise",
       "items": [
-        "Eigenständige Projektverantwortung von der Anforderung bis zum Support",
-        "Kundenkontakt auf Deutsch und Englisch",
+        "Eigenständige Projektverantwortung",
         "Remote-Erfahrung",
         "KI-gestützte Entwicklung"
       ]
@@ -192,16 +155,12 @@
       "category": "Plattform",
       "items": [
         "Git",
+        "CI/CD mit GitHub Actions",
         "Docker",
         "Windows Server",
         "Linux",
         "Entra ID",
-        "Mendix"
-      ]
-    },
-    {
-      "category": "Infrastruktur",
-      "items": [
+        "Mendix",
         "Serveraufbau und -einrichtung"
       ]
     }
