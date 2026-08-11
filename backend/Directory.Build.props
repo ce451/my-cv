@@ -1,0 +1,10 @@
+<Project>
+
+  <ItemGroup>
+    <!-- SQLite-CVE im nativen e_sqlite3; noch keine gepatchte SQLitePCLRaw-Version
+         verfügbar (geprüft 11.08.2026). Lokales Tool mit eigener, vertrauenswürdiger
+         DB — Suppression entfernen, sobald > 2.1.11 erscheint. -->
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-2m69-gcr7-jv3q" />
+  </ItemGroup>
+
+</Project>
