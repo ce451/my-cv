@@ -2,47 +2,55 @@ import { Component, DestroyRef, ElementRef, afterNextRender, inject, viewChild }
 import { FxLoop } from './fx-loop';
 import { hasFinePointer, prefersReducedMotion } from './motion';
 
+interface Electron {
+  angle: number;
+  speed: number;
+  plane: number;
+  precession: number;
+  wobbleFreq: number;
+  wobblePhase: number;
+  rx: number;
+  ry: number;
+  trail: { x: number; y: number }[];
+}
+
+const TRAIL_LENGTH = 12;
+
 /**
- * Custom cursor: a dot with a small amber "planet" orbiting it on a trailing
- * anchor (desktop only). While active, the native cursor is hidden via a
- * class on <html> (see styles.scss).
+ * Custom cursor as a tiny atom (desktop only): the teal nucleus sits on the
+ * pointer, three amber electrons orbit a trailing anchor on tilted, slowly
+ * precessing elliptical paths and drag a fading tail behind them (canvas).
+ * While active, the native cursor is hidden via a class on <html>
+ * (see styles.scss).
  */
 @Component({
   selector: 'fx-cursor',
   template: `
     <div class="dot" #dot aria-hidden="true"></div>
-    <div class="orbit" #ring aria-hidden="true"><i class="planet"></i></div>
+    <canvas #canvas aria-hidden="true"></canvas>
   `,
   styles: `
     :host { display: contents; }
-    .dot, .orbit {
-      position: fixed; top: 0; left: 0; z-index: 60;
-      pointer-events: none; display: none;
-    }
     .dot {
+      position: fixed; top: 0; left: 0; z-index: 60;
       width: 8px; height: 8px; border-radius: 50%;
       background: var(--teal);
+      pointer-events: none; display: none;
       transform: translate(-50%, -50%);
       transition: width 0.2s, height 0.2s;
     }
-    .planet {
-      position: absolute; top: 0; left: 0;
-      width: 6px; height: 6px; margin: -3px 0 0 -3px;
-      border-radius: 50%; background: var(--amber);
-      animation: fx-orbit 2.6s linear infinite;
+    canvas {
+      position: fixed; inset: 0; z-index: 59;
+      pointer-events: none; display: none;
     }
-    @keyframes fx-orbit {
-      from { transform: rotate(0turn) translateX(22px); }
-      to { transform: rotate(1turn) translateX(22px); }
-    }
-    :host(.active) .dot, :host(.active) .orbit { display: block; }
+    :host(.active) .dot, :host(.active) canvas { display: block; }
     :host(.link) .dot { width: 14px; height: 14px; }
   `,
 })
 export class Cursor {
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly dot = viewChild.required<ElementRef<HTMLElement>>('dot');
-  private readonly ring = viewChild.required<ElementRef<HTMLElement>>('ring');
+  private readonly canvasRef = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');
   private readonly loop = inject(FxLoop);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -53,15 +61,43 @@ export class Cursor {
       }
       const hostEl = this.host.nativeElement;
       const dotEl = this.dot().nativeElement;
-      const ringEl = this.ring().nativeElement;
+      const canvas = this.canvasRef().nativeElement;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        return;
+      }
+
+      const resize = () => {
+        const dpr = Math.min(devicePixelRatio || 1, 2);
+        canvas.width = innerWidth * dpr;
+        canvas.height = innerHeight * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      };
+      resize();
+      addEventListener('resize', resize, { passive: true });
+
+      // Three orbital planes ~60° apart, each with its own tilt, direction,
+      // speed wobble and slow precession — regular enough to read as an atom,
+      // irregular enough to feel alive.
+      const electrons: Electron[] = Array.from({ length: 3 }, (_, i) => ({
+        angle: Math.random() * Math.PI * 2,
+        speed: (0.03 + Math.random() * 0.02) * (i % 2 ? -1 : 1),
+        plane: (Math.PI / 3) * i + (Math.random() - 0.5) * 0.5,
+        precession: (0.002 + Math.random() * 0.004) * (i % 2 ? 1 : -1),
+        wobbleFreq: 0.5 + Math.random(),
+        wobblePhase: Math.random() * Math.PI * 2,
+        rx: 17 + i * 5,
+        ry: (17 + i * 5) * (0.34 + Math.random() * 0.14),
+        trail: [],
+      }));
+
       let targetX = innerWidth / 2;
       let targetY = innerHeight / 2;
-      let ringX = targetX;
-      let ringY = targetY;
-      const docEl = document.documentElement;
+      let coreX = targetX;
+      let coreY = targetY;
       const onMove = (event: PointerEvent) => {
         hostEl.classList.add('active');
-        docEl.classList.add('cursor-hidden');
+        document.documentElement.classList.add('cursor-hidden');
         targetX = event.clientX;
         targetY = event.clientY;
       };
@@ -71,19 +107,54 @@ export class Cursor {
       };
       addEventListener('pointermove', onMove, { passive: true });
       document.addEventListener('pointerover', onOver, { passive: true });
+
       const unregister = this.loop.register(() => {
         dotEl.style.left = `${targetX}px`;
         dotEl.style.top = `${targetY}px`;
-        ringX += (targetX - ringX) * 0.14;
-        ringY += (targetY - ringY) * 0.14;
-        ringEl.style.left = `${ringX}px`;
-        ringEl.style.top = `${ringY}px`;
+        coreX += (targetX - coreX) * 0.14;
+        coreY += (targetY - coreY) * 0.14;
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+        if (!hostEl.classList.contains('active')) {
+          return;
+        }
+        const t = performance.now() / 1000;
+        for (const electron of electrons) {
+          electron.angle +=
+            electron.speed * (1 + 0.3 * Math.sin(t * electron.wobbleFreq + electron.wobblePhase));
+          electron.plane += electron.precession;
+          const cos = Math.cos(electron.plane);
+          const sin = Math.sin(electron.plane);
+          const px = Math.cos(electron.angle) * electron.rx;
+          const py = Math.sin(electron.angle) * electron.ry;
+          const x = coreX + px * cos - py * sin;
+          const y = coreY + px * sin + py * cos;
+          electron.trail.unshift({ x, y });
+          if (electron.trail.length > TRAIL_LENGTH) {
+            electron.trail.pop();
+          }
+          ctx.lineCap = 'round';
+          for (let k = 0; k + 1 < electron.trail.length; k++) {
+            const fade = 1 - k / TRAIL_LENGTH;
+            ctx.beginPath();
+            ctx.moveTo(electron.trail[k].x, electron.trail[k].y);
+            ctx.lineTo(electron.trail[k + 1].x, electron.trail[k + 1].y);
+            ctx.strokeStyle = `rgba(255, 180, 84, ${0.4 * fade * fade})`;
+            ctx.lineWidth = 2.4 * fade;
+            ctx.stroke();
+          }
+          ctx.beginPath();
+          ctx.arc(x, y, 2.6, 0, 6.2832);
+          ctx.fillStyle = 'rgba(255, 180, 84, 0.95)';
+          ctx.fill();
+        }
       });
+
       this.destroyRef.onDestroy(() => {
         unregister();
         removeEventListener('pointermove', onMove);
+        removeEventListener('resize', resize);
         document.removeEventListener('pointerover', onOver);
-        docEl.classList.remove('cursor-hidden');
+        document.documentElement.classList.remove('cursor-hidden');
       });
     });
   }

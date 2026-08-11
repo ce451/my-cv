@@ -152,9 +152,10 @@ Neue Route? Dann immer: in `app.routes.ts` eintragen, im Komponenten-Konstruktor
       Präsenzdienst raus, HTBLA ausgeschrieben + Matura, Stat-Box zählt
       jetzt die Kenntnisse-Liste, Making-of von der Projekt-Sektion verlinkt
       und entschlackt (FamHub/82-KB/0-€ raus, CSP-Zeile rein), laufende
-      Station ohne Dauer mit Puls-Punkt, Cursor nur noch Punkt + Planet
-      (Orbit 22px, ohne Ring), Mobil ganz ohne Kopfleiste, Partikel
-      resize-stabil (URL-Leiste), Magnetic-CTA gleitet statt springt
+      Station ohne Dauer mit Puls-Punkt, Cursor als „Atom" (Teal-Kern +
+      drei Amber-Elektronen mit Canvas-Schweif auf präzedierenden Ellipsen),
+      Mobil ganz ohne Kopfleiste, Partikel resize-stabil (URL-Leiste),
+      Magnetic-CTA gleitet statt springt
 
 ## Offene Punkte
 
