@@ -1,5 +1,6 @@
-import { Component, DestroyRef, NgZone, afterNextRender, inject, signal } from '@angular/core';
+import { Component, DestroyRef, DOCUMENT, NgZone, afterNextRender, inject, signal } from '@angular/core';
 import { CV } from './content/cv-data';
+import { buildJsonLd } from './content/schema';
 import { UI } from './ui/ui-text';
 import { Cursor } from './fx/cursor';
 import { Particles } from './fx/particles';
@@ -27,6 +28,16 @@ export class App {
   private readonly destroyRef = inject(DestroyRef);
 
   constructor() {
+    // Runs during prerender too, so the JSON-LD ends up in the static HTML.
+    const doc = inject(DOCUMENT);
+    if (!doc.getElementById('cv-jsonld')) {
+      const script = doc.createElement('script');
+      script.id = 'cv-jsonld';
+      script.type = 'application/ld+json';
+      script.text = JSON.stringify(buildJsonLd(CV));
+      doc.head.appendChild(script);
+    }
+
     afterNextRender(() => {
       const onScroll = () => this.scrolled.set(scrollY > innerHeight * 0.55);
       onScroll();

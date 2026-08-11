@@ -33,6 +33,15 @@ describe('App', () => {
     expect(compiled.querySelectorAll('.skills .row').length).toBe(CV.skills.length);
   });
 
+  it('injects schema.org JSON-LD into the document head', async () => {
+    await render();
+    const script = document.getElementById('cv-jsonld');
+    expect(script).toBeTruthy();
+    const parsed = JSON.parse(script!.textContent ?? '{}');
+    expect(parsed['@type']).toBe('ProfilePage');
+    expect(parsed.mainEntity.name).toBe(CV.profile.fullName);
+  });
+
   it('contains no application-only data', async () => {
     const compiled = await render();
     const text = compiled.textContent ?? '';

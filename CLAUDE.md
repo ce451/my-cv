@@ -72,7 +72,10 @@ Qualitätsanspruch: Craft statt Spektakel — dieses Repo ist selbst Arbeitsprob
       prefers-reduced-motion), Content typisiert aus content/cv.de.json zur Buildzeit
       mit berechneten Dauern/Statistiken, SSG via outputMode static, self-hosted
       Fonts, WebP-Porträt, Print-CSS als PDF-Weg v1 (11.08.2026)
-- [ ] Phase 4 — Impressum/DSGVO, schema.org-JSON-LD, /now, /uses, Making-of-Seite
+- [x] Phase 4a — schema.org-JSON-LD (ProfilePage/Person, aus Content abgeleitet,
+      im Prerender-HTML) (11.08.2026)
+- [ ] Phase 4b — Impressum/DSGVO-Seiten, /now, /uses, Making-of-Seite
+      (wartet auf Input: Impressum-Umfang, /now- und /uses-Inhalte, neue E-Mail)
 - [ ] Phase 5 — Cloudflare Pages + elstner.ch, Launch
 
 Datenquelle für den Erstimport ist der private Lebenslauf (lokal, außerhalb des Repos).
