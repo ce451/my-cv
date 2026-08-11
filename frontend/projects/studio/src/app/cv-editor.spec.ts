@@ -7,10 +7,12 @@ function sampleCv(): StudioCv {
     profile: {
       fullName: 'Max Muster',
       role: 'Dev',
+      tagline: 'Claim',
       intro: 'Intro',
       locationPublic: 'Weiz',
       addressFull: 'Geheimgasse 1',
       birthDate: '1990-01-02',
+      highlights: ['Angular'],
       contacts: [{ type: 'github', label: 'gh', value: 'max', url: null, visibility: 'Public' }],
     },
     experiences: [

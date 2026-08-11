@@ -14,8 +14,10 @@ public static class PublishMapper
         new PublicProfile(
             doc.Profile.FullName,
             doc.Profile.Role,
+            doc.Profile.Tagline,
             doc.Profile.Intro,
             doc.Profile.LocationPublic,
+            [.. doc.Profile.Highlights],
             [.. doc.Profile.Contacts
                 .Where(c => c.Visibility == Visibility.Public)
                 .Select(c => new PublicContact(c.Type, c.Label, c.Value, c.Url))]),
@@ -27,5 +29,5 @@ public static class PublishMapper
         [.. doc.Languages.Select(l => new PublicLanguage(l.Name, l.Level))],
         [.. doc.Personal
             .Where(p => p.Visibility == Visibility.Public)
-            .Select(p => new PublicProject(p.Label, p.Text))]);
+            .Select(p => new PublicProject(p.Label, p.Text, [.. p.Links]))]);
 }

@@ -12,8 +12,10 @@ public static class CvMapper
         {
             FullName = doc.Profile.FullName,
             Role = doc.Profile.Role,
+            Tagline = doc.Profile.Tagline,
             Intro = doc.Profile.Intro,
             LocationPublic = doc.Profile.LocationPublic,
+            Highlights = [.. doc.Profile.Highlights],
             AddressFull = doc.Profile.AddressFull,
             BirthDate = doc.Profile.BirthDate is { } birthDate
                 ? DateOnly.Parse(birthDate, CultureInfo.InvariantCulture)
@@ -73,6 +75,7 @@ public static class CvMapper
         {
             Label = p.Label,
             Text = p.Text,
+            Links = [.. p.Links],
             Visibility = p.Visibility,
             SortOrder = i,
         }).ToList());
@@ -81,10 +84,12 @@ public static class CvMapper
         new ProfileDto(
             data.Profile.FullName,
             data.Profile.Role,
+            data.Profile.Tagline,
             data.Profile.Intro,
             data.Profile.LocationPublic,
             data.Profile.AddressFull,
             data.Profile.BirthDate?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+            [.. data.Profile.Highlights],
             [.. data.Profile.Contacts.OrderBy(c => c.SortOrder)
                 .Select(c => new ContactDto(c.Type, c.Label, c.Value, c.Url, c.Visibility))]),
         [.. data.Experiences.OrderBy(e => e.SortOrder)
@@ -99,5 +104,5 @@ public static class CvMapper
         [.. data.Languages.OrderBy(l => l.SortOrder)
             .Select(l => new LanguageDto(l.Name, l.Level))],
         [.. data.Personal.OrderBy(p => p.SortOrder)
-            .Select(p => new PersonalDto(p.Label, p.Text, p.Visibility))]);
+            .Select(p => new PersonalDto(p.Label, p.Text, [.. p.Links], p.Visibility))]);
 }

@@ -59,16 +59,19 @@ export interface StudioContact {
 export interface StudioProfile {
   fullName: string;
   role: string;
+  tagline?: string | null;
   intro: string;
   locationPublic: string;
   addressFull?: string | null;
   birthDate?: string | null;
+  highlights: string[];
   contacts: StudioContact[];
 }
 
 export interface StudioPersonal {
   label?: string | null;
   text: string;
+  links: string[];
   visibility: Visibility;
 }
 
@@ -99,14 +102,17 @@ export interface PublicContact {
 export interface PublicProfile {
   fullName: string;
   role: string;
+  tagline?: string | null;
   intro: string;
   location: string;
+  highlights: string[];
   contacts: PublicContact[];
 }
 
 export interface PublicProject {
   title?: string | null;
   text: string;
+  links: string[];
 }
 
 export interface PublicCv {

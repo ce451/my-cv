@@ -10,6 +10,10 @@ public class PersonalEntry
     public int Id { get; set; }
     public string? Label { get; set; }
     public required string Text { get; set; }
+
+    /// <summary>Related repository URLs, rendered as links on the public project card.</summary>
+    public List<string> Links { get; set; } = [];
+
     public Visibility Visibility { get; set; }
     public int SortOrder { get; set; }
 }

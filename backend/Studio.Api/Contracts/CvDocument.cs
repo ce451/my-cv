@@ -18,10 +18,12 @@ public record CvDocument(
 public record ProfileDto(
     string FullName,
     string Role,
+    string? Tagline,
     string Intro,
     string LocationPublic,
     string? AddressFull,
     string? BirthDate,
+    List<string> Highlights,
     List<ContactDto> Contacts);
 
 public record ContactDto(string Type, string? Label, string Value, string? Url, Visibility Visibility);
@@ -45,4 +47,4 @@ public record SkillCategoryDto(string Category, List<string> Items);
 
 public record LanguageDto(string Name, string Level);
 
-public record PersonalDto(string? Label, string Text, Visibility Visibility);
+public record PersonalDto(string? Label, string Text, List<string> Links, Visibility Visibility);

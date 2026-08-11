@@ -5,7 +5,11 @@
       <label>Name <input [(ngModel)]="d.profile.fullName" /></label>
       <label>Rolle <input [(ngModel)]="d.profile.role" /></label>
     </div>
+    <label>Tagline (Zeile unter dem Namen) <input [(ngModel)]="d.profile.tagline" /></label>
     <label>Intro <textarea rows="4" [(ngModel)]="d.profile.intro"></textarea></label>
+    <label>Hero-Highlights (kommagetrennt)
+      <input [ngModel]="joinComma(d.profile.highlights)" (ngModelChange)="d.profile.highlights = splitComma($event)" />
+    </label>
     <div class="row">
       <label>Ort (öffentlich) <input [(ngModel)]="d.profile.locationPublic" /></label>
       <label>Adresse (nur Bewerbung) <input [(ngModel)]="d.profile.addressFull" /></label>
@@ -178,6 +182,9 @@
           </span>
         </div>
         <label>Text <textarea rows="2" [(ngModel)]="p.text"></textarea></label>
+        <label>Links (einer pro Zeile, nur öffentlich relevant)
+          <textarea rows="2" [ngModel]="joinLines(p.links)" (ngModelChange)="p.links = splitLines($event)"></textarea>
+        </label>
       </div>
     }
     <button type="button" (click)="addPersonal(d.personal)">Eintrag hinzufügen</button>

@@ -23,6 +23,16 @@ public class PublishMapperTests
 
         var project = Assert.Single(publicCv.Projects);
         Assert.Equal("IoT", project.Title);
+        Assert.Equal(["https://github.com/max/iot"], project.Links);
+    }
+
+    [Fact]
+    public void PublicView_CarriesTaglineAndHighlights()
+    {
+        var publicCv = PublishMapper.ToPublic(CvMapperTests.SampleDocument(), PublishedAt);
+
+        Assert.Equal("Claim unter dem Namen", publicCv.Profile.Tagline);
+        Assert.Equal(["Angular", ".NET"], publicCv.Profile.Highlights);
     }
 
     [Fact]

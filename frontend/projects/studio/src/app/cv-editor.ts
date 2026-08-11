@@ -106,7 +106,7 @@ export class CvEditor {
   }
 
   protected addPersonal(list: StudioPersonal[]): void {
-    list.push({ label: null, text: '', visibility: 'Public' });
+    list.push({ label: null, text: '', links: [], visibility: 'Public' });
   }
 }
 
@@ -120,8 +120,10 @@ function normalize(cv: StudioCv): StudioCv {
   return {
     profile: {
       ...cv.profile,
+      tagline: opt(cv.profile.tagline),
       addressFull: opt(cv.profile.addressFull),
       birthDate: opt(cv.profile.birthDate),
+      highlights: [...cv.profile.highlights],
       contacts: cv.profile.contacts.map((c) => ({ ...c, label: opt(c.label), url: opt(c.url) })),
     },
     experiences: cv.experiences.map((e) => ({
@@ -139,6 +141,6 @@ function normalize(cv: StudioCv): StudioCv {
     internships: cv.internships.map((i) => ({ ...i, note: opt(i.note) })),
     skills: cv.skills.map((s) => ({ ...s, items: [...s.items] })),
     languages: cv.languages.map((l) => ({ ...l })),
-    personal: cv.personal.map((p) => ({ ...p, label: opt(p.label) })),
+    personal: cv.personal.map((p) => ({ ...p, label: opt(p.label), links: [...p.links] })),
   };
 }

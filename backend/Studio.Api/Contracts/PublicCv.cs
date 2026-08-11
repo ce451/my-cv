@@ -20,8 +20,10 @@ public record PublicMeta(string PublishedAt, string Locale);
 public record PublicProfile(
     string FullName,
     string Role,
+    string? Tagline,
     string Intro,
     string Location,
+    List<string> Highlights,
     List<PublicContact> Contacts);
 
 public record PublicContact(string Type, string? Label, string Value, string? Url);
@@ -45,4 +47,4 @@ public record PublicSkillCategory(string Category, List<string> Items);
 
 public record PublicLanguage(string Name, string Level);
 
-public record PublicProject(string? Title, string Text);
+public record PublicProject(string? Title, string Text, List<string> Links);
