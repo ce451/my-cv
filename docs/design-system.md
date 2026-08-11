@@ -69,7 +69,7 @@ Schrift, Skill-Prozentbalken, Typewriter-Effekte, Template-Icon-Grids.
 | Zähler | Ease-out-cubic, 1.3s, deutsches Dezimalkomma |
 | Tilt-Karten | `rotateX ±7° / rotateY ±9°` + wanderndes Glow-Highlight |
 | Magnetic CTA | Versatz ×0.25/0.35 zur Cursorposition, federnder Rücklauf |
-| Cursor | „Atom" (11.08.2026): Teal-Kern (8px, wächst über Links auf 14px) auf dem Pointer; drei Amber-Elektronen kreisen auf verkippten, langsam präzedierenden Ellipsen (rx 17/22/27px, individuelle Richtung + Tempo-Wobble) um einen nachlaufenden Anker (lerp 0.14) und ziehen einen ausblendenden Canvas-Schweif (12 Segmente); nativer Cursor via `html.cursor-hidden` ausgeblendet; nur Desktop |
+| Cursor | „Atom" (11.08.2026): Teal-Kern (8px, wächst über Links auf 14px) auf dem Pointer; drei weiße Elektronen kreisen auf verkippten, langsam präzedierenden Ellipsen (rx 18/26/34px, individuelle Richtung + Tempo-Wobble) um einen nachlaufenden Anker (lerp 0.14) und ziehen einen ausblendenden Canvas-Schweif (12 Segmente in Bewegung, 30 in Ruhe); nativer Cursor via `html.cursor-hidden` ausgeblendet; nur Desktop |
 | Nav | Fixed, erscheint ab 55vh Scroll, `backdrop-filter: blur(14px)`; mobil (≤760px) bewusst ganz ausgeblendet |
 
 ## Accessibility & Performance

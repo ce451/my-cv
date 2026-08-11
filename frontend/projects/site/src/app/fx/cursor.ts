@@ -14,11 +14,14 @@ interface Electron {
   trail: { x: number; y: number }[];
 }
 
-const TRAIL_LENGTH = 12;
+/** Trail length while the pointer moves … */
+const TRAIL_MOVING = 12;
+/** … and while it rests — the atom "settles" and draws longer tails. */
+const TRAIL_RESTING = 30;
 
 /**
  * Custom cursor as a tiny atom (desktop only): the teal nucleus sits on the
- * pointer, three amber electrons orbit a trailing anchor on tilted, slowly
+ * pointer, three white electrons orbit a trailing anchor on tilted, slowly
  * precessing elliptical paths and drag a fading tail behind them (canvas).
  * While active, the native cursor is hidden via a class on <html>
  * (see styles.scss).
@@ -86,8 +89,8 @@ export class Cursor {
         precession: (0.002 + Math.random() * 0.004) * (i % 2 ? 1 : -1),
         wobbleFreq: 0.5 + Math.random(),
         wobblePhase: Math.random() * Math.PI * 2,
-        rx: 17 + i * 5,
-        ry: (17 + i * 5) * (0.34 + Math.random() * 0.14),
+        rx: 18 + i * 8,
+        ry: (18 + i * 8) * (0.34 + Math.random() * 0.14),
         trail: [],
       }));
 
@@ -95,6 +98,9 @@ export class Cursor {
       let targetY = innerHeight / 2;
       let coreX = targetX;
       let coreY = targetY;
+      let prevX = targetX;
+      let prevY = targetY;
+      let trailMax = TRAIL_MOVING;
       const onMove = (event: PointerEvent) => {
         hostEl.classList.add('active');
         document.documentElement.classList.add('cursor-hidden');
@@ -118,6 +124,10 @@ export class Cursor {
           return;
         }
         const t = performance.now() / 1000;
+        const moving = Math.hypot(targetX - prevX, targetY - prevY) > 0.4;
+        prevX = targetX;
+        prevY = targetY;
+        trailMax += ((moving ? TRAIL_MOVING : TRAIL_RESTING) - trailMax) * 0.04;
         for (const electron of electrons) {
           electron.angle +=
             electron.speed * (1 + 0.3 * Math.sin(t * electron.wobbleFreq + electron.wobblePhase));
@@ -129,22 +139,22 @@ export class Cursor {
           const x = coreX + px * cos - py * sin;
           const y = coreY + px * sin + py * cos;
           electron.trail.unshift({ x, y });
-          if (electron.trail.length > TRAIL_LENGTH) {
+          while (electron.trail.length > Math.round(trailMax)) {
             electron.trail.pop();
           }
           ctx.lineCap = 'round';
           for (let k = 0; k + 1 < electron.trail.length; k++) {
-            const fade = 1 - k / TRAIL_LENGTH;
+            const fade = 1 - k / electron.trail.length;
             ctx.beginPath();
             ctx.moveTo(electron.trail[k].x, electron.trail[k].y);
             ctx.lineTo(electron.trail[k + 1].x, electron.trail[k + 1].y);
-            ctx.strokeStyle = `rgba(255, 180, 84, ${0.4 * fade * fade})`;
-            ctx.lineWidth = 2.4 * fade;
+            ctx.strokeStyle = `rgba(255, 255, 255, ${0.36 * fade * fade})`;
+            ctx.lineWidth = 2.2 * fade;
             ctx.stroke();
           }
           ctx.beginPath();
           ctx.arc(x, y, 2.6, 0, 6.2832);
-          ctx.fillStyle = 'rgba(255, 180, 84, 0.95)';
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
           ctx.fill();
         }
       });
