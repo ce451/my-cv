@@ -59,6 +59,32 @@ Qualitätsanspruch: Craft statt Spektakel — dieses Repo ist selbst Arbeitsprob
 - Tests: `cd frontend && npm run test:ci` bzw. `cd backend && dotnet test`
 - CI: `.github/workflows/ci.yml`; Cloudflare-Deploy: `docs/setup-cloudflare-pages.md`
 
+## Code-Wegweiser (schneller Einstieg)
+
+Site-Struktur unter `frontend/projects/site/src/app/`:
+
+- `content/` — `cv-data.ts` (Buildzeit-Import von content/cv.de.json), `cv-format.ts`
+  (Zeiträume, Dauern, Statistiken — berechnet, nie hartkodiert), `schema.ts` (JSON-LD)
+- `ui/ui-text.ts` — alle UI-Strings zentral (i18n-light, ADR 0004)
+- `fx/` — Effekte: `fx-loop.ts` (ein gemeinsamer rAF-Loop), `motion.ts` (Guards),
+  `reveal`/`letters`/`counter`/`tilt`/`magnetic` (Direktiven), `particles`/`cursor`
+  (Komponenten). Muster überall gleich: Init in `afterNextRender`, Guards für
+  SSR/jsdom/reduced-motion/Pointer-Typ, Cleanup über `DestroyRef`.
+- `sections/` — Hero, IntroStats, Timeline, Projects, Skills, Education, Contact;
+  `pages/` — Home (Sektionen) + /now, /uses, /making-of, /datenschutz
+- Styles global in `styles.scss` (Tokens → Bühne → Sektionen → Unterseiten → Print →
+  reduced-motion). Reveal-Ausblendung greift nur unter `html.js` (No-JS bleibt lesbar).
+
+Content-Typen ändern — immer in dieser Reihenfolge:
+Backend-DTO (`Contracts/`) + Entity + `CvMapper`/`PublishMapper` + EF-Migration →
+TS-Typen in `content-model` (danach `npx ng build content-model`) →
+Studio-Editorformulare → Tests nachziehen (der Visibility-Leak-Test in
+`PublishMapperTests` ist Pflicht) → Studio-Publish → commit/push.
+
+Deploy: Push auf `main` → CI (frontend + backend) → nur bei Grün Deploy auf das
+Cloudflare-Pages-Projekt `elstner-cv` → https://elstner.ch (GitHub-Secrets:
+`CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`). PRs/Branches deployen nicht.
+
 ## Roadmap / Status
 
 - [x] Phase 1 — Fundament: Workspace, Solution, CI, Doku (11.08.2026)
