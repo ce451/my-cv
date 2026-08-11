@@ -11,14 +11,18 @@ Qualitätsanspruch: Craft statt Spektakel — dieses Repo ist selbst Arbeitsprob
   Deutsch, von Anfang an i18n-fähig. Hosting: Cloudflare Pages, Domain elstner.ch.
 - `frontend/projects/studio` — Admin-UI des privaten Content-Backends. Läuft nur lokal,
   wird nie deployed.
-- `backend/` — Studio-API: .NET 10 Minimal API; ab Phase 2 EF Core + SQLite
-  (DB liegt in `backend/data/`, gitignored).
+- `backend/` — Studio-API: .NET 10 Minimal API + EF Core + SQLite. In `backend/data/`
+  (gitignored) liegen `studio.db` und `seed.json` mit den privaten Rohdaten.
+- `frontend/projects/content-model` — geteilte TypeScript-Typen (Studio-Dokument +
+  publiziertes Public-Schema). Mappt auf `dist/` → nach dem Clone einmal
+  `npx ng build content-model` ausführen, bevor site/studio gebaut werden.
 - `content/` — veröffentlichte Content-Artefakte (JSON), vom Studio per Publish erzeugt;
   einzige Datenquelle des Site-Builds. Kein Laufzeit-Backend für die öffentliche Seite.
 
 ## Verbindliche Regeln
 
-- **Niemals committen oder pushen ohne ausdrückliche Anweisung.**
+- **Committen: nach jedem Phasenabschluss (stehende Anweisung vom 11.08.2026).
+  Pushen weiterhin nur auf ausdrückliche Anweisung.**
 - **Datenschutz für alle öffentlichen Ausgaben** (Website, öffentliches PDF, Repo):
   Wohnort nur „Weiz" — keine Straße, kein Geburtsdatum, keine Telefonnummer, keine
   private Gmail-Adresse. Kontakt läuft über eine eigene, noch einzurichtende Adresse.
@@ -44,14 +48,18 @@ Qualitätsanspruch: Craft statt Spektakel — dieses Repo ist selbst Arbeitsprob
 - Node über nvm: `nvm use` (liest `.nvmrc`, Node 24)
 - Site dev-Server: `cd frontend && npx ng serve site`
 - Studio-UI: `cd frontend && npx ng serve studio`
-- Studio-API: `cd backend && dotnet run --project Studio.Api`
+- Studio-API: `cd backend && dotnet run --project Studio.Api` → http://localhost:5451
+- Publish ohne UI: `cd backend && dotnet run --project Studio.Api -- publish`
+  (migriert, seedet bei leerer DB aus `data/seed.json`, schreibt `content/cv.de.json`)
 - Tests: `cd frontend && npm run test:ci` bzw. `cd backend && dotnet test`
 - CI: `.github/workflows/ci.yml`; Cloudflare-Deploy: `docs/setup-cloudflare-pages.md`
 
 ## Roadmap / Status
 
 - [x] Phase 1 — Fundament: Workspace, Solution, CI, Doku (11.08.2026)
-- [ ] Phase 2 — Content-Datenmodell + Studio (Import aus dem bestehenden Lebenslauf)
+- [x] Phase 2a — Datenmodell mit Sichtbarkeitsflag, SQLite, Seed-Import, Publish-Pipeline,
+      API (GET/PUT /api/cv, POST /api/publish) (11.08.2026)
+- [ ] Phase 2b — Studio-Editor-UI (Formulare für alle Bereiche, Speichern via PUT)
 - [ ] Phase 3 — Designphase (2–3 Entwürfe zur Auswahl), dann Site-Aufbau mit SSG,
       i18n und Print-CSS (eine Quelle → Bildschirm + DACH-konformes PDF)
 - [ ] Phase 4 — Impressum/DSGVO, schema.org-JSON-LD, /now, /uses, Making-of-Seite

@@ -1,0 +1,40 @@
+:host {
+  display: block;
+  font-family: system-ui, sans-serif;
+  color: #222;
+}
+
+main {
+  max-width: 40rem;
+  margin: 3rem auto;
+  padding: 0 1rem;
+}
+
+.status {
+  .online {
+    color: #1a7f37;
+  }
+
+  .offline {
+    color: #b42318;
+  }
+}
+
+button {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.ok {
+  color: #1a7f37;
+}
+
+.error {
+  color: #b42318;
+}
+
+.hint {
+  margin-top: 2rem;
+  color: #667085;
+  font-size: 0.9rem;
+}
