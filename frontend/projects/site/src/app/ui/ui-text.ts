@@ -25,7 +25,7 @@ export const UI = {
   },
   stats: {
     years: 'Jahre Berufserfahrung',
-    tenure: 'Jahre längste Betriebszugehörigkeit',
+    technologies: 'Technologien im Projekteinsatz',
     languages: 'Kundengespräche in beiden Sprachen',
   },
   projectLabel: 'Projekt',

@@ -12,12 +12,14 @@
   </picture>
   <p class="kicker">{{ cv.profile.role }} · {{ cv.profile.location }}{{ ui.locationSuffix }}</p>
   <h1 fxLetters>{{ cv.profile.fullName }}</h1>
-  <p class="role">{{ lead }}</p>
+  <p class="role">{{ tagline }}</p>
   <div class="meta">
     @for (contact of contactLinks; track contact.type) {
       <a [href]="contact.url" rel="me noopener">{{ contact.type }}/{{ contact.label || contact.value }}</a>
     }
-    <span>{{ techLine }}</span>
+    @if (highlightsLine) {
+      <span>{{ highlightsLine }}</span>
+    }
   </div>
   <div class="scrollcue" aria-hidden="true"></div>
 </header>

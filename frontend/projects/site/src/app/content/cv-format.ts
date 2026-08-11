@@ -51,17 +51,17 @@ export function formatDuration(months: number): string {
 
 export interface CvStats {
   careerYears: number;
-  longestTenureYears: number;
+  /** Distinct technologies used across all experience stations. */
+  technologies: number;
   languagesShort: string;
 }
 
 export function computeStats(cv: PublicCv, now: Date): CvStats {
   const nowIndex = now.getFullYear() * 12 + now.getMonth();
   const earliestStart = Math.min(...cv.experiences.map((e) => monthIndex(e.start, 1)));
-  const longestMonths = Math.max(...cv.experiences.map((e) => durationMonths(e.start, e.end, now)));
   return {
     careerYears: Math.floor((nowIndex - earliestStart) / 12),
-    longestTenureYears: Math.round((longestMonths / 12) * 10) / 10,
+    technologies: new Set(cv.experiences.flatMap((e) => e.tech)).size,
     languagesShort: cv.languages.map((l) => l.name.slice(0, 2).toUpperCase()).join(' · '),
   };
 }

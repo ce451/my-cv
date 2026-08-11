@@ -86,7 +86,7 @@ export class Particles {
       if (dot.y > innerHeight + 20) dot.y = -20;
       ctx.beginPath();
       ctx.arc(dot.x, dot.y, dot.r, 0, 6.2832);
-      ctx.fillStyle = 'rgba(120, 200, 194, 0.5)';
+      ctx.fillStyle = 'rgba(132, 212, 205, 0.62)';
       ctx.fill();
       for (let j = i + 1; j < dots.length; j++) {
         const other = dots[j];
@@ -97,7 +97,7 @@ export class Particles {
           ctx.beginPath();
           ctx.moveTo(dot.x, dot.y);
           ctx.lineTo(other.x, other.y);
-          ctx.strokeStyle = `rgba(90, 170, 165, ${0.11 * (1 - dd / 16900)})`;
+          ctx.strokeStyle = `rgba(108, 190, 183, ${0.16 * (1 - dd / 16900)})`;
           ctx.lineWidth = 1;
           ctx.stroke();
         }

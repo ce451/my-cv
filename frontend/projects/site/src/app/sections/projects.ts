@@ -16,4 +16,9 @@ export class Projects {
   protected index(i: number): string {
     return String(i + 1).padStart(2, '0');
   }
+
+  /** "https://github.com/ce451/my-cv" → "my-cv" */
+  protected repoName(url: string): string {
+    return url.split('/').filter(Boolean).pop() ?? url;
+  }
 }

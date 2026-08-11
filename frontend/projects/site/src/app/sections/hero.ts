@@ -12,7 +12,7 @@ import { Letters } from '../fx/letters';
 export class Hero {
   protected readonly cv = CV;
   protected readonly ui = UI;
-  protected readonly lead = splitIntro(CV.profile.intro).lead;
+  protected readonly tagline = CV.profile.tagline ?? splitIntro(CV.profile.intro).lead;
   protected readonly contactLinks = CV.profile.contacts.filter((c) => c.url);
-  protected readonly techLine = CV.experiences[0]?.tech.slice(0, 3).join(' · ') ?? '';
+  protected readonly highlightsLine = CV.profile.highlights.join(' · ');
 }

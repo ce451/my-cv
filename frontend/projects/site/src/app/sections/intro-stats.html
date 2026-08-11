@@ -6,8 +6,8 @@
       <div class="cap">{{ ui.stats.years }}</div>
     </div>
     <div class="stat rv-d1" fxReveal>
-      <div class="num"><span [fxCount]="stats.longestTenureYears" [fxCountDecimals]="1">{{ tenureText }}</span></div>
-      <div class="cap">{{ ui.stats.tenure }}</div>
+      <div class="num"><span [fxCount]="stats.technologies">{{ stats.technologies }}</span></div>
+      <div class="cap">{{ ui.stats.technologies }}</div>
     </div>
     <div class="stat rv-d2" fxReveal>
       <div class="num">{{ stats.languagesShort }}</div>

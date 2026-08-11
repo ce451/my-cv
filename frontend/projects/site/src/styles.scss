@@ -28,6 +28,8 @@ body {
   overflow-x: hidden;
 }
 ::selection { background: rgba(63, 208, 192, 0.35); }
+/* Der Custom-Cursor (fx-cursor) setzt diese Klasse, sobald er aktiv ist. */
+html.cursor-hidden, html.cursor-hidden * { cursor: none; }
 a { color: inherit; }
 a:focus-visible,
 button:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
@@ -93,13 +95,15 @@ nav.top .pdf:hover { filter: brightness(1.1); }
   display: flex; flex-direction: column; justify-content: center;
   max-width: 74rem; margin: 0 auto; padding: 6rem 1.5rem 4rem;
 }
-.portrait-wrap { position: absolute; top: 16%; right: 1.5rem; }
+.portrait-wrap { position: absolute; top: 14%; right: 1.5rem; }
 .portrait {
   display: block;
-  width: clamp(72px, 9vw, 130px); height: clamp(72px, 9vw, 130px);
+  width: clamp(96px, 16vw, 250px); height: clamp(96px, 16vw, 250px);
   object-fit: cover; border-radius: 50%;
-  border: 2px solid rgba(63, 208, 192, 0.6);
-  box-shadow: 0 0 34px rgba(63, 208, 192, 0.28);
+  border: 3px solid rgba(63, 208, 192, 0.65);
+  outline: 1px solid rgba(63, 208, 192, 0.22);
+  outline-offset: 12px;
+  box-shadow: 0 0 45px rgba(63, 208, 192, 0.33), 0 0 130px rgba(63, 208, 192, 0.14);
 }
 .kicker {
   font: 500 0.8rem/1.5 var(--mono);
@@ -169,8 +173,14 @@ html.js .rv.in { opacity: 1; transform: none; }
 .stat .cap { color: var(--muted); font-size: 0.92rem; margin-top: 0.2rem; }
 
 /* ---------- Werdegang ---------- */
-.timeline { position: relative; padding-left: 3rem; }
-.tl-track { position: absolute; left: 0.55rem; top: 0.4rem; bottom: 0.4rem; width: 2px; background: var(--line); }
+/* --tl-x ist die gemeinsame Mittelachse von Linie und Punkten (ganzzahlige px,
+   damit die 2px-Linie und die 16px-Punkte pixelgenau zentriert bleiben). */
+.timeline { --tl-x: 9px; position: relative; padding-left: 3rem; }
+.tl-track {
+  position: absolute; left: calc(var(--tl-x) - 1px); width: 2px;
+  top: calc(0.5rem + 8px); bottom: 0.4rem;
+  background: var(--line);
+}
 .tl-progress {
   position: absolute; inset: 0;
   background: linear-gradient(var(--teal), rgba(63, 208, 192, 0.2));
@@ -178,8 +188,8 @@ html.js .rv.in { opacity: 1; transform: none; }
 }
 .station { position: relative; margin-bottom: 4.5rem; }
 .station::before {
-  content: ''; position: absolute; left: -3rem; top: 0.5rem;
-  width: 12px; height: 12px; margin-left: 0.05rem; border-radius: 50%;
+  content: ''; position: absolute; left: calc(var(--tl-x) - 3rem - 8px); top: 0.5rem;
+  width: 12px; height: 12px; border-radius: 50%;
   border: 2px solid var(--teal); background: var(--bg);
   box-shadow: 0 0 18px rgba(63, 208, 192, 0.55);
 }
@@ -236,6 +246,16 @@ h3 { margin: 0.4rem 0 0.15rem; font-size: 1.45rem; font-weight: 700; letter-spac
 }
 .tilt h3 { font-size: 1.3rem; margin: 0.7rem 0 0.4rem; }
 .tilt p:not(.icon) { margin: 0; color: var(--muted); max-width: 44ch; }
+.tilt .repos { margin-top: 1.2rem; }
+.repos li { padding: 0; }
+.repos a {
+  display: inline-block; padding: 0.38rem 0.66rem;
+  text-decoration: none; color: inherit;
+  transition: color 0.2s;
+}
+.repos a::after { content: ' ↗'; opacity: 0.7; }
+.repos li:hover { border-color: var(--teal); }
+.repos li:hover a { color: #9ef0e6; }
 
 /* ---------- Kenntnisse ---------- */
 .skills .row {
@@ -306,10 +326,11 @@ footer a:hover { color: var(--teal); }
   .stats, .projects, .edu-grid { grid-template-columns: 1fr; }
   .skills .row { grid-template-columns: 1fr; gap: 0.3rem; }
   .timeline { padding-left: 2.2rem; }
-  .station::before { left: -2.2rem; }
+  .station::before { left: calc(var(--tl-x) - 2.2rem - 8px); }
   .ghost { display: none; }
   nav.top .links a { display: none; }
-  .portrait-wrap { position: static; margin-bottom: 1.4rem; }
+  .portrait-wrap { position: static; margin-bottom: 1.6rem; }
+  .portrait { width: 108px; height: 108px; outline-offset: 8px; }
 }
 
 /* ---------- Unterseiten ---------- */
@@ -367,7 +388,7 @@ footer a:hover { color: var(--teal); }
   h1 { font-size: 26pt; }
   h1 .l { transform: none; filter: none; animation: none; }
   .portrait-wrap { position: static; float: right; margin-left: 1rem; }
-  .portrait { box-shadow: none; border-color: var(--line); }
+  .portrait { width: 120px; height: 120px; box-shadow: none; outline: none; border-color: var(--line); }
   .section { padding-top: 1.6rem; }
   .card, .stat, .edu-card { box-shadow: none !important; transform: none !important; break-inside: avoid; }
   .ghost, .tl-progress { display: none; }

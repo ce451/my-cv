@@ -2,10 +2,17 @@
   <h2 fxReveal><span class="no">02</span>{{ ui.sections.projekte }}</h2>
   <div class="projects">
     @for (project of projects; track project.text; let i = $index) {
-      <div fxTilt fxReveal [class.rv-d1]="i === 1">
+      <div fxTilt fxReveal [class.rv-d1]="i % 3 === 1" [class.rv-d2]="i % 3 === 2">
         <p class="icon">{{ ui.projectLabel }} {{ index(i) }}</p>
         <h3>{{ project.title }}</h3>
         <p>{{ project.text }}</p>
+        @if (project.links.length) {
+          <ul class="chips repos">
+            @for (link of project.links; track link) {
+              <li><a [href]="link" target="_blank" rel="noopener">{{ repoName(link) }}</a></li>
+            }
+          </ul>
+        }
       </div>
     }
   </div>

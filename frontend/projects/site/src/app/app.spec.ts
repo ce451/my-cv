@@ -18,7 +18,7 @@ describe('App', () => {
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('nav.top')).toBeTruthy();
-    expect(compiled.querySelectorAll('footer nav a').length).toBe(5);
+    expect(compiled.querySelectorAll('footer nav a').length).toBe(3);
   });
 
   it('injects schema.org JSON-LD into the document head', async () => {
