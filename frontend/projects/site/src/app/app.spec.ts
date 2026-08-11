@@ -11,12 +11,12 @@ describe('App', () => {
     }).compileComponents();
   });
 
-  it('creates the shell with navigation and footer links', async () => {
+  it('creates the shell with back-to-top button and footer links', async () => {
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('nav.top')).toBeTruthy();
+    expect(compiled.querySelector('button.to-top')).toBeTruthy();
     expect(compiled.querySelectorAll('footer nav a').length).toBe(3);
   });
 

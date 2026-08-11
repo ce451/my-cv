@@ -90,22 +90,47 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
 }
 .wrap { position: relative; z-index: 1; }
 
-/* ---------- Navigation ---------- */
-nav.top {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 45;
-  display: flex; align-items: center; gap: 1.6rem;
-  padding: 0.9rem 1.5rem;
-  background: rgba(10, 13, 17, 0.72);
-  backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--line);
-  transform: translateY(-110%);
-  transition: transform 0.45s var(--ease);
+/* ---------- Scrollbar ---------- */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(63, 208, 192, 0.45) rgba(255, 255, 255, 0.04);
 }
-nav.top.scrolled { transform: translateY(0); }
-nav.top .brand { font-weight: 700; text-decoration: none; }
-nav.top .links { display: flex; gap: 1.4rem; margin-left: auto; align-items: center; }
-nav.top .links a { font: 500 0.85rem/1 var(--sans); color: var(--muted); text-decoration: none; }
-nav.top .links a:hover { color: var(--teal); }
+::-webkit-scrollbar { width: 11px; height: 11px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(rgba(63, 208, 192, 0.6), rgba(63, 208, 192, 0.25));
+  border-radius: 999px;
+  /* Rand in Hintergrundfarbe: der Balken „schwebt" schmal über der Spur. */
+  border: 3px solid var(--bg);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--teal); border: 3px solid var(--bg); }
+
+/* ---------- Nach-oben-Button ---------- */
+.to-top {
+  position: fixed; right: 1.6rem; bottom: 1.6rem; z-index: 46;
+  width: 52px; height: 52px; padding: 0; border: 0; border-radius: 50%;
+  background: rgba(10, 13, 17, 0.78);
+  color: var(--teal);
+  cursor: pointer;
+  display: grid; place-items: center;
+  backdrop-filter: blur(10px);
+  opacity: 0; visibility: hidden; transform: translateY(14px);
+  transition: opacity 0.35s var(--ease), transform 0.35s var(--ease), visibility 0.35s,
+    background-color 0.25s, color 0.25s, box-shadow 0.25s;
+}
+/* Lesefortschritt als Teal-Ring; den Winkel (--p) setzt der Scroll-Listener. */
+.to-top::before {
+  content: ''; position: absolute; inset: -3px; border-radius: 50%;
+  background: conic-gradient(var(--teal) calc(var(--p, 0) * 1turn), rgba(255, 255, 255, 0.12) 0);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
+}
+.to-top.show { opacity: 1; visibility: visible; transform: none; }
+.to-top:hover {
+  background: var(--teal); color: #06231f;
+  box-shadow: 0 12px 36px -10px rgba(63, 208, 192, 0.6);
+}
+.to-top svg { display: block; }
 
 /* ---------- Hero ---------- */
 .hero {
@@ -354,8 +379,7 @@ footer a:hover { color: var(--teal); }
   .timeline { padding-left: 2.2rem; }
   .station::before { left: calc(var(--tl-x) - 2.2rem - 8px); }
   .ghost { display: none; }
-  /* Mobil bewusst ohne Kopfleiste; die Seite ist eine reine Scroll-Erzählung. */
-  nav.top { display: none; }
+  .to-top { right: 1rem; bottom: 1rem; width: 48px; height: 48px; }
   .portrait-wrap { position: static; margin-bottom: 1.6rem; }
   .portrait { width: 108px; height: 108px; outline-offset: 8px; }
 }
@@ -406,7 +430,7 @@ footer a:hover { color: var(--teal); }
     --teal-soft: #eef3f5;
     --amber: #7a4a12;
   }
-  fx-particles, fx-cursor, .aurora, .grain, nav.top, .scrollcue, .skiplink, .contact { display: none !important; }
+  fx-particles, fx-cursor, .aurora, .grain, .to-top, .scrollcue, .skiplink, .contact { display: none !important; }
   html.js .rv { opacity: 1 !important; transform: none !important; transition: none !important; }
   html.js h1[fxletters]:not(.split) { opacity: 1; }
   body { font-size: 10.5pt; overflow-x: visible; }

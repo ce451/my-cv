@@ -166,7 +166,9 @@ Neue Route? Dann immer: in `app.routes.ts` eintragen, im Komponenten-Konstruktor
       Kontakt-Link raus; das Print-Stylesheet für Strg+P bleibt), Intro neu
       („Zuhören, bauen, ausliefern, dranbleiben: …"), Tagline final
       „12 Jahre Code, Projekt- und Teamarbeit", Cursor-Elektronen weiß mit
-      Ruhe-Schweifen (12→30 Segmente) und größeren Bahnen (18/26/34px)
+      Ruhe-Schweifen (12→30 Segmente) und größeren Bahnen (18/26/34px);
+      Kopfleiste komplett entfernt, stattdessen Nach-oben-Button unten
+      rechts mit Lesefortschritts-Ring; Custom Scrollbar in Teal
 
 ## Offene Punkte
 

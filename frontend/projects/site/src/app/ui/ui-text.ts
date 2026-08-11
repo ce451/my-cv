@@ -8,13 +8,7 @@ export const UI = {
   portraitAltPrefix: 'Porträt von ',
   present: 'heute',
   back: '← Zur Startseite',
-  nav: {
-    brand: 'CE',
-    werdegang: 'Werdegang',
-    projekte: 'Projekte',
-    kenntnisse: 'Kenntnisse',
-    kontakt: 'Kontakt',
-  },
+  toTop: 'Nach oben scrollen',
   sections: {
     werdegang: 'Werdegang',
     projekte: 'Private Projekte',

@@ -3,16 +3,6 @@
 <div class="aurora" aria-hidden="true"></div>
 <div class="grain" aria-hidden="true"></div>
 
-<nav class="top" [class.scrolled]="navVisible()" aria-label="Hauptnavigation">
-  <a class="brand" routerLink="/">{{ ui.nav.brand }}</a>
-  <div class="links">
-    <a routerLink="/" fragment="werdegang">{{ ui.nav.werdegang }}</a>
-    <a routerLink="/" fragment="projekte">{{ ui.nav.projekte }}</a>
-    <a routerLink="/" fragment="kenntnisse">{{ ui.nav.kenntnisse }}</a>
-    <a routerLink="/" fragment="kontakt">{{ ui.nav.kontakt }}</a>
-  </div>
-</nav>
-
 <div class="wrap">
   <main id="main">
     <router-outlet />
@@ -26,4 +16,19 @@
     </nav>
   </footer>
 </div>
+
+<button
+  type="button"
+  class="to-top"
+  #toTop
+  [class.show]="topVisible()"
+  (click)="scrollTop()"
+  [attr.aria-label]="ui.toTop"
+>
+  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none"
+    stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 19V5" />
+    <path d="m5 12 7-7 7 7" />
+  </svg>
+</button>
 <fx-cursor />
