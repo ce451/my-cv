@@ -37,27 +37,34 @@ jobs:
       - run: dotnet build --configuration Release
       - run: dotnet test --configuration Release --no-build
 
-  # ---- DEPLOY: einkommentieren, sobald die Cloudflare-Secrets existieren. ----
-  # ---- Anleitung: docs/setup-cloudflare-pages.md ----
-  # deploy:
-  #   needs: [frontend, backend]
-  #   if: github.ref == 'refs/heads/main'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version-file: .nvmrc
-  #         cache: npm
-  #         cache-dependency-path: frontend/package-lock.json
-  #     - run: npm ci
-  #       working-directory: frontend
-  #     - run: npx ng build content-model
-  #       working-directory: frontend
-  #     - run: npx ng build site
-  #       working-directory: frontend
-  #     - uses: cloudflare/wrangler-action@v3
-  #       with:
-  #         apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-  #         accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-  #         command: pages deploy frontend/dist/site/browser --project-name=my-cv
+  deploy:
+    needs: [frontend, backend]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+        working-directory: frontend
+      - run: npx ng build content-model
+        working-directory: frontend
+      - run: npx ng build site
+        working-directory: frontend
+      # Idempotent: legt das Projekt beim ersten Lauf an, scheitert danach folgenlos.
+      - name: Ensure Pages project exists
+        uses: cloudflare/wrangler-action@v3
+        continue-on-error: true
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages project create elstner-cv --production-branch=main
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy frontend/dist/site/browser --project-name=elstner-cv

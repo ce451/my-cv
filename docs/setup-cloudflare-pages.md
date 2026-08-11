@@ -4,17 +4,19 @@ Stand 11.08.2026 — elstner.ch liegt bereits auf Cloudflare-Nameservern (verifi
 `donovan.ns.cloudflare.com` / `miki.ns.cloudflare.com`), es existieren noch keine
 A/AAAA-Records.
 
-## Einmalige Schritte (macht der Betreiber im Cloudflare-/GitHub-Dashboard)
+## Status
 
-1. Cloudflare: My Profile → API Tokens → Create Token → Custom Token mit
-   Berechtigung **Account → Cloudflare Pages → Edit**.
-2. Account-ID notieren (Dashboard, rechte Spalte der Zonen-Übersicht).
-3. GitHub-Repo → Settings → Secrets and variables → Actions → zwei Secrets anlegen:
-   - `CLOUDFLARE_API_TOKEN`
-   - `CLOUDFLARE_ACCOUNT_ID`
-4. Deploy-Job in `.github/workflows/ci.yml` einkommentieren (Marker „DEPLOY").
-5. Nach dem ersten Deploy: Pages-Projekt → Custom Domains → `elstner.ch` hinzufügen
-   (DNS-Record legt Cloudflare selbst an).
+Erledigt am 11.08.2026: API-Token (Account → Cloudflare Pages → Edit) und die
+GitHub-Secrets `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` existieren, der
+Deploy-Job in `.github/workflows/ci.yml` ist aktiv. Pages-Projekt: **elstner-cv**
+(→ elstner-cv.pages.dev; „my-cv" wäre als globale pages.dev-Subdomain riskant).
+
+## Verbleibender manueller Schritt
+
+Nach dem ersten erfolgreichen Deploy einmalig im Dashboard:
+Workers & Pages → Projekt **elstner-cv** → Custom Domains → `elstner.ch` hinzufügen.
+Cloudflare legt den DNS-Record selbst an (Zone liegt im selben Account); der
+API-Token hat bewusst keine DNS-Rechte, darum geht dieser Schritt nicht über CI.
 
 ## Warum Actions-Deploy statt Git-Integration
 
