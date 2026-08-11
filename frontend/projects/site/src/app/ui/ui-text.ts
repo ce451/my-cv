@@ -7,6 +7,7 @@ export const UI = {
   locationSuffix: ', Österreich',
   portraitAltPrefix: 'Porträt von ',
   present: 'heute',
+  back: '← Zur Startseite',
   nav: {
     brand: 'CE',
     werdegang: 'Werdegang',
@@ -37,7 +38,7 @@ export const UI = {
     pdf: 'Lebenslauf als PDF',
   },
   footer: {
-    imprint: 'Impressum',
+    makingOf: 'Making-of',
     privacy: 'Datenschutz',
     source: 'Quellcode dieser Seite',
   },

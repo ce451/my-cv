@@ -3,32 +3,28 @@
 <div class="aurora" aria-hidden="true"></div>
 <div class="grain" aria-hidden="true"></div>
 
-<nav class="top" [class.scrolled]="scrolled()" aria-label="Hauptnavigation">
-  <a class="brand" href="#top">{{ ui.nav.brand }}</a>
+<nav class="top" [class.scrolled]="navVisible()" aria-label="Hauptnavigation">
+  <a class="brand" routerLink="/">{{ ui.nav.brand }}</a>
   <div class="links">
-    <a href="#werdegang">{{ ui.nav.werdegang }}</a>
-    <a href="#projekte">{{ ui.nav.projekte }}</a>
-    <a href="#kenntnisse">{{ ui.nav.kenntnisse }}</a>
-    <a href="#kontakt">{{ ui.nav.kontakt }}</a>
+    <a routerLink="/" fragment="werdegang">{{ ui.nav.werdegang }}</a>
+    <a routerLink="/" fragment="projekte">{{ ui.nav.projekte }}</a>
+    <a routerLink="/" fragment="kenntnisse">{{ ui.nav.kenntnisse }}</a>
+    <a routerLink="/" fragment="kontakt">{{ ui.nav.kontakt }}</a>
     <button class="pdf" type="button" (click)="print()">{{ ui.nav.pdf }}</button>
   </div>
 </nav>
 
 <div class="wrap">
-  <app-hero />
   <main id="main">
-    <app-intro-stats />
-    <app-timeline />
-    <app-projects />
-    <app-skills />
-    <app-education />
-    <app-contact />
+    <router-outlet />
   </main>
   <footer>
     <span>© {{ year }} {{ name }}</span>
-    <nav aria-label="Rechtliches">
-      <a href="#">{{ ui.footer.imprint }}</a>
-      <a href="#">{{ ui.footer.privacy }}</a>
+    <nav aria-label="Weitere Seiten">
+      <a routerLink="/now">/now</a>
+      <a routerLink="/uses">/uses</a>
+      <a routerLink="/making-of">{{ ui.footer.makingOf }}</a>
+      <a routerLink="/datenschutz">{{ ui.footer.privacy }}</a>
       <a href="https://github.com/ce451/my-cv">{{ ui.footer.source }}</a>
     </nav>
   </footer>

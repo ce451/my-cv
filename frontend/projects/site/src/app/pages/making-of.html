@@ -1,0 +1,58 @@
+<section class="section subpage">
+  <p class="pkicker">Making-of</p>
+  <h1>Wie diese Seite entstanden ist</h1>
+  <p class="stand">Stand: August 2026 · wird fortgeschrieben</p>
+
+  <div class="prose">
+    <p>
+      Diese Website ist bewusst beides: mein Lebenslauf und eine Arbeitsprobe.
+      Der komplette Quellcode ist öffentlich — inklusive der Recherche, der
+      verworfenen Designentwürfe und der Architekturentscheidungen.
+    </p>
+
+    <h2>Architektur</h2>
+    <p>
+      Die öffentliche Seite ist eine statisch vorgerenderte Angular-Anwendung.
+      Inhalte pflege ich in einem privaten, nur lokal laufenden Backend
+      („Studio": .NET 10, EF Core, SQLite) und veröffentliche sie als JSON ins
+      Repository; der Site-Build liest ausschließlich diese Datei. Es gibt kein
+      öffentliches Laufzeit-Backend, keine Cookies, kein Tracking. Ein
+      Sichtbarkeitsflag im Datenmodell trennt, was auf die Website darf und was
+      nur in Bewerbungsdokumente gehört — automatisierte Tests erzwingen das.
+    </p>
+
+    <h2>Design</h2>
+    <p>
+      Vor dem Design stand Recherche: was auf Entwickler-Portfolios alle machen
+      (Skill-Prozentbalken, Template-Layouts, Typewriter-Effekte) — und was ich
+      deshalb weglasse. Aus fünf Entwürfen wurde die Richtung „Cinematic":
+      dunkle Bühne, Partikelfeld, scroll-gezeichnete Timeline. Alle Effekte sind
+      handgeschriebenes Vanilla-JS/CSS hinter einem gemeinsamen Animations-Loop,
+      respektieren <code>prefers-reduced-motion</code>, und ohne JavaScript
+      bleibt die Seite vollständig lesbar. Schriften liegen lokal, es wird
+      nichts von Dritt-Servern nachgeladen.
+    </p>
+
+    <h2>KI-Einsatz</h2>
+    <p>
+      Gebaut habe ich die Seite mit Claude Code — bewusst als Test, wie weit
+      professionelle KI-gestützte Entwicklung trägt: verbindliche Projektregeln
+      in einer CLAUDE.md, Architekturentscheidungen als ADRs, phasenweise
+      Commits, Recherche und Entwürfe im Repo nachvollziehbar. Die Gegenprobe
+      ist mein Lernprojekt FamHub, das ich komplett ohne KI von Hand schreibe.
+    </p>
+
+    <h2>Eckdaten</h2>
+    <ul>
+      <li>Alle Seiten statisch vorgerendert; rund 82 KB initialer Transfer</li>
+      <li>Backend-, Studio- und Site-Tests laufen in jeder CI-Pipeline</li>
+      <li>Hosting über ein CDN, laufende Kosten: 0 €</li>
+    </ul>
+
+    <p>
+      <a href="https://github.com/ce451/my-cv" rel="noopener">Zum Quellcode auf GitHub →</a>
+    </p>
+  </div>
+
+  <p class="back"><a routerLink="/">{{ ui.back }}</a></p>
+</section>

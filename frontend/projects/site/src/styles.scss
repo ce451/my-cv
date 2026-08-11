@@ -312,6 +312,39 @@ footer a:hover { color: var(--teal); }
   .portrait-wrap { position: static; margin-bottom: 1.4rem; }
 }
 
+/* ---------- Unterseiten ---------- */
+.subpage { max-width: 46rem; padding-top: 9rem; min-height: 70vh; }
+.subpage .pkicker {
+  font: 500 0.8rem/1.5 var(--mono);
+  letter-spacing: 0.3em; text-transform: uppercase; color: var(--teal); margin: 0;
+}
+.subpage h1 {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  letter-spacing: -0.02em; line-height: 1.1; margin: 0.6rem 0 0.4rem;
+}
+.subpage .stand { font: 400 0.8rem/1.6 var(--mono); color: var(--faint); margin: 0 0 2.2rem; }
+.prose { color: #c6ccd3; }
+.prose p { max-width: 62ch; margin: 0 0 1rem; }
+.prose h2 {
+  display: block; margin: 2rem 0 0.8rem;
+  font: 500 0.78rem/1.5 var(--mono);
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint);
+}
+.prose h2::after { content: none; }
+.prose ul { margin: 0 0 1.2rem; padding-left: 1.15rem; }
+.prose li { margin-bottom: 0.5rem; max-width: 60ch; }
+.prose li::marker { color: var(--teal); }
+.prose a {
+  color: var(--ink); text-decoration: underline;
+  text-decoration-color: rgba(63, 208, 192, 0.5); text-underline-offset: 3px;
+}
+.prose a:hover { color: var(--teal); }
+.prose .note { color: var(--faint); font-size: 0.9rem; }
+.prose code { font-family: var(--mono); font-size: 0.88em; color: var(--teal); }
+.subpage .back { margin-top: 3rem; }
+.subpage .back a { font: 500 0.9rem/1.5 var(--sans); color: var(--muted); text-decoration: none; }
+.subpage .back a:hover { color: var(--teal); }
+
 /* ---------- Print: helles DACH-Dokument aus derselben Quelle ---------- */
 @media print {
   :root {

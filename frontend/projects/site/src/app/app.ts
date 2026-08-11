@@ -1,20 +1,24 @@
-import { Component, DestroyRef, DOCUMENT, NgZone, afterNextRender, inject, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  DOCUMENT,
+  NgZone,
+  afterNextRender,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { CV } from './content/cv-data';
 import { buildJsonLd } from './content/schema';
 import { UI } from './ui/ui-text';
 import { Cursor } from './fx/cursor';
 import { Particles } from './fx/particles';
-import { Contact } from './sections/contact';
-import { Education } from './sections/education';
-import { Hero } from './sections/hero';
-import { IntroStats } from './sections/intro-stats';
-import { Projects } from './sections/projects';
-import { Skills } from './sections/skills';
-import { Timeline } from './sections/timeline';
 
 @Component({
   selector: 'app-root',
-  imports: [Particles, Cursor, Hero, IntroStats, Timeline, Projects, Skills, Education, Contact],
+  imports: [RouterOutlet, RouterLink, Particles, Cursor],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
@@ -22,10 +26,15 @@ export class App {
   protected readonly ui = UI;
   protected readonly name = CV.profile.fullName;
   protected readonly year = new Date().getFullYear();
-  protected readonly scrolled = signal(false);
+
+  private readonly scrolled = signal(false);
+  private readonly onSubpage = signal(false);
+  /** Nav shows after scrolling on the home page, immediately on subpages. */
+  protected readonly navVisible = computed(() => this.scrolled() || this.onSubpage());
 
   private readonly zone = inject(NgZone);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly router = inject(Router);
 
   constructor() {
     // Runs during prerender too, so the JSON-LD ends up in the static HTML.
@@ -37,6 +46,12 @@ export class App {
       script.text = JSON.stringify(buildJsonLd(CV));
       doc.head.appendChild(script);
     }
+
+    this.router.events.pipe(takeUntilDestroyed()).subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.onSubpage.set(!event.urlAfterRedirects.split('#')[0].match(/^\/?$/));
+      }
+    });
 
     afterNextRender(() => {
       const onScroll = () => this.scrolled.set(scrollY > innerHeight * 0.55);

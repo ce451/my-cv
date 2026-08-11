@@ -29,6 +29,8 @@ Qualitätsanspruch: Craft statt Spektakel — dieses Repo ist selbst Arbeitsprob
   private Gmail-Adresse. Kontakt läuft über eine eigene, noch einzurichtende Adresse.
   Das vollständige Bewerbungs-PDF (mehr Daten) und die öffentliche Fassung sind zwei
   Sichten auf denselben Datenbestand → das Datenmodell braucht ein Sichtbarkeitsflag.
+  **Bewusst kein Impressum** (Entscheidung 11.08.2026); die /datenschutz-Seite bleibt
+  minimal und ohne Adresse. Vor breiter Streuung der Seite neu bewerten.
 - **Ton aller sichtbaren Texte:** sachlich und konkret, keine Selbstvermarktungs-Floskeln,
   keine KI-typischen Formulierungen. Zahlen und Fakten statt Adjektive.
 - **Design:** verbindlich ist `docs/design-system.md` — Richtung „Cinematic"
@@ -74,8 +76,10 @@ Qualitätsanspruch: Craft statt Spektakel — dieses Repo ist selbst Arbeitsprob
       Fonts, WebP-Porträt, Print-CSS als PDF-Weg v1 (11.08.2026)
 - [x] Phase 4a — schema.org-JSON-LD (ProfilePage/Person, aus Content abgeleitet,
       im Prerender-HTML) (11.08.2026)
-- [ ] Phase 4b — Impressum/DSGVO-Seiten, /now, /uses, Making-of-Seite
-      (wartet auf Input: Impressum-Umfang, /now- und /uses-Inhalte, neue E-Mail)
+- [x] Phase 4b — Unterseiten /now, /uses, /making-of, /datenschutz mit Routing
+      (alle Routen prerendert, anchorScrolling, View Transitions); bewusst ohne
+      Impressum; Seiteninhalte liegen als Templates im Repo, nicht im Studio
+      (11.08.2026)
 - [ ] Phase 5 — Cloudflare Pages + elstner.ch, Launch
 
 Datenquelle für den Erstimport ist der private Lebenslauf (lokal, außerhalb des Repos).
