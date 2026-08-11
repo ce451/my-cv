@@ -5,12 +5,10 @@
       <a class="cta" [href]="linkedInUrl">{{ ui.contact.ctaLinkedIn }}</a>
     </span>
   }
-  <p class="alt rv-d2" fxReveal>
-    {{ ui.contact.or }}
-    @if (github?.url; as githubUrl) {
+  @if (github?.url; as githubUrl) {
+    <p class="alt rv-d2" fxReveal>
+      {{ ui.contact.or }}
       <a [href]="githubUrl">{{ ui.contact.github }}</a>
-      ·
-    }
-    <button type="button" class="linklike" (click)="print()">{{ ui.contact.pdf }}</button>
-  </p>
+    </p>
+  }
 </section>

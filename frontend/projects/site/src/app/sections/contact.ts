@@ -13,10 +13,4 @@ export class Contact {
   protected readonly ui = UI;
   protected readonly linkedIn = CV.profile.contacts.find((c) => c.type === 'linkedin');
   protected readonly github = CV.profile.contacts.find((c) => c.type === 'github');
-
-  protected print(): void {
-    if (typeof window !== 'undefined') {
-      window.print();
-    }
-  }
 }

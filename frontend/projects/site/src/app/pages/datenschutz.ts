@@ -4,7 +4,7 @@ import { buildWebPageJsonLd } from '../content/schema';
 import { PageHead } from '../ui/page-head';
 import { UI } from '../ui/ui-text';
 
-const TITLE = 'Datenschutz — Christopher Elstner';
+const TITLE = 'Datenschutz · Christopher Elstner';
 const DESCRIPTION =
   'Datenschutzerklärung dieser Website: keine Cookies, kein Tracking, keine externen Dienste; ' +
   'Hosting über Cloudflare Pages.';

@@ -6,7 +6,7 @@
   <div class="prose">
     <p>
       Diese Website ist bewusst beides: mein Lebenslauf und eine Arbeitsprobe.
-      Der komplette Quellcode ist öffentlich — inklusive der Recherche, der
+      Der komplette Quellcode ist öffentlich, inklusive der Recherche, der
       verworfenen Designentwürfe und der Architekturentscheidungen.
     </p>
 
@@ -18,13 +18,13 @@
       Repository; der Site-Build liest ausschließlich diese Datei. Es gibt kein
       öffentliches Laufzeit-Backend, keine Cookies, kein Tracking. Ein
       Sichtbarkeitsflag im Datenmodell trennt, was auf die Website darf und was
-      nur in Bewerbungsdokumente gehört — automatisierte Tests erzwingen das.
+      nur in Bewerbungsdokumente gehört; automatisierte Tests erzwingen das.
     </p>
 
     <h2>Design</h2>
     <p>
       Vor dem Design stand Recherche: was auf Entwickler-Portfolios alle machen
-      (Skill-Prozentbalken, Template-Layouts, Typewriter-Effekte) — und was ich
+      (Skill-Prozentbalken, Template-Layouts, Typewriter-Effekte), und was ich
       deshalb weglasse. Aus fünf Entwürfen wurde die Richtung „Cinematic":
       dunkle Bühne, Partikelfeld, scroll-gezeichnete Timeline. Alle Effekte sind
       handgeschriebenes Vanilla-JS/CSS hinter einem gemeinsamen Animations-Loop,
@@ -35,7 +35,7 @@
 
     <h2>KI-Einsatz</h2>
     <p>
-      Gebaut habe ich die Seite mit Claude Code — bewusst als Test, wie weit
+      Gebaut habe ich die Seite mit Claude Code, bewusst als Test, wie weit
       professionelle KI-gestützte Entwicklung trägt: verbindliche Projektregeln
       in einer CLAUDE.md, Architekturentscheidungen als ADRs, phasenweise
       Commits, Recherche und Entwürfe im Repo nachvollziehbar.
@@ -45,7 +45,7 @@
     <ul>
       <li>Alle Seiten statisch vorgerendert, keine Requests an Dritt-Server, kein Tracking</li>
       <li>Site- und Backend-Tests laufen in jeder CI-Pipeline; deployt wird nur bei Grün</li>
-      <li>Strikte Content-Security-Policy — ein CI-Check hält die Hash-Allowlist aktuell</li>
+      <li>Strikte Content-Security-Policy; ein CI-Check hält die Hash-Allowlist aktuell</li>
     </ul>
 
     <p>

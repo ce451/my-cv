@@ -1,13 +1,13 @@
 {
   "meta": {
-    "publishedAt": "2026-08-11T21:45:16.2481602+02:00",
+    "publishedAt": "2026-08-11T21:52:16.1407745+02:00",
     "locale": "de"
   },
   "profile": {
     "fullName": "Christopher Elstner",
     "role": "Senior Full-Stack Softwareentwickler",
     "tagline": "12 Jahre Code, Projekt- und Teamarbeit",
-    "intro": "Zuhören, bauen, ausliefern, dranbleiben — ich übernehme Projekte vom ersten Kundengespräch bis in den laufenden Betrieb, allein verantwortlich oder mitten im Team.",
+    "intro": "Zuhören, bauen, ausliefern, dranbleiben: Ich übernehme Projekte vom ersten Kundengespräch bis in den laufenden Betrieb, allein verantwortlich oder mitten im Team.",
     "location": "Weiz",
     "highlights": [
       "Angular",
@@ -61,7 +61,7 @@
       "positionNote": "Einstieg als Junior",
       "organization": "HGS GmbH & Co KG",
       "organizationNote": null,
-      "summary": "Individualentwicklung für Industriekunden aus Energietechnik, Anlagenbau, Intralogistik und Automotive — Projekte ab Vertragsabschluss allein verantwortet.",
+      "summary": "Individualentwicklung für Industriekunden aus Energietechnik, Anlagenbau, Intralogistik und Automotive. Projekte ab Vertragsabschluss allein verantwortet.",
       "bullets": [],
       "tech": [
         "Angular",
@@ -97,14 +97,39 @@
       "end": "2013",
       "institution": "HTBLA Weiz (Höhere Technische Lehranstalt)",
       "program": "Elektrotechnik und Informationstechnik",
-      "note": "Abschluss mit Matura. Diplomarbeit: Launch Control für ein Bergrennfahrzeug (BMW 320 IRL evo) — Softwareentwicklung, SPS-Programmierung mit CoDeSys"
+      "note": "Abschluss mit Matura. Diplomarbeit: Launch Control für ein Bergrennfahrzeug (BMW 320 IRL evo), Aufgabenbereich Softwareentwicklung und SPS-Programmierung mit CoDeSys"
     }
   ],
   "internships": [
     {
-      "years": "2008 – 2013",
-      "organization": "Ferialpraktika",
-      "note": "Automatisierungstechnik, Energiewirtschaft, Fertigung, Forschung & Entwicklung"
+      "years": "2013",
+      "organization": "Salomon Automation",
+      "note": "Automatisierungstechnik (heute SSI Schäfer IT Solutions)"
+    },
+    {
+      "years": "2010, 2011, 2012",
+      "organization": "Energie Steiermark",
+      "note": "Netzmanagement und Netzbetrieb"
+    },
+    {
+      "years": "2012",
+      "organization": "Pentanova",
+      "note": "Projektkostenauswertung"
+    },
+    {
+      "years": "2010",
+      "organization": "Siemens Transformers Austria Standort Weiz",
+      "note": "Forschung und Entwicklung (heute Siemens Energy)"
+    },
+    {
+      "years": "2009, 2011",
+      "organization": "Mosdorfer Weiz",
+      "note": "Fertigung"
+    },
+    {
+      "years": "2008",
+      "organization": "Stadtgemeinde Weiz",
+      "note": null
     }
   ],
   "skills": [

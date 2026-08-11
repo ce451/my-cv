@@ -4,7 +4,7 @@ import { buildWebPageJsonLd } from '../content/schema';
 import { PageHead } from '../ui/page-head';
 import { UI } from '../ui/ui-text';
 
-const TITLE = 'Making-of — Christopher Elstner';
+const TITLE = 'Making-of · Christopher Elstner';
 const DESCRIPTION =
   'Wie diese Website entsteht: KI-gestützter Entwicklungsworkflow mit Claude Code, ' +
   'Architekturentscheidungen als ADRs, privates Content-Backend und Tests in der CI.';

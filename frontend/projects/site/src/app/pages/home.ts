@@ -19,9 +19,9 @@ export class Home {
   constructor() {
     inject(PageHead).apply({
       path: '/',
-      title: 'Christopher Elstner — Senior Full-Stack Softwareentwickler',
+      title: 'Christopher Elstner · Senior Full-Stack Softwareentwickler',
       description:
-        'Senior Full-Stack Softwareentwickler aus Weiz: Angular, .NET, Java. Über zwölf Jahre Software für Industrie und Gesundheitswesen — von der Anforderung bis zum Support.',
+        'Senior Full-Stack Softwareentwickler aus Weiz: Angular, .NET, Java. Über zwölf Jahre Software für Industrie und Gesundheitswesen, von der Anforderung bis zum Support.',
       ogType: 'profile',
       jsonLd: buildJsonLd(CV),
     });

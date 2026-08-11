@@ -50,10 +50,4 @@ export class App {
       this.destroyRef.onDestroy(() => removeEventListener('scroll', onScroll));
     });
   }
-
-  protected print(): void {
-    if (typeof window !== 'undefined') {
-      window.print();
-    }
-  }
 }

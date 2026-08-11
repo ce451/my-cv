@@ -1,4 +1,4 @@
-/* Globales Stylesheet — Designsystem „Cinematic" (docs/design-system.md).
+/* Globales Stylesheet, Designsystem „Cinematic" (docs/design-system.md).
    Fonts liegen als Latin-Subsets unter public/fonts/ (self-hosted, DSGVO,
    Lizenz: fonts/OFL.txt) und werden in index.html vorgeladen. */
 
@@ -30,7 +30,7 @@
   --line: rgba(255, 255, 255, 0.09);
   --ink: #e9edf1;
   --muted: #97a2ad;
-  /* Hell genug für WCAG AA (5,1:1 auf --bg) — auch für Kleintext. */
+  /* Hell genug für WCAG AA (5,1:1 auf --bg), auch für Kleintext. */
   --faint: #7a848e;
   --teal: #3fd0c0;
   --teal-soft: rgba(63, 208, 192, 0.14);
@@ -106,12 +106,6 @@ nav.top .brand { font-weight: 700; text-decoration: none; }
 nav.top .links { display: flex; gap: 1.4rem; margin-left: auto; align-items: center; }
 nav.top .links a { font: 500 0.85rem/1 var(--sans); color: var(--muted); text-decoration: none; }
 nav.top .links a:hover { color: var(--teal); }
-nav.top .pdf {
-  font: 600 0.85rem/1 var(--sans); color: #06231f;
-  background: var(--teal); border: 0; cursor: pointer;
-  padding: 0.55rem 0.9rem; border-radius: 999px;
-}
-nav.top .pdf:hover { filter: brightness(1.1); }
 
 /* ---------- Hero ---------- */
 .hero {
@@ -176,7 +170,7 @@ h2 {
 h2 .no { font: 500 0.8rem/1 var(--mono); color: var(--teal); letter-spacing: 0.2em; }
 h2::after { content: ''; flex: 1; height: 1px; background: var(--line); align-self: center; }
 
-/* Reveal — Ausblendung greift nur mit JS (progressive enhancement) */
+/* Reveal: Ausblendung greift nur mit JS (progressive enhancement) */
 html.js .rv { opacity: 0; transform: translateY(34px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); }
 html.js .rv.in { opacity: 1; transform: none; }
 .rv-d1 { transition-delay: 0.08s; }
@@ -341,11 +335,6 @@ h3 { margin: 0.4rem 0 0.15rem; font-size: 1.45rem; font-weight: 700; letter-spac
 .contact .alt { margin-top: 1.4rem; color: var(--faint); font-size: 0.95rem; }
 .contact .alt a { color: var(--muted); }
 .contact .alt a:hover { color: var(--teal); }
-.linklike {
-  background: none; border: 0; padding: 0; cursor: pointer;
-  font: inherit; color: var(--muted); text-decoration: underline;
-}
-.linklike:hover { color: var(--teal); }
 
 /* ---------- Footer ---------- */
 footer {
@@ -365,7 +354,7 @@ footer a:hover { color: var(--teal); }
   .timeline { padding-left: 2.2rem; }
   .station::before { left: calc(var(--tl-x) - 2.2rem - 8px); }
   .ghost { display: none; }
-  /* Mobil bewusst ohne Kopfleiste — die Seite ist eine reine Scroll-Erzählung. */
+  /* Mobil bewusst ohne Kopfleiste; die Seite ist eine reine Scroll-Erzählung. */
   nav.top { display: none; }
   .portrait-wrap { position: static; margin-bottom: 1.6rem; }
   .portrait { width: 108px; height: 108px; outline-offset: 8px; }

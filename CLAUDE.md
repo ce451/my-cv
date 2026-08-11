@@ -34,10 +34,14 @@ Qualitätsanspruch: Craft statt Spektakel — dieses Repo ist selbst Arbeitsprob
   **Keine Kundennamen aus Projekten in öffentlichen Ausgaben** (Anweisung
   11.08.2026): Projektkunden und Projektnamen der Arbeitgeber (z. B. aus der
   Individualentwicklung) erscheinen weder auf der Website noch im öffentlichen
-  PDF. Eigene Arbeitgeber sind ok; Praktika werden ohne Firmennamen
-  zusammengefasst.
+  PDF. Eigene Arbeitgeber sind ok, auch bei den Praktika (alle sechs stehen
+  auf seine Anweisung wieder einzeln mit Namen auf der Seite).
 - **Ton aller sichtbaren Texte:** sachlich und konkret, keine Selbstvermarktungs-Floskeln,
   keine KI-typischen Formulierungen. Zahlen und Fakten statt Adjektive.
+  **Keine Gedankenstriche (Em-Dashes) in sämtlichen Texten des Projekts**
+  (Anweisung 11.08.2026; gilt für Website, PDF-Varianten, Doku und Commits):
+  stattdessen Doppelpunkt, Komma, Semikolon oder ·. Der Bis-Strich (–) in
+  Zeiträumen wie „2008 – 2013" bleibt erlaubt.
 - **Design:** verbindlich ist `docs/design-system.md` — Richtung „Cinematic"
   (dunkle Bühne, Teal/Amber, Space Grotesk + IBM Plex Mono, Effekt-Inventar mit
   Motion-Regeln), entschieden am 11.08.2026. Referenz-Prototyp:
@@ -156,18 +160,23 @@ Neue Route? Dann immer: in `app.routes.ts` eintragen, im Komponenten-Konstruktor
       drei Amber-Elektronen mit Canvas-Schweif auf präzedierenden Ellipsen),
       Mobil ganz ohne Kopfleiste, Partikel resize-stabil (URL-Leiste),
       Magnetic-CTA gleitet statt springt
+- [x] Phase 9 — Nachzügler (11.08.2026, spätabends): Em-Dash-Verbot projektweit
+      umgesetzt (Ton-Regel oben, Titel-Trenner jetzt ·), Praktika wieder alle
+      sechs einzeln sichtbar, PDF-Option komplett entfernt (Nav-Button und
+      Kontakt-Link raus; das Print-Stylesheet für Strg+P bleibt), Intro neu
+      („Zuhören, bauen, ausliefern, dranbleiben: …"), Tagline final
+      „12 Jahre Code, Projekt- und Teamarbeit", Cursor-Elektronen weiß mit
+      Ruhe-Schweifen (12→30 Segmente) und größeren Bahnen (18/26/34px)
 
 ## Offene Punkte
 
 - Neue Kontakt-E-Mail: liefert der User nach → im Studio eintragen, publishen.
-- Öffentliches Lebenslauf-PDF: `~/nas/Beruf/01_Unterlagen/lebenslauf-public.html`
-  ist die fertig bereinigte Vorlage (ohne Bewerbungs-Personaldaten). Headless-
-  Rendering scheitert auf dieser Maschine (Playwright-Chromium rendert keinen
-  Text — Font-Inkompatibilität; Vivaldi-CLI-Print hängt): Der User druckt sie
-  selbst zu PDF, danach als `frontend/projects/site/public/
-  Lebenslauf-Christopher-Elstner.pdf` einchecken und die beiden PDF-Buttons von
-  `window.print()` auf den Download umstellen (Entscheidung 11.08.2026:
-  vorerst Druckdialog).
+- Lebenslauf-PDF: Entscheidung 11.08.2026 (spätabends): Es gibt bewusst KEINE
+  PDF-Option auf der Seite (Buttons entfernt). Die bereinigte Vorlage
+  `~/nas/Beruf/01_Unterlagen/lebenslauf-public.html` bleibt auf der NAS
+  liegen, falls das Thema wiederkommt. Headless-Rendering funktioniert auf
+  dieser Maschine nicht (Playwright-Chromium rendert keinen Text, Vivaldi-
+  CLI-Print hängt); PDFs druckt der User selbst.
 - GitHub Actions bei Gelegenheit auf checkout/setup-node v5 (Node-20-Deprecation).
 - Vor breiter Streuung: Impressum-Frage neu bewerten.
 - Aus dem Review vom 11.08.2026 bewusst offen: Content-Feinschliff (wartet auf

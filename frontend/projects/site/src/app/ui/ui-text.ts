@@ -14,7 +14,6 @@ export const UI = {
     projekte: 'Projekte',
     kenntnisse: 'Kenntnisse',
     kontakt: 'Kontakt',
-    pdf: 'Lebenslauf als PDF',
   },
   sections: {
     werdegang: 'Werdegang',
@@ -29,14 +28,13 @@ export const UI = {
     languages: 'Kundengespräche in beiden Sprachen',
   },
   projectLabel: 'Projekt',
-  projectsMore: 'Wie diese Seite entsteht — zum Making-of →',
+  projectsMore: 'Wie diese Seite entsteht: zum Making-of →',
   contact: {
     lineTop: 'Klingt interessant?',
     lineBottom: 'Dann reden wir.',
     ctaLinkedIn: 'Auf LinkedIn schreiben',
     or: 'oder',
     github: 'Code auf GitHub ansehen',
-    pdf: 'Lebenslauf als PDF',
   },
   footer: {
     makingOf: 'Making-of',
