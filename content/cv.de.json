@@ -1,6 +1,6 @@
 {
   "meta": {
-    "publishedAt": "2026-08-12T11:00:16.1779388+02:00",
+    "publishedAt": "2026-08-12T11:17:13.4642409+02:00",
     "locale": "de"
   },
   "profile": {
@@ -221,19 +221,19 @@
   ],
   "projects": [
     {
+      "title": "Homelab",
+      "text": "Homelab aus NAS und mehreren Proxmox-Servern mit Docker, automatisierten Backups und Workflow-Automatisierungen",
+      "links": []
+    },
+    {
       "title": "IoT-Luftqualitätsmessung",
-      "text": "IoT-Luftqualitätsmessung für Zuhause mit eigener Firmware auf ESP8266, ESP32, REST-API und Angular-Frontend",
+      "text": "Nach dem Umzug in einen Neubau wurde ich rasch mit dem Thema Restbaufeuchte konfrontiert und musste, gerade im Sommer, ständig und mühselig Thermo- und Hygrometer außerhalb und im Haus prüfen, um zu eruieren, ob und wann ich lüften kann. Mein Entwicklergeist und meine Faulheit trieben mich an, diesen Prozess zu optimieren. In allen Räumen und außerhalb des Hauses wurden ESP32- bzw. ESP8266-Mikrocontroller mit Luftmesssensoren, teils mit Display, positioniert. Diese senden an meinen lokal gehosteten Service, wo jeweils die absolute Luftfeuchtigkeit berechnet wird. Im Angular-Frontend werden die Werte übersichtlich inkl. Verlauf dargestellt, um schnell, auch remote, zu ermitteln, ob nun gelüftet werden kann oder wie zuhause das Wetter ist. Um die wichtigsten Werte noch schneller im Blick zu haben, habe ich das Projekt im Nachgang um ein Android-Widget erweitert, das sie direkt am Homescreen meines Smartphones anzeigt.",
       "links": [
         "https://github.com/ce451/airquality-iot",
         "https://github.com/ce451/airquality-api",
         "https://github.com/ce451/airquality-ui",
         "https://github.com/ce451/airquality-widget"
       ]
-    },
-    {
-      "title": "Homelab",
-      "text": "Homelab aus NAS und mehreren Proxmox-Servern mit Docker, automatisierten Backups und Workflow-Automatisierungen",
-      "links": []
     },
     {
       "title": "CV-Website",
