@@ -176,8 +176,18 @@ h1 .l {
   opacity: 0; animation: fx-fadeup 0.8s 1.35s var(--ease) forwards;
 }
 .hero .meta-row { display: flex; flex-wrap: wrap; gap: 0.3rem 1.6rem; }
-.hero .meta a { text-decoration: none; color: var(--muted); }
-.hero .meta a:hover { color: var(--teal); }
+/* Textlinks sind unterstrichen, damit Klickbarkeit erkennbar ist (12.08.2026). */
+.hero .meta a,
+footer a,
+.contact .alt a {
+  color: var(--muted);
+  text-decoration: underline;
+  text-decoration-color: rgba(63, 208, 192, 0.5);
+  text-underline-offset: 3px;
+}
+.hero .meta a:hover,
+footer a:hover,
+.contact .alt a:hover { color: var(--teal); }
 @keyframes fx-fadeup { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
 .scrollcue { position: absolute; bottom: 2rem; left: 50%; width: 1px; height: 64px; overflow: hidden; }
 .scrollcue::after {
@@ -367,8 +377,6 @@ footer {
   font: 400 0.78rem/1.7 var(--mono); color: var(--faint);
 }
 footer nav { display: flex; gap: 1.6rem; }
-footer a { text-decoration: none; }
-footer a:hover { color: var(--teal); }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 760px) {
