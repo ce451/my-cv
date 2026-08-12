@@ -194,6 +194,14 @@ Neue Route? Dann immer: in `app.routes.ts` eintragen, im Komponenten-Konstruktor
       die Edge-Umschreibung mit Angulars Hydration kollidiert (Adresse wurde
       doppelt gerendert). Cursor-Canvas-DPR-Bug auf skalierten Monitoren
       gefixt (fehlende CSS-Größe).
+- [x] Phase 12 — History-Rewrite + UI-Feinheiten (12.08.2026): Git-Historie
+      per git-filter-repo bereinigt (Kontakt-Adresse aus Blobs und
+      Commit-Messages, „Ziegelgasse" aus alter Test-Datei; Backup:
+      ~/dev/my-cv-backup-pre-rewrite-20260812.bundle; force-gepusht, alle
+      Hashes ab 11.08. abends neu). Hero-Meta: Skills in Zeile 1, Kontakte
+      in Zeile 2; Textlinks (Hero-Meta, Footer, Kontakt-Alternative)
+      unterstrichen in Teal-Tönung; Custom Scrollbar nur während des
+      Scrollens sichtbar (html.scrolling mit 0,9-s-Nachlauf aus app.ts).
 
 ## Offene Punkte
 
@@ -205,6 +213,11 @@ Neue Route? Dann immer: in `app.routes.ts` eintragen, im Komponenten-Konstruktor
   CLI-Print hängt); PDFs druckt der User selbst.
 - GitHub Actions bei Gelegenheit auf checkout/setup-node v5 (Node-20-Deprecation).
 - Vor breiter Streuung: Impressum-Frage neu bewerten.
+- Alte Cloudflare-Pages-Deployments (Preview-URLs) enthalten noch Kundennamen
+  und die Kontakt-Adresse im Klartext → bei Bedarf im Dashboard löschen
+  (User). GitHub kann die vor dem Rewrite gepushten Commits über ihre alten
+  SHAs ausliefern, bis dort die Garbage Collection läuft; volle Entfernung
+  nur per GitHub-Support-Anfrage.
 - Aus dem Review vom 11.08.2026 bewusst offen: Content-Feinschliff (wartet auf
   User-Review), JS-Bundle-Verkleinerung (Effekte lazy laden — größerer Umbau),
   GitHub-Profil/READMEs befüllen (liegt außerhalb dieses Repos beim User),

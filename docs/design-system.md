@@ -71,7 +71,7 @@ Schrift, Skill-Prozentbalken, Typewriter-Effekte, Template-Icon-Grids.
 | Magnetic CTA | Versatz ×0.25/0.35 zur Cursorposition, federnder Rücklauf |
 | Cursor | „Atom" (11.08.2026): Teal-Kern (8px, wächst über Links auf 14px) auf dem Pointer; drei weiße Elektronen kreisen auf verkippten, langsam präzedierenden Ellipsen (rx 18/26/34px, individuelle Richtung + Tempo-Wobble) um einen nachlaufenden Anker (lerp 0.14) und ziehen einen ausblendenden Canvas-Schweif (12 Segmente in Bewegung, 30 in Ruhe); nativer Cursor via `html.cursor-hidden` ausgeblendet; nur Desktop |
 | Nach-oben-Button | Ersetzt die Kopfleiste (11.08.2026): 52px-Glaskreis unten rechts (48px mobil), Pfeil in Teal, Lesefortschritt als 2.5px-Conic-Ring (`--p` vom Scroll-Listener); erscheint ab 0.6·Viewport Scroll, hover invertiert auf Teal |
-| Scrollbar | Custom: schmaler Teal-Verlaufs-Balken (webkit + `scrollbar-color`), Track in `--bg`, Balken „schwebt" über 3px-Rand |
+| Scrollbar | Custom: schmaler Teal-Verlaufs-Balken (webkit + `scrollbar-color`), Balken „schwebt" über 3px-Rand; nur während des Scrollens sichtbar (`html.scrolling`, 0,9 s Nachlauf), Spurbreite bleibt reserviert |
 
 ## Accessibility & Performance
 
