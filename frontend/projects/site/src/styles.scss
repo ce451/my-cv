@@ -385,6 +385,9 @@ footer nav { display: flex; gap: 1.6rem; }
 /* ---------- Responsive ---------- */
 @media (max-width: 760px) {
   .stats, .projects, .edu-grid { grid-template-columns: 1fr; }
+  /* Scrollcue (64px hoch, ab bottom 2rem) braucht Platz unter dem Text. */
+  .hero { padding-bottom: 7rem; }
+  .hero .meta-row { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
   .skills .row { grid-template-columns: 1fr; gap: 0.3rem; }
   .timeline { padding-left: 2.2rem; }
   .station::before { left: calc(var(--tl-x) - 2.2rem - 8px); }

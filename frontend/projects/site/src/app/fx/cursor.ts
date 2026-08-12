@@ -86,17 +86,20 @@ export class Cursor {
       // Three orbital planes ~60° apart, each with its own tilt, direction,
       // speed wobble and slow precession — regular enough to read as an atom,
       // irregular enough to feel alive.
-      const electrons: Electron[] = Array.from({ length: 3 }, (_, i) => ({
+      const makeElectron = (index: number, rx: number, speedMin: number, speedSpread: number): Electron => ({
         angle: Math.random() * Math.PI * 2,
-        speed: (0.03 + Math.random() * 0.02) * (i % 2 ? -1 : 1),
-        plane: (Math.PI / 3) * i + (Math.random() - 0.5) * 0.5,
-        precession: (0.002 + Math.random() * 0.004) * (i % 2 ? 1 : -1),
+        speed: (speedMin + Math.random() * speedSpread) * (index % 2 ? -1 : 1),
+        plane: (Math.PI / 3) * index + (Math.random() - 0.5) * 0.5,
+        precession: (0.002 + Math.random() * 0.004) * (index % 2 ? 1 : -1),
         wobbleFreq: 0.5 + Math.random(),
         wobblePhase: Math.random() * Math.PI * 2,
-        rx: 18 + i * 8,
-        ry: (18 + i * 8) * (0.34 + Math.random() * 0.14),
+        rx,
+        ry: rx * (0.34 + Math.random() * 0.14),
         trail: [],
-      }));
+      });
+      const electrons: Electron[] = Array.from({ length: 3 }, (_, i) =>
+        makeElectron(i, 18 + i * 8, 0.03, 0.02),
+      );
 
       let targetX = innerWidth / 2;
       let targetY = innerHeight / 2;
@@ -115,7 +118,21 @@ export class Cursor {
         const interactive = (event.target as Element | null)?.closest('a, button');
         hostEl.classList.toggle('link', interactive != null);
       };
+      // Rechtsklick spawnt ein weiteres Elektron statt des Kontextmenüs; jedes
+      // neue kreist weiter draußen und schneller als das vorige. Speed-Jitter
+      // (0.01) bleibt unter dem Stufenschritt (0.012), damit die Reihenfolge
+      // strikt wächst. Obergrenze schützt Framerate und Bildrand.
+      const MAX_ELECTRONS = 16;
+      const onContextMenu = (event: MouseEvent) => {
+        event.preventDefault();
+        if (electrons.length >= MAX_ELECTRONS) {
+          return;
+        }
+        const n = electrons.length;
+        electrons.push(makeElectron(n, 34 + (n - 2) * 9, 0.05 + (n - 2) * 0.012, 0.01));
+      };
       addEventListener('pointermove', onMove, { passive: true });
+      addEventListener('contextmenu', onContextMenu);
       document.addEventListener('pointerover', onOver, { passive: true });
 
       const unregister = this.loop.register(() => {
@@ -170,6 +187,7 @@ export class Cursor {
       this.destroyRef.onDestroy(() => {
         unregister();
         removeEventListener('pointermove', onMove);
+        removeEventListener('contextmenu', onContextMenu);
         removeEventListener('resize', resize);
         document.removeEventListener('pointerover', onOver);
         document.documentElement.classList.remove('cursor-hidden');
