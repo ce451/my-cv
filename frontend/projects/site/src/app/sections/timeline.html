@@ -8,9 +8,7 @@
         <div class="card">
           <p class="when">
             {{ period(experience) }}
-            @if (experience.end) {
-              <span class="dur">· {{ duration(experience) }}</span>
-            } @else {
+            @if (!experience.end) {
               <span class="live" aria-hidden="true"></span>
             }
           </p>

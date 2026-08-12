@@ -29,26 +29,6 @@ function monthIndex(value: string, fallbackMonth: number): number {
   return year * 12 + (month ?? fallbackMonth) - 1;
 }
 
-/** Elapsed months; finished periods count the final month inclusively. */
-export function durationMonths(start: string, end: string | null | undefined, now: Date): number {
-  const startIndex = monthIndex(start, 1);
-  const endIndex = end == null ? now.getFullYear() * 12 + now.getMonth() : monthIndex(end, 12) + 1;
-  return Math.max(1, endIndex - startIndex);
-}
-
-export function formatDuration(months: number): string {
-  const years = Math.floor(months / 12);
-  const rest = months % 12;
-  const parts: string[] = [];
-  if (years > 0) {
-    parts.push(years === 1 ? '1 Jahr' : `${years} Jahre`);
-  }
-  if (rest > 0) {
-    parts.push(rest === 1 ? '1 Monat' : `${rest} Monate`);
-  }
-  return parts.length ? parts.join(' ') : '1 Monat';
-}
-
 export interface CvStats {
   careerYears: number;
   /** Distinct entries of the skill list (workstyle excluded) — matches what the skills section shows. */

@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { CvExperience } from 'content-model';
 import { CV } from '../content/cv-data';
-import { durationMonths, formatDuration, formatPeriod } from '../content/cv-format';
+import { formatPeriod } from '../content/cv-format';
 import { UI } from '../ui/ui-text';
 import { FxLoop } from '../fx/fx-loop';
 import { prefersReducedMotion } from '../fx/motion';
@@ -23,7 +23,6 @@ import { Reveal } from '../fx/reveal';
 export class Timeline {
   protected readonly ui = UI;
   protected readonly experiences = CV.experiences;
-  private readonly now = new Date();
 
   private readonly container = viewChild.required<ElementRef<HTMLElement>>('timeline');
   private readonly progress = viewChild.required<ElementRef<HTMLElement>>('progress');
@@ -56,10 +55,6 @@ export class Timeline {
 
   protected period(experience: CvExperience): string {
     return formatPeriod(experience.start, experience.end, this.ui.present);
-  }
-
-  protected duration(experience: CvExperience): string {
-    return formatDuration(durationMonths(experience.start, experience.end, this.now));
   }
 
   protected note(experience: CvExperience): string {

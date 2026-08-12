@@ -1,6 +1,6 @@
 {
   "meta": {
-    "publishedAt": "2026-08-12T06:40:20.6460584+02:00",
+    "publishedAt": "2026-08-12T07:03:02.8083124+02:00",
     "locale": "de"
   },
   "profile": {
@@ -43,7 +43,8 @@
         "Anbindung von e-card-Lesegeräten, Labor-, EKG- und Dialysegeräten",
         "Außendienst bei Kunden zur Inbetriebnahme von Laborgeräten",
         "Anbindung an ELGA und die Sozialversicherungsservices GINA/SS12",
-        "Prozessoptimierungen: Zuvor beim Kunden dezentral betriebene Peripherieanwendung in AWEB integriert und cloudfähig gemacht. Reduktion von Datenverkehr durch Long-Polling."
+        "Zuvor beim Kunden dezentral betriebene Peripherieanwendung in AWEB integriert und cloudfähig gemacht",
+        "Geräte-Polling auf Long-Polling umgestellt: im Leerlauf über 80 % weniger Requests"
       ],
       "tech": [
         "Angular",
@@ -61,8 +62,13 @@
       "positionNote": "Einstieg als Junior",
       "organization": "HGS GmbH & Co KG",
       "organizationNote": null,
-      "summary": "Individualentwicklung für Industriekunden aus Energietechnik, Anlagenbau, Intralogistik und Automotive. Projekte ab Vertragsabschluss allein verantwortet.",
-      "bullets": [],
+      "summary": "Individualentwicklung für Industriekunden aus Energietechnik, Anlagenbau, Intralogistik und Automotive. Als Junior eingestiegen und Schritt für Schritt in die alleinige Verantwortung ganzer Projekte hineingewachsen, vom Vertragsabschluss bis zum laufenden Support.",
+      "bullets": [
+        "Dokumentations-, Lager- und Logistiksystem für den Großtransformatorenbau eines Energietechnik-Konzerns, über Jahre gewachsen und auch bei Dienstleistern und Zulieferern im Einsatz",
+        "Kontaktsynchronisation zwischen Entra ID, Datenbanken und One Identity für Industrieunternehmen und eine Stadtverwaltung",
+        "Berechnungsanwendung für Generatoren im Anlagenbau",
+        "Rund zehn Kunden langfristig betreut, viele Projekte über den gesamten Lebenszyklus: erste Anforderung, Entwicklung, Betrieb, Support"
+      ],
       "tech": [
         "Angular",
         "C#",

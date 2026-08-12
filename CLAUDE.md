@@ -169,6 +169,16 @@ Neue Route? Dann immer: in `app.routes.ts` eintragen, im Komponenten-Konstruktor
       Ruhe-Schweifen (12→30 Segmente) und größeren Bahnen (18/26/34px);
       Kopfleiste komplett entfernt, stattdessen Nach-oben-Button unten
       rechts mit Lesefortschritts-Ring; Custom Scrollbar in Teal
+- [x] Phase 10 — Externes Feedback eingearbeitet (12.08.2026): HGS-Station
+      ausgebaut (4 anonymisierte Projekt-Bullets ohne Kundennamen,
+      Junior-zu-Senior als Entwicklung in der Summary, „rund zehn Kunden"
+      vom User bestätigt); Long-Polling mit belegter Zahl („im Leerlauf
+      über 80 % weniger Requests": Evidenz 10-s-Polling vorher vs. 60-s-Hold
+      nachher, aus den Arbeits-Repos verifiziert, nur die Zahl öffentlich);
+      Dauer-Angaben im Werdegang komplett entfernt (nur noch Zeiträume +
+      Puls bei laufender Station); Präsenzdienst wieder drin; Cursor-Kern
+      mit leichtem Glow. Stat-Mitte („28 Technologien") auf User-Entscheid
+      vorerst behalten.
 
 ## Offene Punkte
 
