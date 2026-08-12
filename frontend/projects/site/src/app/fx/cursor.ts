@@ -47,7 +47,10 @@ const CLICK_FADE_MS = 450;
       position: fixed; top: 0; left: 0; z-index: 60;
       width: 8px; height: 8px; border-radius: 50%;
       background: var(--teal);
-      box-shadow: 0 0 14px rgba(63, 208, 192, 0.95), 0 0 40px rgba(63, 208, 192, 0.5);
+      box-shadow:
+        0 0 18px rgba(63, 208, 192, 1),
+        0 0 60px rgba(63, 208, 192, 0.7),
+        0 0 110px rgba(63, 208, 192, 0.35);
       pointer-events: none; display: none;
       transform: translate(-50%, -50%);
       transition: width 0.2s, height 0.2s;
