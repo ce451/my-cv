@@ -1,6 +1,6 @@
 {
   "meta": {
-    "publishedAt": "2026-08-12T11:17:13.4642409+02:00",
+    "publishedAt": "2026-08-12T11:25:01.3350672+02:00",
     "locale": "de"
   },
   "profile": {
@@ -222,7 +222,7 @@
   "projects": [
     {
       "title": "Homelab",
-      "text": "Homelab aus NAS und mehreren Proxmox-Servern mit Docker, automatisierten Backups und Workflow-Automatisierungen",
+      "text": "Alles begann mit einem Synology NAS und dem Drang, Familienfotos sicher archivieren zu können. Einmal in dieser Bubble merkte ich schnell, dass es damit nicht getan ist: Ein sicheres Backup-Konzept musste her. Automatisiert, off-site, manuell. Durch die Arbeit daran packte mich die Faszination des Self-Hostings, und schnell wuchs mein Homelab; gehostet wurden sowohl renommierte FOSS-Projekte (paperless-ngx, Pi-hole, Home Assistant, n8n) als auch selbst entwickelte Projekte. Um die Datensicherheit hochzuhalten, greifen mobile Endgeräte über ein VPN-Mesh-Netzwerk (Tailscale) auf NAS und Server zu.",
       "links": []
     },
     {
