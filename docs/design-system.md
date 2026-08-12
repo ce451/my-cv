@@ -65,9 +65,8 @@ Schrift, Skill-Prozentbalken, Typewriter-Effekte, Template-Icon-Grids.
 | Hero-Letters | Wortweise Spans, Buchstaben `translateY(115%) rotate(4deg) blur(6px)` → 0, Stagger 35ms |
 | Scroll-Reveal | `.rv` + IntersectionObserver (threshold 0.16), einmalig |
 | Timeline | Statische Spur + Teal-Progress `scaleY(scroll)`, Knoten mit Glow; Spur und Knoten zentrieren auf gemeinsamer Achse `--tl-x` (ganzzahlige px) |
-| Geisterjahre | Outline-Text `clamp(5rem,16vw,12rem)`, Parallax-Faktor 0.12, mobil aus |
 | Zähler | Ease-out-cubic, 1.3s, deutsches Dezimalkomma |
-| Tilt-Karten | `rotateX ±7° / rotateY ±9°` + wanderndes Glow-Highlight |
+| Glow-Karten | Wanderndes Glow-Highlight (radial, folgt dem Cursor via `--gx`/`--gy`) + Teal-Rahmen auf Hover, auf ALLEN Boxen (Werdegang, Stats, Projekte, Ausbildung); ersetzt am 12.08.2026 den 3D-Kipp-Effekt der Projektkarten. Die Geisterjahre hinter dem Werdegang wurden am selben Tag entfernt |
 | Magnetic CTA | Versatz ×0.25/0.35 zur Cursorposition, Ein-/Rückgleiten über 0,6-s-Transition (12.08.2026 verlangsamt, war zu sprunghaft) |
 | Cursor | „Atom" (11.08.2026): Teal-Kern (8px, wächst über Links auf 14px) auf dem Pointer; drei weiße Elektronen kreisen auf verkippten, langsam präzedierenden Ellipsen (rx 18/26/34px, individuelle Richtung + Tempo-Wobble) um einen nachlaufenden Anker (lerp 0.14) und ziehen einen ausblendenden Canvas-Schweif (12 Segmente in Bewegung, 30 in Ruhe); Rechtsklick spawnt statt des Kontextmenüs ein weiteres Elektron, jedes neue mit größerem Radius (+9px) und höherem Tempo (+0.012), Obergrenze 16; gespawnte Elektronen faden nach 5 s Lebensdauer über 2 s aus, Linksklick schickt sie sofort mit 0,45-s-Fade weg (12.08.2026); nativer Cursor via `html.cursor-hidden` ausgeblendet; nur Desktop |
 | Nach-oben-Button | Ersetzt die Kopfleiste (11.08.2026): 52px-Glaskreis unten rechts (48px mobil), Pfeil in Teal, Lesefortschritt als 2.5px-Conic-Ring (`--p` vom Scroll-Listener); erscheint ab 0.6·Viewport Scroll, hover invertiert auf Teal |

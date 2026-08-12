@@ -3,11 +3,12 @@ import { CvEducation } from 'content-model';
 import { CV } from '../content/cv-data';
 import { formatPeriod } from '../content/cv-format';
 import { UI } from '../ui/ui-text';
+import { Glow } from '../fx/glow';
 import { Reveal } from '../fx/reveal';
 
 @Component({
   selector: 'app-education',
-  imports: [Reveal],
+  imports: [Glow, Reveal],
   templateUrl: './education.html',
 })
 export class Education {

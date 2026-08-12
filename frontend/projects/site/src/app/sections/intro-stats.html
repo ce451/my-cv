@@ -1,15 +1,15 @@
 <section class="section" aria-label="Profil">
   <p class="intro" fxReveal>{{ intro }}</p>
   <div class="stats">
-    <div class="stat" fxReveal>
+    <div class="stat" fxReveal fxGlow>
       <div class="num"><span [fxCount]="stats.careerYears">{{ stats.careerYears }}</span><i>+</i></div>
       <div class="cap">{{ ui.stats.years }}</div>
     </div>
-    <div class="stat rv-d1" fxReveal>
+    <div class="stat rv-d1" fxReveal fxGlow>
       <div class="num"><span [fxCount]="stats.technologies">{{ stats.technologies }}</span></div>
       <div class="cap">{{ ui.stats.technologies }}</div>
     </div>
-    <div class="stat rv-d2" fxReveal>
+    <div class="stat rv-d2" fxReveal fxGlow>
       <div class="num">{{ stats.languagesShort }}</div>
       <div class="cap">{{ ui.stats.languages }}</div>
     </div>

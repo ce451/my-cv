@@ -4,8 +4,7 @@
     <div class="tl-track"><div class="tl-progress" #progress></div></div>
     @for (experience of experiences; track experience.organization + experience.start) {
       <article class="station" fxReveal>
-        <div class="ghost" #ghost aria-hidden="true">{{ year(experience) }}</div>
-        <div class="card">
+        <div class="card" fxGlow>
           <p class="when">
             {{ period(experience) }}
             @if (!experience.end) {

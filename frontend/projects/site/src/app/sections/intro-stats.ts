@@ -3,11 +3,12 @@ import { CV } from '../content/cv-data';
 import { computeStats } from '../content/cv-format';
 import { UI } from '../ui/ui-text';
 import { Counter } from '../fx/counter';
+import { Glow } from '../fx/glow';
 import { Reveal } from '../fx/reveal';
 
 @Component({
   selector: 'app-intro-stats',
-  imports: [Counter, Reveal],
+  imports: [Counter, Glow, Reveal],
   templateUrl: './intro-stats.html',
 })
 export class IntroStats {

@@ -261,12 +261,6 @@ html.js .rv.in { opacity: 1; transform: none; }
   border: 2px solid var(--teal); background: var(--bg);
   box-shadow: 0 0 18px rgba(63, 208, 192, 0.55);
 }
-.ghost {
-  position: absolute; right: -1rem; top: -4.2rem; z-index: -1;
-  font-weight: 700; font-size: clamp(5rem, 16vw, 12rem); letter-spacing: -0.04em;
-  color: transparent; -webkit-text-stroke: 1px rgba(255, 255, 255, 0.07);
-  user-select: none;
-}
 .card {
   border: 1px solid var(--line); border-radius: 18px; padding: 1.9rem 2rem;
   background: var(--panel); backdrop-filter: blur(6px);
@@ -300,28 +294,32 @@ h3 { margin: 0.4rem 0 0.15rem; font-size: 1.45rem; font-weight: 700; letter-spac
   padding: 0.38rem 0.66rem; border-radius: 999px;
 }
 
-/* ---------- Projekte ---------- */
-.projects { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; perspective: 1200px; }
-.tilt {
-  border: 1px solid var(--line); border-radius: 18px; padding: 2rem;
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015));
-  transform-style: preserve-3d; transition: border-color 0.3s;
-  position: relative; overflow: hidden;
-}
-.tilt::after {
-  content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0;
+/* Wanderndes Glow-Highlight auf allen Boxen (fx/glow.ts setzt --gx/--gy);
+   hat am 12.08.2026 den 3D-Kipp-Effekt der Projektkarten ersetzt. */
+.glow { position: relative; }
+.glow::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit;
+  pointer-events: none; opacity: 0;
   background: radial-gradient(420px circle at var(--gx, 50%) var(--gy, 50%), rgba(63, 208, 192, 0.16), transparent 60%);
   transition: opacity 0.3s;
 }
-.tilt:hover::after { opacity: 1; }
-.tilt:hover { border-color: rgba(63, 208, 192, 0.4); }
-.tilt .icon {
+.glow:hover::after { opacity: 1; }
+.glow:hover { border-color: rgba(63, 208, 192, 0.45); }
+
+/* ---------- Projekte ---------- */
+.projects { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+.pcard {
+  border: 1px solid var(--line); border-radius: 18px; padding: 2rem;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015));
+  transition: border-color 0.3s;
+}
+.pcard .icon {
   font: 500 0.72rem/1 var(--mono); letter-spacing: 0.18em;
   text-transform: uppercase; color: var(--amber);
 }
-.tilt h3 { font-size: 1.3rem; margin: 0.7rem 0 0.4rem; }
-.tilt p:not(.icon) { margin: 0; color: var(--muted); max-width: 44ch; }
-.tilt .repos { margin-top: 1.2rem; }
+.pcard h3 { font-size: 1.3rem; margin: 0.7rem 0 0.4rem; }
+.pcard p:not(.icon) { margin: 0; color: var(--muted); max-width: 44ch; }
+.pcard .repos { margin-top: 1.2rem; }
 .repos li { padding: 0; }
 .repos a {
   display: inline-block; padding: 0.38rem 0.66rem;
@@ -400,7 +398,6 @@ footer nav { display: flex; gap: 1.6rem; }
   .skills .row { grid-template-columns: 1fr; gap: 0.3rem; }
   .timeline { padding-left: 2.2rem; }
   .station::before { left: calc(var(--tl-x) - 2.2rem - 8px); }
-  .ghost { display: none; }
   .to-top { right: 1rem; bottom: 1rem; width: 48px; height: 48px; }
   .portrait-wrap { position: static; margin-bottom: 1.6rem; }
   .portrait { width: 108px; height: 108px; outline-offset: 8px; }
@@ -465,7 +462,7 @@ footer nav { display: flex; gap: 1.6rem; }
   .portrait { width: 120px; height: 120px; box-shadow: none; outline: none; border-color: var(--line); }
   .section { padding-top: 1.6rem; }
   .card, .stat, .edu-card { box-shadow: none !important; transform: none !important; break-inside: avoid; }
-  .ghost, .tl-progress, .when .live { display: none; }
+  .tl-progress, .when .live { display: none; }
   .station::before { box-shadow: none; }
   .chips li { color: var(--muted); border-color: var(--line); background: none; }
   footer nav { display: none; }

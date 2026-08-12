@@ -5,7 +5,6 @@ import {
   afterNextRender,
   inject,
   viewChild,
-  viewChildren,
 } from '@angular/core';
 import { CvExperience } from 'content-model';
 import { CV } from '../content/cv-data';
@@ -13,11 +12,12 @@ import { formatPeriod } from '../content/cv-format';
 import { UI } from '../ui/ui-text';
 import { FxLoop } from '../fx/fx-loop';
 import { prefersReducedMotion } from '../fx/motion';
+import { Glow } from '../fx/glow';
 import { Reveal } from '../fx/reveal';
 
 @Component({
   selector: 'app-timeline',
-  imports: [Reveal],
+  imports: [Reveal, Glow],
   templateUrl: './timeline.html',
 })
 export class Timeline {
@@ -26,7 +26,6 @@ export class Timeline {
 
   private readonly container = viewChild.required<ElementRef<HTMLElement>>('timeline');
   private readonly progress = viewChild.required<ElementRef<HTMLElement>>('progress');
-  private readonly ghosts = viewChildren<ElementRef<HTMLElement>>('ghost');
   private readonly loop = inject(FxLoop);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -43,11 +42,6 @@ export class Timeline {
         const rect = containerEl.getBoundingClientRect();
         const p = Math.min(1, Math.max(0, (innerHeight * 0.8 - rect.top) / rect.height));
         progressEl.style.transform = `scaleY(${p})`;
-        for (const ghost of this.ghosts()) {
-          const el = ghost.nativeElement;
-          const ghostRect = el.getBoundingClientRect();
-          el.style.transform = `translateY(${(ghostRect.top - innerHeight / 2) * 0.12}px)`;
-        }
       });
       this.destroyRef.onDestroy(unregister);
     });
@@ -59,9 +53,5 @@ export class Timeline {
 
   protected note(experience: CvExperience): string {
     return [experience.positionNote, experience.organizationNote].filter(Boolean).join(' · ');
-  }
-
-  protected year(experience: CvExperience): string {
-    return experience.start.slice(0, 4);
   }
 }

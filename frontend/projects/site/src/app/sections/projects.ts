@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import { CV } from '../content/cv-data';
 import { UI } from '../ui/ui-text';
 import { Reveal } from '../fx/reveal';
-import { Tilt } from '../fx/tilt';
+import { Glow } from '../fx/glow';
 
 @Component({
   selector: 'app-projects',
-  imports: [Reveal, Tilt],
+  imports: [Reveal, Glow],
   templateUrl: './projects.html',
 })
 export class Projects {
