@@ -1,6 +1,6 @@
 {
   "meta": {
-    "publishedAt": "2026-08-12T11:58:18.6117207+02:00",
+    "publishedAt": "2026-08-12T12:05:13.5982647+02:00",
     "locale": "de"
   },
   "profile": {
@@ -83,6 +83,7 @@
         "WPF",
         "WCF",
         "SQL Server",
+        "T-SQL",
         "Mendix",
         "Windows Server"
       ]
