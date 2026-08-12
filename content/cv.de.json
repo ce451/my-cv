@@ -1,6 +1,6 @@
 {
   "meta": {
-    "publishedAt": "2026-08-11T21:52:16.1407745+02:00",
+    "publishedAt": "2026-08-12T06:40:20.6460584+02:00",
     "locale": "de"
   },
   "profile": {
@@ -98,6 +98,13 @@
       "institution": "HTBLA Weiz (Höhere Technische Lehranstalt)",
       "program": "Elektrotechnik und Informationstechnik",
       "note": "Abschluss mit Matura. Diplomarbeit: Launch Control für ein Bergrennfahrzeug (BMW 320 IRL evo), Aufgabenbereich Softwareentwicklung und SPS-Programmierung mit CoDeSys"
+    },
+    {
+      "start": "2013-09",
+      "end": "2014-02",
+      "institution": "Präsenzdienst",
+      "program": null,
+      "note": null
     }
   ],
   "internships": [
