@@ -44,7 +44,8 @@ describe('Home', () => {
     const hrefs = [...compiled.querySelectorAll('.projects .repos a')].map((a) =>
       a.getAttribute('href'),
     );
-    expect(hrefs).toEqual(CV.projects.flatMap((p) => p.links));
+    // DOM order is column-wise (masonry split), so compare as sets.
+    expect([...hrefs].sort()).toEqual([...CV.projects.flatMap((p) => p.links)].sort());
   });
 
   it('sets canonical, Open Graph tags and Person JSON-LD in the head', async () => {

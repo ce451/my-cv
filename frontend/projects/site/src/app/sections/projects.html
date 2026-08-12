@@ -1,17 +1,28 @@
 <section class="section" id="projekte">
   <h2 fxReveal><span class="no">02</span>{{ ui.sections.projekte }}</h2>
   <div class="projects">
-    @for (project of projects; track project.text; let i = $index) {
-      <div class="pcard" fxGlow fxReveal [class.rv-d1]="i % 3 === 1" [class.rv-d2]="i % 3 === 2">
-        <p class="icon">{{ ui.projectLabel }} {{ index(i) }}</p>
-        <h3>{{ project.title }}</h3>
-        <p>{{ project.text }}</p>
-        @if (project.links.length) {
-          <ul class="chips repos">
-            @for (link of project.links; track link) {
-              <li><a [href]="link" target="_blank" rel="noopener">{{ repoName(link) }}</a></li>
+    @for (column of columns; track $index) {
+      <div class="pcol">
+        @for (item of column; track item.project.text) {
+          <div
+            class="pcard"
+            fxGlow
+            fxReveal
+            [class.rv-d1]="item.n % 3 === 1"
+            [class.rv-d2]="item.n % 3 === 2"
+            [style.order]="item.n"
+          >
+            <p class="icon">{{ ui.projectLabel }} {{ index(item.n) }}</p>
+            <h3>{{ item.project.title }}</h3>
+            <p>{{ item.project.text }}</p>
+            @if (item.project.links.length) {
+              <ul class="chips repos">
+                @for (link of item.project.links; track link) {
+                  <li><a [href]="link" target="_blank" rel="noopener">{{ repoName(link) }}</a></li>
+                }
+              </ul>
             }
-          </ul>
+          </div>
         }
       </div>
     }

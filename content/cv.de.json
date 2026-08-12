@@ -1,6 +1,6 @@
 {
   "meta": {
-    "publishedAt": "2026-08-12T12:05:13.5982647+02:00",
+    "publishedAt": "2026-08-12T13:32:11.0194366+02:00",
     "locale": "de"
   },
   "profile": {
@@ -241,6 +241,13 @@
       "text": "Diese Website: statisch generiertes Angular-Frontend, privates .NET-Backend zur Inhaltspflege, Deploy über GitHub Actions auf Cloudflare Pages. KI-gestützt entwickelt mit Claude Code.",
       "links": [
         "https://github.com/ce451/my-cv"
+      ]
+    },
+    {
+      "title": "Mehr auf GitHub",
+      "text": "Damit ist noch nicht Schluss: Weitere Projekte und Experimente gibt es öffentlich auf meinem GitHub-Profil.",
+      "links": [
+        "https://github.com/ce451"
       ]
     }
   ]
