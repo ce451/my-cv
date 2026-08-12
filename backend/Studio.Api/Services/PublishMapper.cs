@@ -1,3 +1,4 @@
+using System.Text;
 using Studio.Api.Contracts;
 using Studio.Api.Models;
 
@@ -20,7 +21,7 @@ public static class PublishMapper
             [.. doc.Profile.Highlights],
             [.. doc.Profile.Contacts
                 .Where(c => c.Visibility == Visibility.Public)
-                .Select(c => new PublicContact(c.Type, c.Label, c.Value, c.Url))]),
+                .Select(ToPublicContact)]),
         [.. doc.Experiences.Select(e => new PublicExperience(e.Start, e.End, e.Position, e.PositionNote,
             e.Organization, e.OrganizationNote, e.Summary, [.. e.Bullets], [.. e.Tech]))],
         [.. doc.Education.Select(e => new PublicEducation(e.Start, e.End, e.Institution, e.Program, e.Note))],
@@ -30,4 +31,16 @@ public static class PublishMapper
         [.. doc.Personal
             .Where(p => p.Visibility == Visibility.Public)
             .Select(p => new PublicProject(p.Label, p.Text, [.. p.Links]))]);
+
+    /// <summary>
+    /// Spam-harvester protection (decision 12.08.2026): e-mail contacts leave
+    /// the pipeline base64-encoded and without a mailto URL. The site renders
+    /// only a placeholder and injects address and link after hydration, so the
+    /// published JSON, the JS bundle and the prerendered HTML never contain
+    /// the address in plain text.
+    /// </summary>
+    private static PublicContact ToPublicContact(ContactDto contact) => contact.Type == "email"
+        ? new PublicContact(contact.Type, contact.Label,
+            Convert.ToBase64String(Encoding.UTF8.GetBytes(contact.Value)), null)
+        : new PublicContact(contact.Type, contact.Label, contact.Value, contact.Url);
 }

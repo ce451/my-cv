@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { buildWebPageJsonLd } from '../content/schema';
+import { EmailLink } from '../ui/email-link';
 import { PageHead } from '../ui/page-head';
 import { UI } from '../ui/ui-text';
 
@@ -11,7 +12,7 @@ const DESCRIPTION =
 
 @Component({
   selector: 'app-datenschutz',
-  imports: [RouterLink],
+  imports: [RouterLink, EmailLink],
   templateUrl: './datenschutz.html',
 })
 export class Datenschutz {

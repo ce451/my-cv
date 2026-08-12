@@ -26,7 +26,13 @@ Qualitätsanspruch: Craft statt Spektakel — dieses Repo ist selbst Arbeitsprob
   fehlt Input vom User.**
 - **Datenschutz für alle öffentlichen Ausgaben** (Website, öffentliches PDF, Repo):
   Wohnort nur „Weiz" — keine Straße, kein Geburtsdatum, keine Telefonnummer, keine
-  private Gmail-Adresse. Öffentlicher Kontakt: [e-mail-entfernt] (seit 12.08.2026).
+  private Gmail-Adresse. Öffentlicher Kontakt: „jobs" auf der Domain der Seite
+  (seit 12.08.2026). **Die Adresse steht nirgends im Repo oder in öffentlichen
+  Ausgaben im Klartext** (Spam-Schutz, Anweisung 12.08.2026): Der PublishMapper
+  kodiert E-Mail-Kontakte Base64, das Prerender-HTML zeigt nur den Platzhalter
+  „E-Mail", und `ui/email-link.ts` setzt Adresse + mailto erst nach der
+  Hydration ein. Auch in Doku und Commit-Messages die Adresse nicht wörtlich
+  ausschreiben.
   Das vollständige Bewerbungs-PDF (mehr Daten) und die öffentliche Fassung sind zwei
   Sichten auf denselben Datenbestand → das Datenmodell braucht ein Sichtbarkeitsflag.
   **Bewusst kein Impressum** (Entscheidung 11.08.2026); die /datenschutz-Seite bleibt
@@ -179,11 +185,15 @@ Neue Route? Dann immer: in `app.routes.ts` eintragen, im Komponenten-Konstruktor
       Puls bei laufender Station); Präsenzdienst wieder drin; Cursor-Kern
       mit leichtem Glow. Stat-Mitte („28 Technologien") auf User-Entscheid
       vorerst behalten.
-- [x] Phase 11 — Kontakt-Mail [e-mail-entfernt] live (12.08.2026): primärer
-      CTA in der Kontakt-Sektion (LinkedIn/GitHub als Alternativen), in der
-      Hero-Meta-Zeile (über die Kontakt-Daten), im Footer, auf /datenschutz
-      (ersetzt „Kontakt derzeit über LinkedIn") und als email im
-      Person-JSON-LD. Cursor-Canvas-DPR-Bug auf skalierten Monitoren gefixt.
+- [x] Phase 11 — Kontakt-Mail live (12.08.2026): primärer CTA in der
+      Kontakt-Sektion (LinkedIn als Alternative), in der Hero-Meta-Zeile
+      (zweizeilig: Kontakte oben, Skills darunter), im Footer und auf
+      /datenschutz. Spam-Schutz wie oben beschrieben (Base64 in der
+      Publish-Pipeline, Platzhalter im Prerender, Einsetzen nach Hydration);
+      Cloudflares Email-Obfuscation per email_off-Marker deaktiviert, weil
+      die Edge-Umschreibung mit Angulars Hydration kollidiert (Adresse wurde
+      doppelt gerendert). Cursor-Canvas-DPR-Bug auf skalierten Monitoren
+      gefixt (fehlende CSS-Größe).
 
 ## Offene Punkte
 

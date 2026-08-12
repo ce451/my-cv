@@ -9,6 +9,8 @@ export const UI = {
   present: 'heute',
   back: '← Zur Startseite',
   toTop: 'Nach oben scrollen',
+  /** Steht im Prerender anstelle der Adresse; ersetzt sie nach der Hydration (Spam-Schutz). */
+  emailPlaceholder: 'E-Mail',
   sections: {
     werdegang: 'Werdegang',
     projekte: 'Private Projekte',
@@ -25,6 +27,7 @@ export const UI = {
   contact: {
     lineTop: 'Klingt interessant?',
     lineBottom: 'Dann reden wir.',
+    ctaEmail: 'E-Mail schreiben',
     ctaLinkedIn: 'Auf LinkedIn schreiben',
     or: 'oder',
     linkedInAlt: 'auf LinkedIn schreiben',

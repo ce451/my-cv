@@ -70,4 +70,9 @@ describe('Home', () => {
     expect(text).not.toContain('gmail');
     expect(text).not.toContain('Verheiratet');
   });
+
+  // Spam protection: the published data carries the address only base64-encoded.
+  it('never holds the contact address in plain text', () => {
+    expect(JSON.stringify(CV)).not.toContain('@elstner');
+  });
 });

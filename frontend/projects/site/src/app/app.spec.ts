@@ -18,7 +18,7 @@ describe('App', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('button.to-top')).toBeTruthy();
     expect(compiled.querySelectorAll('footer nav a').length).toBe(4);
-    expect(compiled.querySelector('footer nav a')?.getAttribute('href')).toContain('mailto:');
+    expect(compiled.querySelector('footer nav a[appEmail]')).toBeTruthy();
   });
 
 });

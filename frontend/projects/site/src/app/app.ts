@@ -11,12 +11,13 @@ import {
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { CV } from './content/cv-data';
 import { UI } from './ui/ui-text';
+import { EmailLink } from './ui/email-link';
 import { Cursor } from './fx/cursor';
 import { Particles } from './fx/particles';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, Particles, Cursor],
+  imports: [RouterOutlet, RouterLink, Particles, Cursor, EmailLink],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
@@ -24,7 +25,7 @@ export class App {
   protected readonly ui = UI;
   protected readonly name = CV.profile.fullName;
   protected readonly year = new Date().getFullYear();
-  protected readonly email = CV.profile.contacts.find((c) => c.type === 'email' && c.url);
+  protected readonly hasEmail = CV.profile.contacts.some((c) => c.type === 'email');
 
   /** The back-to-top button appears once the page is scrolled a bit. */
   protected readonly topVisible = signal(false);

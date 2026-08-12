@@ -12,8 +12,21 @@ public class PublishMapperTests
     {
         var publicCv = PublishMapper.ToPublic(CvMapperTests.SampleDocument(), PublishedAt);
 
-        var contact = Assert.Single(publicCv.Profile.Contacts);
-        Assert.Equal("github", contact.Type);
+        Assert.Equal(["email", "github"], publicCv.Profile.Contacts.Select(c => c.Type));
+    }
+
+    /// <summary>Spam protection: the address never leaves the pipeline in plain text.</summary>
+    [Fact]
+    public void PublicView_EncodesEmailAddresses()
+    {
+        var publicCv = PublishMapper.ToPublic(CvMapperTests.SampleDocument(), PublishedAt);
+
+        var email = Assert.Single(publicCv.Profile.Contacts, c => c.Type == "email");
+        Assert.Equal(Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes("max@example.org")), email.Value);
+        Assert.Null(email.Url);
+
+        var json = JsonSerializer.Serialize(publicCv, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+        Assert.DoesNotContain("max@example.org", json);
     }
 
     [Fact]

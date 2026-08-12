@@ -13,7 +13,6 @@ const SITE_LAUNCHED = '2026-08-11';
  */
 export function buildJsonLd(cv: PublicCv): Record<string, unknown> {
   const currentJob = cv.experiences.find((experience) => !experience.end);
-  const mail = cv.profile.contacts.find((contact) => contact.type === 'email' && contact.url);
   return {
     '@context': 'https://schema.org',
     '@type': 'ProfilePage',
@@ -26,8 +25,8 @@ export function buildJsonLd(cv: PublicCv): Record<string, unknown> {
       jobTitle: cv.profile.role,
       description: cv.profile.intro,
       url: `${SITE_ORIGIN}/`,
+      // Bewusst keine email-Property: Spam-Schutz, die Adresse bleibt kodiert.
       image: `${SITE_ORIGIN}/portrait-640.webp`,
-      ...(mail && { email: mail.value }),
       address: {
         '@type': 'PostalAddress',
         addressLocality: cv.profile.location,

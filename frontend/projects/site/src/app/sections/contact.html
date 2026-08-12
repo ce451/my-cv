@@ -1,8 +1,8 @@
 <section class="section contact" id="kontakt">
   <p class="big" fxReveal>{{ ui.contact.lineTop }}<br /><em>{{ ui.contact.lineBottom }}</em></p>
-  @if (email?.url; as emailUrl) {
+  @if (hasEmail) {
     <span class="rv-d1" fxMagnetic fxReveal>
-      <a class="cta" [href]="emailUrl">{{ email?.value }}</a>
+      <a class="cta" appEmail>{{ ui.contact.ctaEmail }}</a>
     </span>
     @if (linkedIn?.url; as linkedInUrl) {
       <p class="alt rv-d2" fxReveal>

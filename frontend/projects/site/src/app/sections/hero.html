@@ -14,11 +14,16 @@
   <h1 fxLetters>{{ cv.profile.fullName }}</h1>
   <p class="role">{{ tagline }}</p>
   <div class="meta">
-    @for (contact of contactLinks; track contact.type) {
-      <a [href]="contact.url" rel="me noopener">{{ contact.type }}/{{ contact.label || contact.value }}</a>
-    }
+    <div class="meta-row">
+      @if (hasEmail) {
+        <a appEmail appEmailShowAddress>{{ ui.emailPlaceholder }}</a>
+      }
+      @for (contact of contactLinks; track contact.type) {
+        <a [href]="contact.url" rel="me noopener">{{ contact.type }}/{{ contact.label || contact.value }}</a>
+      }
+    </div>
     @if (highlightsLine) {
-      <span>{{ highlightsLine }}</span>
+      <div class="meta-row">{{ highlightsLine }}</div>
     }
   </div>
   <div class="scrollcue" aria-hidden="true"></div>

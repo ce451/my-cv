@@ -10,6 +10,7 @@ public class CvMapperTests
         new ProfileDto("Max Muster", "Dev", "Claim unter dem Namen", "Intro", "Weiz", "Geheimgasse 1, 8160 Weiz", "1990-01-02",
         ["Angular", ".NET"],
         [
+            new ContactDto("email", null, "max@example.org", "mailto:max@example.org", Visibility.Public),
             new ContactDto("github", "gh", "max", "https://github.com/max", Visibility.Public),
             new ContactDto("phone", null, "0660 0000000", null, Visibility.ApplicationOnly),
         ]),
@@ -39,7 +40,7 @@ public class CvMapperTests
         var data = CvMapper.ToEntities(SampleDocument());
 
         Assert.Equal([0, 1], data.Personal.Select(p => p.SortOrder));
-        Assert.Equal([0, 1], data.Profile.Contacts.Select(c => c.SortOrder));
+        Assert.Equal([0, 1, 2], data.Profile.Contacts.Select(c => c.SortOrder));
     }
 
     [Fact]

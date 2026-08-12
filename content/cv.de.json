@@ -1,6 +1,6 @@
 {
   "meta": {
-    "publishedAt": "2026-08-12T08:23:04.8642694+02:00",
+    "publishedAt": "2026-08-12T08:43:36.2947501+02:00",
     "locale": "de"
   },
   "profile": {
@@ -19,8 +19,8 @@
       {
         "type": "email",
         "label": null,
-        "value": "[e-mail-entfernt]",
-        "url": "mailto:[e-mail-entfernt]"
+        "value": "am9ic0BlbHN0bmVyLmNo",
+        "url": null
       },
       {
         "type": "linkedin",
