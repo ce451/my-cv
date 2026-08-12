@@ -69,7 +69,7 @@ Schrift, Skill-Prozentbalken, Typewriter-Effekte, Template-Icon-Grids.
 | Zähler | Ease-out-cubic, 1.3s, deutsches Dezimalkomma |
 | Tilt-Karten | `rotateX ±7° / rotateY ±9°` + wanderndes Glow-Highlight |
 | Magnetic CTA | Versatz ×0.25/0.35 zur Cursorposition, federnder Rücklauf |
-| Cursor | „Atom" (11.08.2026): Teal-Kern (8px, wächst über Links auf 14px) auf dem Pointer; drei weiße Elektronen kreisen auf verkippten, langsam präzedierenden Ellipsen (rx 18/26/34px, individuelle Richtung + Tempo-Wobble) um einen nachlaufenden Anker (lerp 0.14) und ziehen einen ausblendenden Canvas-Schweif (12 Segmente in Bewegung, 30 in Ruhe); Rechtsklick spawnt statt des Kontextmenüs ein weiteres Elektron, jedes neue mit größerem Radius (+9px) und höherem Tempo (+0.012), Obergrenze 16 (12.08.2026); nativer Cursor via `html.cursor-hidden` ausgeblendet; nur Desktop |
+| Cursor | „Atom" (11.08.2026): Teal-Kern (8px, wächst über Links auf 14px) auf dem Pointer; drei weiße Elektronen kreisen auf verkippten, langsam präzedierenden Ellipsen (rx 18/26/34px, individuelle Richtung + Tempo-Wobble) um einen nachlaufenden Anker (lerp 0.14) und ziehen einen ausblendenden Canvas-Schweif (12 Segmente in Bewegung, 30 in Ruhe); Rechtsklick spawnt statt des Kontextmenüs ein weiteres Elektron, jedes neue mit größerem Radius (+9px) und höherem Tempo (+0.012), Obergrenze 16; gespawnte Elektronen faden nach 10 s Lebensdauer über 2 s aus, Linksklick schickt sie sofort mit 0,45-s-Fade weg (12.08.2026); nativer Cursor via `html.cursor-hidden` ausgeblendet; nur Desktop |
 | Nach-oben-Button | Ersetzt die Kopfleiste (11.08.2026): 52px-Glaskreis unten rechts (48px mobil), Pfeil in Teal, Lesefortschritt als 2.5px-Conic-Ring (`--p` vom Scroll-Listener); erscheint ab 0.6·Viewport Scroll, hover invertiert auf Teal |
 | Scrollbar | Custom: schmaler Teal-Verlaufs-Balken (webkit + `scrollbar-color`), Balken „schwebt" über 3px-Rand; nur während des Scrollens sichtbar (`html.scrolling`, 0,9 s Nachlauf), Spurbreite bleibt reserviert |
 
@@ -78,6 +78,9 @@ Schrift, Skill-Prozentbalken, Typewriter-Effekte, Template-Icon-Grids.
 - Fokus: `outline: 2px solid var(--teal)` mit Offset, überall sichtbar.
 - Mobil ist Pinch-Zoom per Viewport-Meta deaktiviert (bewusste Entscheidung 12.08.2026;
   bekannter A11y-Trade-off, iOS ignoriert `user-scalable=no` teilweise).
+- Horizontales Scrollen ist global unterbunden: `overflow-x: clip` auf html UND body
+  (hidden nur auf body reicht mobil nicht, dort pannt sonst das html-Element);
+  im Print wieder `visible`.
 - Deko-Elemente (Canvas, Aurora, Grain, Geisterjahre, Cursor) tragen `aria-hidden`.
 - Kontraste: Primärtext ≥ 12:1, Sekundärtext ≥ 7:1, Teal auf bg ≥ 7:1.
 - Budget: Effekt-JS ohne Libraries (~8 KB), kein Layout-Shift durch Effekte,

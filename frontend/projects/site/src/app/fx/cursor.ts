@@ -12,12 +12,21 @@ interface Electron {
   rx: number;
   ry: number;
   trail: { x: number; y: number }[];
+  /** Spawned electrons only: when the fade-out starts and how long it takes.
+      The three base electrons never fade (both fields stay undefined). */
+  fadeAt?: number;
+  fadeMs?: number;
 }
 
 /** Trail length while the pointer moves … */
 const TRAIL_MOVING = 12;
 /** … and while it rests — the atom "settles" and draws longer tails. */
 const TRAIL_RESTING = 30;
+/** Spawned electrons live this long, then fade out slowly. */
+const SPAWN_LIFETIME_MS = 10_000;
+const SPAWN_FADE_MS = 2000;
+/** Left click dismisses all spawned electrons with a quick fade. */
+const CLICK_FADE_MS = 450;
 
 /**
  * Custom cursor as a tiny atom (desktop only): the teal nucleus sits on the
@@ -129,10 +138,25 @@ export class Cursor {
           return;
         }
         const n = electrons.length;
-        electrons.push(makeElectron(n, 34 + (n - 2) * 9, 0.05 + (n - 2) * 0.012, 0.01));
+        const electron = makeElectron(n, 34 + (n - 2) * 9, 0.05 + (n - 2) * 0.012, 0.01);
+        electron.fadeAt = performance.now() + SPAWN_LIFETIME_MS;
+        electron.fadeMs = SPAWN_FADE_MS;
+        electrons.push(electron);
+      };
+      // Linksklick schickt alle gespawnten Elektronen mit kurzem Fade weg;
+      // bereits laufende Fades werden nicht unterbrochen (kein Alpha-Sprung).
+      const onClick = () => {
+        const now = performance.now();
+        for (const electron of electrons) {
+          if (electron.fadeAt !== undefined && electron.fadeAt > now) {
+            electron.fadeAt = now;
+            electron.fadeMs = CLICK_FADE_MS;
+          }
+        }
       };
       addEventListener('pointermove', onMove, { passive: true });
       addEventListener('contextmenu', onContextMenu);
+      addEventListener('click', onClick, { passive: true });
       document.addEventListener('pointerover', onOver, { passive: true });
 
       const unregister = this.loop.register(() => {
@@ -148,12 +172,23 @@ export class Cursor {
         if (!hostEl.classList.contains('active')) {
           return;
         }
-        const t = performance.now() / 1000;
+        const now = performance.now();
+        const t = now / 1000;
         const moving = Math.hypot(targetX - prevX, targetY - prevY) > 0.4;
         prevX = targetX;
         prevY = targetY;
         trailMax += ((moving ? TRAIL_MOVING : TRAIL_RESTING) - trailMax) * 0.04;
-        for (const electron of electrons) {
+        // Rückwärts, weil ausgefadete Elektronen hier entfernt werden.
+        for (let i = electrons.length - 1; i >= 0; i--) {
+          const electron = electrons[i];
+          let alpha = 1;
+          if (electron.fadeAt !== undefined && now >= electron.fadeAt) {
+            alpha = 1 - (now - electron.fadeAt) / (electron.fadeMs ?? SPAWN_FADE_MS);
+            if (alpha <= 0) {
+              electrons.splice(i, 1);
+              continue;
+            }
+          }
           electron.angle +=
             electron.speed * (1 + 0.3 * Math.sin(t * electron.wobbleFreq + electron.wobblePhase));
           electron.plane += electron.precession;
@@ -173,13 +208,13 @@ export class Cursor {
             ctx.beginPath();
             ctx.moveTo(electron.trail[k].x, electron.trail[k].y);
             ctx.lineTo(electron.trail[k + 1].x, electron.trail[k + 1].y);
-            ctx.strokeStyle = `rgba(255, 255, 255, ${0.36 * fade * fade})`;
+            ctx.strokeStyle = `rgba(255, 255, 255, ${0.36 * fade * fade * alpha})`;
             ctx.lineWidth = 2.2 * fade;
             ctx.stroke();
           }
           ctx.beginPath();
           ctx.arc(x, y, 2.6, 0, 6.2832);
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+          ctx.fillStyle = `rgba(255, 255, 255, ${0.95 * alpha})`;
           ctx.fill();
         }
       });
@@ -188,6 +223,7 @@ export class Cursor {
         unregister();
         removeEventListener('pointermove', onMove);
         removeEventListener('contextmenu', onContextMenu);
+        removeEventListener('click', onClick);
         removeEventListener('resize', resize);
         document.removeEventListener('pointerover', onOver);
         document.documentElement.classList.remove('cursor-hidden');

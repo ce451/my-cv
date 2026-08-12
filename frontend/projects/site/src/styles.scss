@@ -41,7 +41,10 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+/* overflow-x auf html UND body: hidden nur auf body reicht mobil nicht,
+   dort pannt sonst das html-Element (horizontale Scrollbar). clip erzeugt
+   keinen Scroll-Container; hidden bleibt als Fallback für alte Browser. */
+html { scroll-behavior: smooth; overflow-x: hidden; overflow-x: clip; }
 body {
   margin: 0;
   background: var(--bg);
@@ -50,6 +53,7 @@ body {
   font-size: 1.03rem;
   line-height: 1.65;
   overflow-x: hidden;
+  overflow-x: clip;
 }
 ::selection { background: rgba(63, 208, 192, 0.35); }
 /* Der Custom-Cursor (fx-cursor) setzt diese Klasse, sobald er aktiv ist. */
@@ -446,7 +450,8 @@ footer nav { display: flex; gap: 1.6rem; }
   fx-particles, fx-cursor, .aurora, .grain, .to-top, .scrollcue, .skiplink, .contact { display: none !important; }
   html.js .rv { opacity: 1 !important; transform: none !important; transition: none !important; }
   html.js h1[fxletters]:not(.split) { opacity: 1; }
-  body { font-size: 10.5pt; overflow-x: visible; }
+  html, body { overflow-x: visible; }
+  body { font-size: 10.5pt; }
   .hero { min-height: auto; padding: 0 0 0.5rem; }
   .kicker, .hero .role, .hero .meta { opacity: 1; animation: none; }
   h1 { font-size: 26pt; }
