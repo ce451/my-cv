@@ -112,6 +112,11 @@ html.scrolling::-webkit-scrollbar-thumb {
   border: 3px solid var(--bg);
 }
 html.scrolling::-webkit-scrollbar-thumb:hover { background: var(--teal); border: 3px solid var(--bg); }
+/* Auf Touch-Geräten gar keine Scrollbar. */
+@media (hover: none), (pointer: coarse) {
+  html, html.scrolling { scrollbar-width: none; }
+  ::-webkit-scrollbar { display: none; width: 0; height: 0; }
+}
 
 /* ---------- Nach-oben-Button ---------- */
 .to-top {
