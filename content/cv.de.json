@@ -1,6 +1,6 @@
 {
   "meta": {
-    "publishedAt": "2026-08-12T07:03:02.8083124+02:00",
+    "publishedAt": "2026-08-12T08:17:49.4856830+02:00",
     "locale": "de"
   },
   "profile": {
@@ -16,6 +16,12 @@
       "KI-gestützte Entwicklung"
     ],
     "contacts": [
+      {
+        "type": "email",
+        "label": null,
+        "value": "[e-mail-entfernt]",
+        "url": "mailto:[e-mail-entfernt]"
+      },
       {
         "type": "linkedin",
         "label": "christopher-elstner",

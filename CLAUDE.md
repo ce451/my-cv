@@ -26,7 +26,7 @@ Qualitätsanspruch: Craft statt Spektakel — dieses Repo ist selbst Arbeitsprob
   fehlt Input vom User.**
 - **Datenschutz für alle öffentlichen Ausgaben** (Website, öffentliches PDF, Repo):
   Wohnort nur „Weiz" — keine Straße, kein Geburtsdatum, keine Telefonnummer, keine
-  private Gmail-Adresse. Kontakt läuft über eine eigene, noch einzurichtende Adresse.
+  private Gmail-Adresse. Öffentlicher Kontakt: [e-mail-entfernt] (seit 12.08.2026).
   Das vollständige Bewerbungs-PDF (mehr Daten) und die öffentliche Fassung sind zwei
   Sichten auf denselben Datenbestand → das Datenmodell braucht ein Sichtbarkeitsflag.
   **Bewusst kein Impressum** (Entscheidung 11.08.2026); die /datenschutz-Seite bleibt
@@ -179,10 +179,14 @@ Neue Route? Dann immer: in `app.routes.ts` eintragen, im Komponenten-Konstruktor
       Puls bei laufender Station); Präsenzdienst wieder drin; Cursor-Kern
       mit leichtem Glow. Stat-Mitte („28 Technologien") auf User-Entscheid
       vorerst behalten.
+- [x] Phase 11 — Kontakt-Mail [e-mail-entfernt] live (12.08.2026): primärer
+      CTA in der Kontakt-Sektion (LinkedIn/GitHub als Alternativen), in der
+      Hero-Meta-Zeile (über die Kontakt-Daten), im Footer, auf /datenschutz
+      (ersetzt „Kontakt derzeit über LinkedIn") und als email im
+      Person-JSON-LD. Cursor-Canvas-DPR-Bug auf skalierten Monitoren gefixt.
 
 ## Offene Punkte
 
-- Neue Kontakt-E-Mail: liefert der User nach → im Studio eintragen, publishen.
 - Lebenslauf-PDF: Entscheidung 11.08.2026 (spätabends): Es gibt bewusst KEINE
   PDF-Option auf der Seite (Buttons entfernt). Die bereinigte Vorlage
   `~/nas/Beruf/01_Unterlagen/lebenslauf-public.html` bleibt auf der NAS

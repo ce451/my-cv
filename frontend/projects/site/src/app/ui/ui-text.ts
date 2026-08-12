@@ -28,6 +28,7 @@ export const UI = {
     lineBottom: 'Dann reden wir.',
     ctaLinkedIn: 'Auf LinkedIn schreiben',
     or: 'oder',
+    linkedInAlt: 'auf LinkedIn schreiben',
     github: 'Code auf GitHub ansehen',
   },
   footer: {

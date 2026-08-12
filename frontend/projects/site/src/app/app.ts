@@ -24,6 +24,7 @@ export class App {
   protected readonly ui = UI;
   protected readonly name = CV.profile.fullName;
   protected readonly year = new Date().getFullYear();
+  protected readonly email = CV.profile.contacts.find((c) => c.type === 'email' && c.url);
 
   /** The back-to-top button appears once the page is scrolled a bit. */
   protected readonly topVisible = signal(false);
