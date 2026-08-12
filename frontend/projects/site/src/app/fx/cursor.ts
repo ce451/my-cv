@@ -44,7 +44,9 @@ const TRAIL_RESTING = 30;
       transition: width 0.2s, height 0.2s;
     }
     canvas {
-      position: fixed; inset: 0; z-index: 59;
+      /* Explizite CSS-Größe: ohne sie würde das Canvas in Attributgröße
+         (Viewport × dpr) dargestellt und alles ab dpr > 1 verschoben. */
+      position: fixed; inset: 0; width: 100%; height: 100%; z-index: 59;
       pointer-events: none; display: none;
     }
     :host(.active) .dot, :host(.active) canvas { display: block; }
@@ -71,11 +73,12 @@ export class Cursor {
         return;
       }
 
+      let appliedDpr = 0;
       const resize = () => {
-        const dpr = Math.min(devicePixelRatio || 1, 2);
-        canvas.width = innerWidth * dpr;
-        canvas.height = innerHeight * dpr;
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        appliedDpr = Math.min(devicePixelRatio || 1, 2);
+        canvas.width = innerWidth * appliedDpr;
+        canvas.height = innerHeight * appliedDpr;
+        ctx.setTransform(appliedDpr, 0, 0, appliedDpr, 0, 0);
       };
       resize();
       addEventListener('resize', resize, { passive: true });
@@ -116,6 +119,10 @@ export class Cursor {
       document.addEventListener('pointerover', onOver, { passive: true });
 
       const unregister = this.loop.register(() => {
+        // Monitorwechsel am Dock kann die Pixeldichte ohne resize-Event ändern.
+        if (Math.min(devicePixelRatio || 1, 2) !== appliedDpr) {
+          resize();
+        }
         dotEl.style.left = `${targetX}px`;
         dotEl.style.top = `${targetY}px`;
         coreX += (targetX - coreX) * 0.14;
