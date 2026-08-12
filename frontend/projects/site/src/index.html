@@ -21,6 +21,11 @@
     </script>
   </head>
   <body>
+    <!-- email_off/on: schaltet Cloudflares Email-Obfuscation für die App ab.
+         Die Edge-Umschreibung der Mail-Anker kollidiert mit Angulars Hydration
+         (DOM-Mismatch → doppelte Adressen); die Adresse steht ohnehin im JSON-LD. -->
+    <!--email_off-->
     <app-root></app-root>
+    <!--email_on-->
   </body>
 </html>
