@@ -4,12 +4,6 @@
     <span class="rv-d1" fxMagnetic fxReveal>
       <a class="cta" appEmail>{{ ui.contact.ctaEmail }}</a>
     </span>
-    @if (linkedIn?.url; as linkedInUrl) {
-      <p class="alt rv-d2" fxReveal>
-        {{ ui.contact.or }}
-        <a [href]="linkedInUrl">{{ ui.contact.linkedInAlt }}</a>
-      </p>
-    }
   } @else {
     @if (linkedIn?.url; as linkedInUrl) {
       <span class="rv-d1" fxMagnetic fxReveal>

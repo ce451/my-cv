@@ -23,7 +23,7 @@ const TRAIL_MOVING = 12;
 /** … and while it rests — the atom "settles" and draws longer tails. */
 const TRAIL_RESTING = 30;
 /** Spawned electrons live this long, then fade out slowly. */
-const SPAWN_LIFETIME_MS = 10_000;
+const SPAWN_LIFETIME_MS = 5000;
 const SPAWN_FADE_MS = 2000;
 /** Left click dismisses all spawned electrons with a quick fade. */
 const CLICK_FADE_MS = 450;

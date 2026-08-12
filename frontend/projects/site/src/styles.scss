@@ -175,7 +175,7 @@ h1 .l {
 }
 @keyframes fx-rise { to { transform: translateY(0) rotate(0); filter: blur(0); } }
 .hero .role {
-  font-size: clamp(1.1rem, 2.6vw, 1.5rem); color: var(--muted); max-width: 36ch;
+  font-size: clamp(1.1rem, 2.6vw, 1.5rem); color: var(--muted);
   opacity: 0; animation: fx-fadeup 0.8s 1.1s var(--ease) forwards;
 }
 .hero .meta {
@@ -364,7 +364,7 @@ h3 { margin: 0.4rem 0 0.15rem; font-size: 1.45rem; font-weight: 700; letter-spac
 .contact .big em { font-style: normal; color: var(--teal); }
 .magnetic { display: inline-block; }
 /* Der Magnet-Versatz gleitet ein statt zu springen (siehe fx/magnetic.ts). */
-.magnetic > * { transition: transform 0.35s var(--ease); }
+.magnetic > * { transition: transform 0.6s var(--ease); }
 .cta {
   display: inline-block; text-decoration: none; font-weight: 600; font-size: 1.05rem;
   color: #06231f; background: var(--teal);
