@@ -4,27 +4,17 @@
     <span class="rv-d1" fxMagnetic fxReveal>
       <a class="cta" [href]="emailUrl">{{ email?.value }}</a>
     </span>
-    <p class="alt rv-d2" fxReveal>
-      {{ ui.contact.or }}
-      @if (linkedIn?.url; as linkedInUrl) {
+    @if (linkedIn?.url; as linkedInUrl) {
+      <p class="alt rv-d2" fxReveal>
+        {{ ui.contact.or }}
         <a [href]="linkedInUrl">{{ ui.contact.linkedInAlt }}</a>
-        ·
-      }
-      @if (github?.url; as githubUrl) {
-        <a [href]="githubUrl">{{ ui.contact.github }}</a>
-      }
-    </p>
+      </p>
+    }
   } @else {
     @if (linkedIn?.url; as linkedInUrl) {
       <span class="rv-d1" fxMagnetic fxReveal>
         <a class="cta" [href]="linkedInUrl">{{ ui.contact.ctaLinkedIn }}</a>
       </span>
-    }
-    @if (github?.url; as githubUrl) {
-      <p class="alt rv-d2" fxReveal>
-        {{ ui.contact.or }}
-        <a [href]="githubUrl">{{ ui.contact.github }}</a>
-      </p>
     }
   }
 </section>

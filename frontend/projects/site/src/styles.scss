@@ -307,9 +307,6 @@ h3 { margin: 0.4rem 0 0.15rem; font-size: 1.45rem; font-weight: 700; letter-spac
 .repos a::after { content: ' ↗'; opacity: 0.7; }
 .repos li:hover { border-color: var(--teal); }
 .repos li:hover a { color: #9ef0e6; }
-.projects-more { margin: 1.8rem 0 0; font-size: 0.95rem; }
-.projects-more a { color: var(--muted); text-decoration: none; }
-.projects-more a:hover { color: var(--teal); }
 
 /* ---------- Kenntnisse ---------- */
 .skills .row {
