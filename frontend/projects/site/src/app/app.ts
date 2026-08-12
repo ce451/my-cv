@@ -39,14 +39,24 @@ export class App {
     // (see ui/page-head.ts), called in the page components.
     afterNextRender(() => {
       const buttonEl = this.toTop().nativeElement;
+      const docEl = document.documentElement;
+      let scrollbarTimer: ReturnType<typeof setTimeout> | undefined;
       const onScroll = () => {
         this.topVisible.set(scrollY > innerHeight * 0.6);
-        const range = document.documentElement.scrollHeight - innerHeight;
+        const range = docEl.scrollHeight - innerHeight;
         buttonEl.style.setProperty('--p', String(range > 0 ? Math.min(1, scrollY / range) : 0));
+        // Custom Scrollbar nur während des Scrollens zeigen (styles.scss).
+        docEl.classList.add('scrolling');
+        clearTimeout(scrollbarTimer);
+        scrollbarTimer = setTimeout(() => docEl.classList.remove('scrolling'), 900);
       };
       onScroll();
       this.zone.runOutsideAngular(() => addEventListener('scroll', onScroll, { passive: true }));
-      this.destroyRef.onDestroy(() => removeEventListener('scroll', onScroll));
+      this.destroyRef.onDestroy(() => {
+        removeEventListener('scroll', onScroll);
+        clearTimeout(scrollbarTimer);
+        docEl.classList.remove('scrolling');
+      });
     });
   }
 

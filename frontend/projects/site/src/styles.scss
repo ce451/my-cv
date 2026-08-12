@@ -91,19 +91,23 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
 .wrap { position: relative; z-index: 1; }
 
 /* ---------- Scrollbar ---------- */
+/* Nur während des Scrollens sichtbar; html.scrolling setzt der Scroll-Listener
+   in app.ts mit kurzem Nachlauf. Die Spurbreite bleibt reserviert, nichts springt. */
 html {
   scrollbar-width: thin;
-  scrollbar-color: rgba(63, 208, 192, 0.45) rgba(255, 255, 255, 0.04);
+  scrollbar-color: transparent transparent;
 }
+html.scrolling { scrollbar-color: rgba(63, 208, 192, 0.45) rgba(255, 255, 255, 0.04); }
 ::-webkit-scrollbar { width: 11px; height: 11px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-track { background: transparent; }
+html.scrolling::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: transparent; border-radius: 999px; }
+html.scrolling::-webkit-scrollbar-thumb {
   background: linear-gradient(rgba(63, 208, 192, 0.6), rgba(63, 208, 192, 0.25));
-  border-radius: 999px;
   /* Rand in Hintergrundfarbe: der Balken „schwebt" schmal über der Spur. */
   border: 3px solid var(--bg);
 }
-::-webkit-scrollbar-thumb:hover { background: var(--teal); border: 3px solid var(--bg); }
+html.scrolling::-webkit-scrollbar-thumb:hover { background: var(--teal); border: 3px solid var(--bg); }
 
 /* ---------- Nach-oben-Button ---------- */
 .to-top {
