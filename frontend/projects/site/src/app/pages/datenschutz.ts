@@ -5,10 +5,10 @@ import { EmailLink } from '../ui/email-link';
 import { PageHead } from '../ui/page-head';
 import { UI } from '../ui/ui-text';
 
-const TITLE = 'Datenschutz · Christopher Elstner';
+const TITLE = 'Impressum und Datenschutz · Christopher Elstner';
 const DESCRIPTION =
-  'Datenschutzerklärung dieser Website: keine Cookies, kein Tracking, keine externen Dienste; ' +
-  'Hosting über Cloudflare Pages.';
+  'Offenlegung gemäß § 25 MedienG und Datenschutzerklärung dieser Website: keine Cookies, ' +
+  'kein Tracking, keine externen Dienste; Hosting über Cloudflare Pages.';
 
 @Component({
   selector: 'app-datenschutz',

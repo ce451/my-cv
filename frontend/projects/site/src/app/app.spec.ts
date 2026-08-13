@@ -17,7 +17,7 @@ describe('App', () => {
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('button.to-top')).toBeTruthy();
-    expect(compiled.querySelectorAll('footer nav a').length).toBe(4);
+    expect(compiled.querySelectorAll('footer nav a').length).toBe(3);
     expect(compiled.querySelector('footer nav a[appEmail]')).toBeTruthy();
   });
 

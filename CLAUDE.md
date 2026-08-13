@@ -35,8 +35,9 @@ Qualitätsanspruch: Craft statt Spektakel — dieses Repo ist selbst Arbeitsprob
   ausschreiben.
   Das vollständige Bewerbungs-PDF (mehr Daten) und die öffentliche Fassung sind zwei
   Sichten auf denselben Datenbestand → das Datenmodell braucht ein Sichtbarkeitsflag.
-  **Bewusst kein Impressum** (Entscheidung 11.08.2026); die /datenschutz-Seite bleibt
-  minimal und ohne Adresse. Vor breiter Streuung der Seite neu bewerten.
+  Die /datenschutz-Seite heißt seit 13.08.2026 „Impressum und Datenschutz" und
+  enthält die Offenlegung gemäß § 25 MedienG (nur Name + „Weiz", keine Straße);
+  die URL /datenschutz bleibt unverändert.
   **Keine Kundennamen aus Projekten in öffentlichen Ausgaben** (Anweisung
   11.08.2026): Projektkunden und Projektnamen der Arbeitgeber (z. B. aus der
   Individualentwicklung) erscheinen weder auf der Website noch im öffentlichen
@@ -212,7 +213,10 @@ Neue Route? Dann immer: in `app.routes.ts` eintragen, im Komponenten-Konstruktor
   dieser Maschine nicht (Playwright-Chromium rendert keinen Text, Vivaldi-
   CLI-Print hängt); PDFs druckt der User selbst.
 - GitHub Actions bei Gelegenheit auf checkout/setup-node v5 (Node-20-Deprecation).
-- Vor breiter Streuung: Impressum-Frage neu bewerten.
+- Google zeigt das Favicon in den Suchergebnissen erst nach dem nächsten
+  Favicon-Crawl (kann Tage dauern); seit 13.08.2026 liegen icon-96.png und ein
+  48px-Layer im favicon.ico bereit. Beschleunigen geht nur über die
+  Search-Console-URL-Prüfung (User).
 - Alte Cloudflare-Pages-Deployments (Preview-URLs) enthalten noch Kundennamen
   und die Kontakt-Adresse im Klartext → bei Bedarf im Dashboard löschen
   (User). GitHub kann die vor dem Rewrite gepushten Commits über ihre alten

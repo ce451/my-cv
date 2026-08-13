@@ -34,7 +34,6 @@ export const UI = {
   },
   footer: {
     makingOf: 'Making-of',
-    privacy: 'Datenschutz',
-    source: 'Quellcode dieser Seite',
+    privacy: 'Impressum und Datenschutz',
   },
 } as const;

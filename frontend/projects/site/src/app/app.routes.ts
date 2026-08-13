@@ -6,6 +6,10 @@ import { MakingOf } from './pages/making-of';
 export const routes: Routes = [
   { path: '', component: Home, title: 'Christopher Elstner · Senior Full-Stack Softwareentwickler' },
   { path: 'making-of', component: MakingOf, title: 'Making-of · Christopher Elstner' },
-  { path: 'datenschutz', component: Datenschutz, title: 'Datenschutz · Christopher Elstner' },
+  {
+    path: 'datenschutz',
+    component: Datenschutz,
+    title: 'Impressum und Datenschutz · Christopher Elstner',
+  },
   { path: '**', redirectTo: '' },
 ];
