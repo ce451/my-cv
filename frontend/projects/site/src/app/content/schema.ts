@@ -5,7 +5,7 @@ export const SITE_ORIGIN = 'https://elstner.ch';
 const PERSON_ID = `${SITE_ORIGIN}/#person`;
 
 /** Launch date of the site — dateCreated of the ProfilePage. */
-const SITE_LAUNCHED = '2026-08-11';
+const SITE_LAUNCHED = '2026-08-11T00:00:00+02:00';
 
 /**
  * schema.org ProfilePage/Person markup (Google-documented), derived from the
