@@ -3,13 +3,13 @@
 
 Runs Christopher's own shell setup (oh-my-zsh "jonathan", plugins, micro
 settings) inside a detached tmux pane, types the scene's commands key by key
-and captures every screen state with colours. Nothing touches the real
-repositories: HOME points to a sandbox with a local clone of airquality-ui
-and a Beruf folder that only holds the public CV (from content/cv.de.json).
+and captures every screen state with colours. Nothing real is touched: HOME
+points to a sandbox whose Beruf folder only holds the public CV (from
+content/cv.de.json).
 
   python3 web/terminal/capture.py   ->  web/src/scene/terminal-frames.json
 
-Needs tmux, zsh, micro, git and ~/.oh-my-zsh. The output is a plain data
+Needs tmux, zsh, micro and ~/.oh-my-zsh. The output is a plain data
 file; the site never runs any of this.
 """
 import json
@@ -28,9 +28,6 @@ REAL_HOME = Path.home()
 COLS, ROWS = 100, 24
 SOCK = "mycv-capture"
 
-EDIT_FILE = "src/app/shared/components/station-card/station-card.ts"
-EDIT_LINE = 15  # const WS_WINDOW_MAX_POINTS = 150;
-EDIT_NEW = "180"
 CV_FILE = "01_Unterlagen/lebenslauf.md"
 
 # Breeze (Konsole default scheme, used by the Kubuntu profile)
@@ -97,9 +94,6 @@ def sandbox():
     for f in ("settings.json", "bindings.json"):
         if (REAL_HOME / ".config" / "micro" / f).exists():
             shutil.copy(REAL_HOME / ".config" / "micro" / f, sb / ".config" / "micro" / f)
-    (sb / "src").mkdir()
-    subprocess.run(["git", "clone", "-q", str(REAL_HOME / "src" / "airquality-ui"), str(sb / "src" / "airquality-ui")],
-                   check=True)
     cv = sb / "nas" / "Beruf" / CV_FILE
     cv.parent.mkdir(parents=True)
     cv.write_text(cv_markdown(), encoding="utf-8")
@@ -282,20 +276,6 @@ def main():
             time.sleep(0.1)
         rec.settle(None, quiet=0.8)
         rec.keys("clear", "Enter", mark="home", quiet=0.5)
-        rec.type("cd ~/src/airquality-ui")
-        rec.keys("Enter", mark="cd-repo", quiet=0.6)
-        rec.type(f"micro {EDIT_FILE}")
-        rec.keys("Enter", mark="micro-open", quiet=0.8)
-        # soft-wrapped lines take extra Down presses; follow micro's status line
-        while f"({EDIT_LINE}," not in rec.raw()[0]:
-            rec.keys("Down", quiet=0.08)
-        rec.keys("End", quiet=0.08)
-        rec.keys("Left", mark="edit-start", quiet=0.08)
-        for _ in range(3):
-            rec.keys("BSpace", quiet=0.08)
-        rec.type(EDIT_NEW, mark="edited")
-        rec.keys("C-s", mark="saved", quiet=0.4)
-        rec.keys("C-q", mark="micro-quit", quiet=0.6)
         rec.type("cd ~/nas/Beruf")
         rec.keys("Enter", mark="cd-beruf", quiet=0.6)
         rec.type(f"micro {CV_FILE}")
@@ -318,8 +298,6 @@ def main():
     # Konsole tab title "%d : %n": current directory name and program
     d = "~"
     for fr in rec.frames:
-        if fr["mark"] == "cd-repo":
-            d = "airquality-ui"
         if fr["mark"] == "cd-beruf":
             d = "Beruf"
         fr["_dir"] = d

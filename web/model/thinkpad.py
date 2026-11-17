@@ -439,7 +439,14 @@ def build():
         else:
             smile = 0.45 * MM if k["row"] in (1, 2, 3, 4, 5) and h > 12 * MM else 0.0
             ring = lambda i, w=w, h=h, cx=cx, cy=cy, smile=smile: key_outline(w, h, 1.6 * MM, i * MM, smile, cx, cy)
-        loft_rings(bm, [(ring(0.0), z0), (ring(0.08), zt - 0.9 * MM), (ring(0.3), zt - 0.2 * MM), (ring(0.55), zt)])
+        # sides, rounded top edge, then a shallow dish like the real caps (0.3 mm deep)
+        room = (min(w, h) / MM if not k["shape"] else 12.0) / 2 - 1.4
+        m = max(room - 0.55, 0.5)
+        depth = 0.3 * MM * min(1.0, m / 4.5)
+        dish = [(0.55 + m * f, zt - depth * d) for f, d in ((0.3, 0.38), (0.62, 0.78), (1.0, 1.0))]
+        loops = loft_rings(bm, [(ring(0.0), z0), (ring(0.08), zt - 0.9 * MM), (ring(0.3), zt - 0.2 * MM),
+                                (ring(0.55), zt)] + [(ring(i), z) for i, z in dish], cap_top=False)
+        bm.faces.new(loops[-1])  # untagged: the dish shades smoothly into its floor
         out_keys.append({
             "u": (x0 - u0) / (u1 - u0), "v": (v1 - y1) / (v1 - v0),
             "w": w / (u1 - u0), "h": h / (v1 - v0),

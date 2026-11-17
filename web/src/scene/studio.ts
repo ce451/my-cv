@@ -1,19 +1,13 @@
 import * as THREE from 'three';
 
 /**
- * Reflection environment like a product photo studio: a dark room, a large
+ * Studio lights for the reflections, as on a product shoot on location: a large
  * softbox above and behind (soft gradient on deck and keys), a strip light
  * behind on the left (thin highlights along the edges) and a dim card in front.
  * Coordinates: laptop at the origin, front towards +z, metres.
  */
 export function studioScene(): THREE.Scene {
   const scene = new THREE.Scene();
-  const room = new THREE.Mesh(
-    new THREE.BoxGeometry(8, 5, 8),
-    new THREE.MeshBasicMaterial({ color: new THREE.Color(0.012, 0.012, 0.013), side: THREE.BackSide }),
-  );
-  room.position.y = 2;
-  scene.add(room);
 
   const light = (w: number, h: number, intensity: number, pos: [number, number, number], tint = 0xffffff) => {
     const color = new THREE.Color(tint).multiplyScalar(intensity);

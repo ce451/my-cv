@@ -8,9 +8,10 @@ import { RectAreaLightUniformsLib } from 'three/addons/lights/RectAreaLightUnifo
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import layout from './keyboard-layout.json';
-import { legendTextures, shadowTexture, type KeyboardLayout } from './textures';
+import { legendTextures, shadowTexture, wordmarkTextures, type KeyboardLayout } from './textures';
 import { quadToMatrix3d, type Quad } from './screen-map';
 import { buildTerminal, DESKTOP_W } from './terminal';
+import { buildTransformer } from './transformer';
 import { studioScene } from './studio';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -53,6 +54,16 @@ function applyPose(camera: THREE.PerspectiveCamera, p: Pose) {
   camera.lookAt(p.target);
 }
 
+/** Black soft-touch coating of the ThinkPad chassis. */
+const CHASSIS: THREE.MeshPhysicalMaterialParameters = {
+  color: '#0d0e10',
+  roughness: 0.6,
+  specularIntensity: 0.5,
+  sheen: 0.35,
+  sheenRoughness: 0.55,
+  sheenColor: '#202226',
+};
+
 export async function initStage(canvas: HTMLCanvasElement, screenEl: HTMLElement) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -60,12 +71,37 @@ export async function initStage(canvas: HTMLCanvasElement, screenEl: HTMLElement
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   const scene = new THREE.Scene();
-  const bg = new THREE.Color(css('--scene-bg'));
-  scene.background = bg;
-  scene.fog = new THREE.Fog(bg, 1.1, 2.6);
+  scene.background = new THREE.Color(css('--scene-bg'));
+  const tex = new THREE.TextureLoader();
+  const load = async (url: string, srgb = true) => {
+    const t = await tex.loadAsync(url);
+    if (srgb) t.colorSpace = THREE.SRGBColorSpace;
+    return t;
+  };
+  const [envMap, backdropMap, deskColor, deskRough, deskNormal] = await Promise.all([
+    load('/scene/env.webp'),
+    load('/scene/backdrop.webp'),
+    load('/scene/desk-color.webp'),
+    load('/scene/desk-rough.webp', false),
+    load('/scene/desk-normal.webp', false),
+  ]);
+
+  // reflections: the evening room around the desk, plus studio softboxes that
+  // shape the black chassis the way a product shoot on location would
+  const studio = studioScene();
+  envMap.mapping = THREE.EquirectangularReflectionMapping;
+  const dome = new THREE.Mesh(
+    new THREE.SphereGeometry(3.5, 64, 32),
+    new THREE.MeshBasicMaterial({ map: envMap, side: THREE.BackSide, color: new THREE.Color().setScalar(1.4) }),
+  );
   const pmrem = new THREE.PMREMGenerator(renderer);
-  scene.environment = pmrem.fromScene(studioScene(), 0.02).texture;
-  scene.environmentIntensity = 1;
+  // the desk mirrors only the room: at grazing angles it would show the softboxes
+  const roomOnly = new THREE.Scene();
+  roomOnly.add(dome);
+  const roomEnv = pmrem.fromScene(roomOnly, 0.02).texture;
+  studio.add(dome);
+  scene.environment = pmrem.fromScene(studio, 0.02).texture;
+  scene.environmentIntensity = 0.8;
 
   const camera = new THREE.PerspectiveCamera(FOV, 1, 0.01, 20);
 
@@ -75,7 +111,7 @@ export async function initStage(canvas: HTMLCanvasElement, screenEl: HTMLElement
   laptop.position.y = 0.0015; // rubber feet
   scene.add(laptop);
 
-  const legends = legendTextures(layout as unknown as KeyboardLayout, '#141416', '#b9b9bd', '"Hanken Grotesk"');
+  const legends = legendTextures(layout as unknown as KeyboardLayout, '#0f0f11', '#b9b9bd', '"Hanken Grotesk"');
   let keysMat: THREE.MeshStandardMaterial | undefined;
   let screenMesh: THREE.Mesh | undefined;
   // physical materials: soft-touch coating on the chassis (velvety edge response),
@@ -92,14 +128,7 @@ export async function initStage(canvas: HTMLCanvasElement, screenEl: HTMLElement
     const mat = mesh.material as THREE.MeshStandardMaterial;
     switch (mat.name) {
       case 'chassis':
-        swap(mesh, 'chassis', {
-          color: '#141517',
-          roughness: 0.62,
-          specularIntensity: 0.5,
-          sheen: 0.6,
-          sheenRoughness: 0.55,
-          sheenColor: '#2b2e33',
-        });
+        swap(mesh, 'chassis', CHASSIS);
         break;
       case 'touchpad':
         swap(mesh, 'touchpad', { color: '#121315', roughness: 0.56, specularIntensity: 0.4 });
@@ -125,6 +154,38 @@ export async function initStage(canvas: HTMLCanvasElement, screenEl: HTMLElement
     }
   });
   if (!screenMesh) throw new Error('Screen mesh missing in model');
+
+  // ThinkPad wordmark embossed into the palm rest, red i-dot (Lenovo top photo:
+  // centre 147.5 mm right of the middle, 31 mm from the front, rising at 40 deg)
+  await document.fonts.load('600 40px "Archivo"');
+  const mark = wordmarkTextures('Th\u0131nkPad', '"Archivo"');
+  for (const t of [mark.roughness, mark.normal]) {
+    t.flipY = true;
+    t.needsUpdate = true;
+  }
+  const markW = 0.05;
+  const markH = markW / mark.aspect;
+  const wordmark = new THREE.Mesh(
+    new THREE.PlaneGeometry(markW, markH),
+    new THREE.MeshPhysicalMaterial({
+      ...CHASSIS,
+      roughnessMap: mark.roughness,
+      normalMap: mark.normal,
+      normalScale: new THREE.Vector2(1.6, 1.6),
+      polygonOffset: true,
+      polygonOffsetFactor: -2,
+    }),
+  );
+  const iDot = new THREE.Mesh(
+    new THREE.CircleGeometry(0.00075, 20),
+    new THREE.MeshStandardMaterial({ color: '#c41e24', roughness: 0.5, emissive: '#c41e24', emissiveIntensity: 0.15, polygonOffset: true, polygonOffsetFactor: -4 }),
+  );
+  iDot.position.set((mark.dot.u - 0.5) * markW, (0.5 - mark.dot.v) * markH, 0);
+  wordmark.add(iDot);
+  wordmark.rotation.set(-Math.PI / 2, 0, THREE.MathUtils.degToRad(40), 'XYZ');
+  wordmark.position.set(0.1475, 0.01441, 0.1243 - 0.0312);
+  wordmark.receiveShadow = true;
+  laptop.add(wordmark);
   laptop.updateMatrixWorld(true);
 
   // screen corners in world space, from the quad's local bounds
@@ -148,19 +209,33 @@ export async function initStage(canvas: HTMLCanvasElement, screenEl: HTMLElement
   const screenH = tl.distanceTo(bl);
   const screenW = tl.distanceTo(tr);
 
-  // lights: the display lights the keyboard, two rims separate black from black
+  // lights: the display lights the keyboard, the desk lamp the rest
   RectAreaLightUniformsLib.init();
   const screenLight = new THREE.RectAreaLight('#eef0f2', 0.9, screenW, screenH);
   screenLight.position.copy(center).addScaledVector(normal, 0.003);
   screenLight.lookAt(center.clone().add(normal));
   scene.add(screenLight);
-  const key = new THREE.DirectionalLight('#f6f2ed', 0.5);
-  key.position.set(0.9, 1.3, 1.1);
-  const rim = new THREE.DirectionalLight('#e4e8ee', 2.4);
-  rim.position.set(-0.7, 0.8, -1.3);
-  const rim2 = new THREE.DirectionalLight('#ffd9b8', 0.6);
-  rim2.position.set(1.0, 0.35, -0.9);
-  scene.add(key, rim, rim2);
+  // desk lamp off to the left: warm light pool and real shadows
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFShadowMap;
+  const lamp = new THREE.SpotLight('#ffc996', 12, 0, 0.72, 1, 2);
+  lamp.position.set(-0.78, 0.82, 0.18);
+  lamp.target.position.set(0.08, 0, -0.06);
+  lamp.castShadow = true;
+  lamp.shadow.mapSize.set(2048, 2048);
+  lamp.shadow.bias = -0.0004;
+  lamp.shadow.normalBias = 0.0015;
+  lamp.shadow.radius = 4;
+  lamp.shadow.camera.near = 0.3;
+  lamp.shadow.camera.far = 2.5;
+  scene.add(lamp, lamp.target);
+  // cool rim from behind separates the black lid from the warm room
+  const rim = new THREE.DirectionalLight('#dfe6f0', 0.8);
+  rim.position.set(-1.0, 1.7, -0.9);
+  scene.add(rim);
+  laptop.traverse((o) => {
+    if ((o as THREE.Mesh).isMesh && o !== screenMesh) o.castShadow = o.receiveShadow = true;
+  });
 
   // ambient occlusion: contact shadows in the keyboard well, under the keys and the laptop
   const composer = new EffectComposer(
@@ -175,18 +250,42 @@ export async function initStage(canvas: HTMLCanvasElement, screenEl: HTMLElement
   composer.addPass(ao);
   composer.addPass(new OutputPass());
 
-  const floor = new THREE.Mesh(
-    new THREE.PlaneGeometry(10, 10),
-    new THREE.MeshStandardMaterial({ color: css('--floor'), roughness: 0.95 }),
+  // desk: varnished wood (Poly Haven, CC0), grain running left to right
+  for (const t of [deskColor, deskRough, deskNormal]) {
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    t.center.set(0.5, 0.5);
+    t.rotation = Math.PI / 2;
+    t.repeat.set(1.2, 3.2);
+    t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  }
+  const desk = new THREE.Mesh(
+    new THREE.BoxGeometry(3.2, 0.03, 1.2),
+    new THREE.MeshPhysicalMaterial({
+      map: deskColor,
+      roughnessMap: deskRough,
+      normalMap: deskNormal,
+      normalScale: new THREE.Vector2(0.6, 0.6),
+      color: new THREE.Color().setScalar(0.42),
+      roughness: 1,
+      envMap: roomEnv,
+      envMapIntensity: 0.6,
+    }),
   );
-  floor.rotation.x = -Math.PI / 2;
+  desk.position.set(0.3, -0.015, -0.27);
+  desk.receiveShadow = true;
   const shadow = new THREE.Mesh(
     new THREE.PlaneGeometry(0.62, 0.46),
-    new THREE.MeshBasicMaterial({ map: shadowTexture(), transparent: true, depthWrite: false }),
+    new THREE.MeshBasicMaterial({ map: shadowTexture(), transparent: true, opacity: 0.7, depthWrite: false }),
   );
   shadow.rotation.x = -Math.PI / 2;
   shadow.position.set(0, 0.0004, -0.01);
-  scene.add(floor, shadow);
+  // the room behind, out of focus: a backplate far behind the desk
+  const backdrop = new THREE.Mesh(
+    new THREE.PlaneGeometry(7.6, 4.3),
+    new THREE.MeshBasicMaterial({ map: backdropMap, toneMapped: false, fog: false, color: new THREE.Color(1, 1, 1) }),
+  );
+  backdrop.position.set(0.4, 0.5, -3.2);
+  scene.add(desk, shadow, backdrop);
 
   // camera poses
   const laptopPose: Pose = { target: new THREE.Vector3(0.0, 0.1, -0.035), r: 0.98, az: -0.5, el: 0.4, up: new THREE.Vector3(0, 1, 0) };
@@ -202,9 +301,11 @@ export async function initStage(canvas: HTMLCanvasElement, screenEl: HTMLElement
   let sh = 0;
   const termSlide = screenEl.querySelector<HTMLElement>('.slide--term')!;
   const terminal = buildTerminal(termSlide);
-  // the camera pulls back while the line is edited and saved
-  const panFrom = terminal.timeOf('edit-start') - 300;
-  const panTo = terminal.timeOf('micro-quit') + 900;
+  const explode = buildTransformer(screenEl.querySelector<HTMLElement>('.slide--now')!);
+  // the CV opens in the close view, then the camera pulls back to the reading view
+  const panFrom = terminal.timeOf('cv-open') + 500;
+  const panTo = panFrom + 1600;
+  const sessionEnd = panTo;
   // dev chapter progress at which the session starts, resets, and the CV scrolls
   const ZOOM_TO = 0.14;
   const PLAY_AT = ZOOM_TO;
@@ -272,6 +373,11 @@ export async function initStage(canvas: HTMLCanvasElement, screenEl: HTMLElement
   const pull = ScrollTrigger.create({ trigger: '#ch-hero', start: 'top top', end: () => `+=${window.innerHeight}` });
   const now = ScrollTrigger.create({ trigger: '#ch-now', start: 'top top', end: 'top -60%' });
   const dev = ScrollTrigger.create({ trigger: '#ch-dev', start: 'top top', end: 'bottom bottom' });
+  // right before the next chapter the drawing on the display comes apart on its own;
+  // scrolled back above that point it goes back together
+  const apart = ScrollTrigger.create({ trigger: '#ch-dev', start: 'top 80%', end: 'top top' });
+  const EXPLODE_MS = 1700;
+  let exploded = 0;
   const tracks = [pull, now, dev];
   const shown = tracks.map(() => 0);
 
@@ -319,15 +425,21 @@ export async function initStage(canvas: HTMLCanvasElement, screenEl: HTMLElement
     const cvScroll = span(pDevNow, CV_FROM, 0.97);
     if (pDevNow < RESET_AT) playStart = null;
     else if (playStart === null && pDevNow >= PLAY_AT - 0.002) playStart = t;
-    if (playStart !== null && cvScroll > 0 && t - playStart < terminal.duration) playStart = t - terminal.duration;
+    if (playStart !== null && cvScroll > 0 && t - playStart < sessionEnd) playStart = t - sessionEnd;
     const playT = playStart === null ? 0 : t - playStart;
     const panTarget = ease(span(playT, panFrom, panTo));
     if (Math.abs(panTarget - pan) > 1e-4) {
       pan += (panTarget - pan) * k;
       moving = true;
     } else pan = panTarget;
-    if (locked && playStart !== null && playT >= terminal.duration) lockScroll(false);
-    if (playStart !== null && playT < terminal.duration + 100) moving = true;
+    if (locked && playStart !== null && playT >= sessionEnd) lockScroll(false);
+    if (playStart !== null && playT < sessionEnd + 100) moving = true;
+    const explodeTo = apart.progress > 0 ? 1 : 0;
+    if (exploded !== explodeTo) {
+      const step = (dt * 1000) / EXPLODE_MS;
+      exploded = explodeTo > exploded ? Math.min(1, exploded + step) : Math.max(0, exploded - step);
+      moving = true;
+    }
     if (moving) {
       const [pPull, pNow, pDev] = shown;
       const zoomIn = ease(span(pDev, 0, ZOOM_TO));
@@ -340,9 +452,16 @@ export async function initStage(canvas: HTMLCanvasElement, screenEl: HTMLElement
       camera.updateMatrixWorld();
       if (keysMat) keysMat.emissiveIntensity = 0.9 * ease(span(pDev, 0.04, 0.2));
       terminal.update(playT, cvScroll);
+      explode(exploded);
       // slides change one after another: old fades out, then the new one fades in
       const devSwap = ease(span(pDev, 0.0, 0.025));
       screenEl.style.setProperty('--glare', ease(pPull).toFixed(4));
+      // the room mirrored faintly in the panel, drifting as the camera moves
+      screenEl.style.setProperty('--refl-x', `${(50 + (pose.az - screenAz) * 90).toFixed(2)}%`);
+      screenEl.style.setProperty('--refl-y', `${(50 - (pose.el - screenEl0) * 90).toFixed(2)}%`);
+      // dark behind the chapter text only while a text is shown, never over the zoomed terminal
+      const scrim = Math.max(ease(span(pNow, 0.3, 0.8)) * (1 - zoomIn), ease(span(panOut, 0.5, 1)));
+      document.documentElement.style.setProperty('--scrim', scrim.toFixed(4));
       screenEl.style.setProperty('--hero-o', (1 - ease(span(pNow, 0.1, 0.4))).toFixed(4));
       screenEl.style.setProperty('--now-o', (ease(span(pNow, 0.45, 0.8)) * (1 - devSwap)).toFixed(4));
       screenEl.style.setProperty('--term-o', ease(span(pDev, 0.012, 0.04)).toFixed(4));

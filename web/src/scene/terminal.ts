@@ -42,30 +42,16 @@ function lineHtml(styles: Style[], line: Line): string {
 
 /** Hold after a marked frame before the next keystroke, in ms: time to read the result. */
 const PAUSE: Record<string, number> = {
-  home: 150,
-  'cd-repo': 200,
-  'micro-open': 500,
-  'edit-start': 100,
-  edited: 250,
-  saved: 200,
-  'micro-quit': 350,
+  home: 350,
   'cd-beruf': 350,
 };
-
-/** The airquality-ui part (up to quitting micro) runs much faster than the CV part. */
-const QUICK_UNTIL = term.frames.findIndex((f) => f.mark === 'micro-quit');
 
 /** Milliseconds before frame i appears: fast typing with some unevenness, pauses before results. */
 function delay(i: number): number {
   const f = term.frames[i];
-  const quick = i <= QUICK_UNTIL;
-  if (f.mark === 'cd-repo' || f.mark === 'cd-beruf' || f.mark === 'micro-quit') return quick ? 90 : 170;
-  if (f.mark === 'micro-open' || f.mark === 'cv-open') return quick ? 150 : 260;
-  if (f.mark === 'saved') return 80;
-  const inMicro = f.title.endsWith(': micro') && term.frames[i - 1]?.title.endsWith(': micro');
-  // key repeat for cursor travel, typing otherwise
-  if (inMicro) return quick ? 20 : 38;
-  return quick ? 9 + ((i * 37) % 9) : 22 + ((i * 37) % 31);
+  if (f.mark === 'cd-beruf') return 170;
+  if (f.mark === 'cv-open') return 260;
+  return 22 + ((i * 37) % 31);
 }
 
 const icon = {
@@ -81,8 +67,6 @@ export interface Terminal {
   update(ms: number, doc: number): void;
   /** ms after the start at which the frame with this mark appears */
   timeOf(mark: string): number;
-  /** ms until the CV is open */
-  duration: number;
 }
 
 export function buildTerminal(host: HTMLElement): Terminal {
@@ -154,6 +138,5 @@ export function buildTerminal(host: HTMLElement): Terminal {
   return {
     update,
     timeOf: (mark) => times[term.frames.findIndex((f) => f.mark === mark)],
-    duration: times[cvOpen],
   };
 }

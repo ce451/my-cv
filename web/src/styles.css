@@ -89,25 +89,13 @@ body {
 .slide--hero {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-rows: auto 1fr;
+  align-items: center;
   column-gap: clamp(24px, 4vw, 80px);
   opacity: var(--hero-o, 1);
 }
 
-.hero__place {
-  grid-column: 1 / -1;
-  margin: 0;
-  color: var(--muted);
-  font-size: clamp(15px, 1.05vw, 18px);
-}
-
-.hero__main {
-  align-self: end;
-  min-width: 0;
-}
-
 .hero__name {
-  margin: 0 0 0.4em;
+  margin: 0;
   font-family: var(--font-display);
   font-stretch: 125%;
   font-weight: 800;
@@ -116,31 +104,51 @@ body {
   letter-spacing: -0.012em;
 }
 
-.hero__role {
-  margin: 0 0 0.3em;
-  font-size: clamp(18px, 1.5vw, 27px);
-  font-weight: 500;
+.hero__contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em 1.8em;
+  margin: clamp(20px, 2.2vw, 40px) 0 0;
+  font: 400 clamp(13px, 0.95vw, 17px) / 1.6 Hack, monospace;
 }
 
-.hero__past {
-  margin: 0;
+.hero__contact a {
   color: var(--muted);
-  font-size: clamp(16px, 1.2vw, 21px);
+  text-decoration: underline;
+  text-decoration-color: rgb(201 129 79 / 0.55);
+  text-underline-offset: 0.25em;
 }
 
+.hero__contact a:hover {
+  color: var(--text);
+}
+
+/* round portrait with a ring around it, as on the first version of the site */
 .hero__photo {
-  align-self: end;
-  width: clamp(200px, 25vw, 470px);
+  --ring: clamp(10px, 0.9vw, 18px);
+  width: clamp(200px, 22vw, 420px);
   height: auto;
   aspect-ratio: 1;
+  margin: var(--ring);
   object-fit: cover;
+  border-radius: 50%;
+  border: clamp(2px, 0.18vw, 4px) solid rgb(201 129 79 / 0.8);
+  outline: 1px solid rgb(201 129 79 / 0.45);
+  outline-offset: var(--ring);
+}
+
+/* the decorative slides lie over the hero, even while faded out: clicks go through to its links */
+.slide--now,
+.slide--term {
+  pointer-events: none;
 }
 
 .slide--now {
   display: none;
-  flex-direction: column;
-  justify-content: center;
+  padding: 0;
+  overflow: hidden;
   opacity: var(--now-o, 0);
+  background: #262626;
 }
 
 /* Konsole (Kubuntu profile, Breeze colours) in a maximised window on Breeze Dark */
@@ -260,37 +268,202 @@ body {
   background: #4d5257;
 }
 
-.now__label {
-  margin: 0 0 1.2em;
-  color: var(--muted);
-  font-size: clamp(16px, 1.3vw, 22px);
+/* CAD window with the patent drawing of a Siemens Energy transformer; neutral,
+   not the Breeze look of the terminal scene */
+.cad {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  transform-origin: 0 0;
+  transform: scale(var(--kde-scale, 1));
+  background: #262626;
+  color: #e6e6e6;
+  font: 12.5px/1 'Hanken Grotesk', system-ui, sans-serif;
 }
 
-.now__title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-stretch: 112%;
-  font-weight: 700;
-  font-size: clamp(40px, 5vw, 100px);
-  line-height: 0.95;
-}
-
-.now__lines span {
+.cad svg {
   display: block;
-  height: clamp(10px, 0.9vw, 16px);
-  margin-top: clamp(14px, 1.3vw, 24px);
-  background: var(--line);
+  width: 100%;
+  height: 100%;
 }
 
-.now__lines span:nth-child(1) {
-  width: 62%;
-  margin-top: clamp(32px, 3vw, 56px);
+.cad__bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 30px;
+  flex: none;
+  padding-left: 10px;
+  background: #1c1c1c;
 }
-.now__lines span:nth-child(2) {
-  width: 48%;
+
+.cad__icon {
+  width: 15px;
+  height: 15px;
+  color: var(--copper);
 }
-.now__lines span:nth-child(3) {
-  width: 55%;
+
+.cad__btns {
+  display: flex;
+  margin-left: auto;
+  height: 100%;
+}
+
+.cad__btns svg {
+  width: 44px;
+  height: 100%;
+  padding: 0 15px;
+  color: #cfcfcf;
+}
+
+.cad__menu {
+  display: flex;
+  align-items: center;
+  height: 26px;
+  flex: none;
+  padding-left: 4px;
+  border-bottom: 1px solid #383838;
+}
+
+.cad__menu span {
+  padding: 0 9px;
+}
+
+.cad__tools {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 30px;
+  flex: none;
+  padding: 0 6px;
+  border-bottom: 1px solid #383838;
+}
+
+.cad__tools i {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 3px;
+  color: #d6d6d6;
+}
+
+.cad__tools i svg {
+  width: 16px;
+  height: 16px;
+}
+
+.cad__tools i.is-on {
+  background: rgb(201 129 79 / 0.22);
+  box-shadow: inset 0 0 0 1px var(--copper);
+}
+
+.cad__tools b {
+  width: 1px;
+  height: 18px;
+  margin: 0 5px;
+  background: #383838;
+}
+
+.cad__body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.cad__tree {
+  width: 150px;
+  flex: none;
+  padding-top: 4px;
+  border-right: 1px solid #383838;
+  font-size: 12px;
+}
+
+.cad__tree p {
+  margin: 0 0 4px;
+  padding: 4px 10px;
+  color: #9a9a9a;
+}
+
+.cad__tree div {
+  display: flex;
+  align-items: center;
+  height: 22px;
+  white-space: nowrap;
+}
+
+.cad__tree div.is-sel {
+  background: rgb(201 129 79 / 0.3);
+}
+
+.cad__canvas {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  background: #1e1e1e;
+}
+
+.cad__sheet {
+  position: absolute;
+  inset: 8px;
+  border: 1px solid #4d4d4d;
+}
+
+.cad__block {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  display: grid;
+  grid-template-columns: auto auto;
+  margin: 0;
+  border-top: 1px solid #4d4d4d;
+  border-left: 1px solid #4d4d4d;
+  z-index: 1;
+  background: #1e1e1e;
+  font-size: 8.5px;
+  line-height: 1;
+  color: #a8a8a8;
+}
+
+.cad__block dt,
+.cad__block dd {
+  margin: 0;
+  padding: 3px 6px;
+  border-bottom: 1px solid #4d4d4d;
+}
+
+.cad__block dt {
+  border-right: 1px solid #4d4d4d;
+  color: #7c7c7c;
+}
+
+.cad__block dd:last-child,
+.cad__block dt:nth-last-child(2) {
+  border-bottom: 0;
+}
+
+/* the drawing keeps clear of the title block in the corner, also when exploded */
+.cad .tx {
+  position: absolute;
+  inset: 14px 180px 14px 14px;
+  width: calc(100% - 194px);
+  height: calc(100% - 28px);
+  overflow: visible;
+}
+
+.cad__status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 22px;
+  flex: none;
+  padding: 0 8px;
+  border-top: 1px solid #383838;
+  font-size: 11.5px;
+  color: #b8b8b8;
 }
 
 /* ---------- story text ---------- */
@@ -350,6 +523,16 @@ html.stage-on .stage__gl {
   height: 100%;
 }
 
+/* darkens the room behind the chapter text on the left */
+html.stage-on .stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: var(--scrim, 0);
+  background: linear-gradient(90deg, rgb(9 8 7 / 0.88) 0%, rgb(9 8 7 / 0.68) 24%, rgb(9 8 7 / 0) 46%);
+}
+
 html.stage-on .screen {
   position: absolute;
   left: 50%;
@@ -378,6 +561,19 @@ html.is-staged .screen {
   will-change: transform;
 }
 
+/* the room behind the camera, mirrored faintly and out of focus in the panel */
+html.is-staged .screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  opacity: calc(var(--glare, 0) * 0.09);
+  mix-blend-mode: screen;
+  background: url('/scene/backdrop.webp') var(--refl-x, 50%) var(--refl-y, 50%) / 160% auto no-repeat;
+  filter: blur(calc(22px * var(--kde-scale, 1)));
+}
+
 /* matte anti-glare panel: faint diffuse sheen and backlight falloff towards the edges */
 html.is-staged .screen::after {
   content: '';
@@ -392,7 +588,7 @@ html.is-staged .screen::after {
 }
 
 html.is-staged .slide--now {
-  display: flex;
+  display: block;
 }
 
 html.is-staged .slide--term {

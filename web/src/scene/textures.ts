@@ -231,3 +231,78 @@ export function shadowTexture(): THREE.CanvasTexture {
   t.colorSpace = THREE.SRGBColorSpace;
   return t;
 }
+
+/**
+ * Palm-rest wordmark, embossed into the coating: returns a roughness map of the
+ * letters and a normal map of their raised edges. The i is drawn dotless; the
+ * red dot is a separate mesh.
+ */
+export function wordmarkTextures(text: string, font: string) {
+  const W = 1024;
+  const H = 192;
+  const [, ctx] = canvas(W, H);
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = '#fff';
+  ctx.font = `600 ${H * 0.82}px ${font}`;
+  (ctx as CanvasRenderingContext2D & { fontStretch: string }).fontStretch = 'extra-condensed';
+  ctx.textBaseline = 'alphabetic';
+  ctx.textAlign = 'center';
+  const width = ctx.measureText(text).width;
+  const scale = Math.min(1, (W * 0.96) / width);
+  ctx.setTransform(scale, 0, 0, 1, W / 2, H * 0.86);
+  ctx.fillText(text, 0, 0);
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  const mask = ctx.getImageData(0, 0, W, H).data;
+  // where the dot of the dotless i goes, in 0..1 across and down the canvas
+  const i = text.indexOf('\u0131');
+  const before = ctx.measureText(text.slice(0, i)).width;
+  const glyph = ctx.measureText('\u0131').width;
+  const dot = { u: 0.5 + ((before + glyph / 2 - width / 2) * scale) / W, v: 0.16 };
+
+  // the print is a touch glossier than the soft-touch coating around it
+  const [rc, rctx] = canvas(W, H);
+  const rough = rctx.createImageData(W, H);
+  for (let p = 0; p < W * H; p++) {
+    const g = 255 - (mask[p * 4] / 255) * 70;
+    rough.data.set([g, g, g, 255], p * 4);
+  }
+  rctx.putImageData(rough, 0, 0);
+
+  // height = slightly blurred mask, normals from its slope
+  const h = new Float32Array(W * H);
+  for (let i = 0; i < W * H; i++) h[i] = mask[i * 4] / 255;
+  const blurred = new Float32Array(W * H);
+  const R = 2;
+  for (let y = 0; y < H; y++)
+    for (let x = 0; x < W; x++) {
+      let sum = 0;
+      let n = 0;
+      for (let dy = -R; dy <= R; dy++)
+        for (let dx = -R; dx <= R; dx++) {
+          const xx = x + dx;
+          const yy = y + dy;
+          if (xx < 0 || yy < 0 || xx >= W || yy >= H) continue;
+          sum += h[yy * W + xx];
+          n++;
+        }
+      blurred[y * W + x] = sum / n;
+    }
+  const [nc, nctx] = canvas(W, H);
+  const img = nctx.createImageData(W, H);
+  const strength = 2.2;
+  for (let y = 0; y < H; y++)
+    for (let x = 0; x < W; x++) {
+      const at = (xx: number, yy: number) => blurred[Math.min(H - 1, Math.max(0, yy)) * W + Math.min(W - 1, Math.max(0, xx))];
+      const dx = (at(x + 1, y) - at(x - 1, y)) * strength;
+      const dy = (at(x, y + 1) - at(x, y - 1)) * strength;
+      const len = Math.hypot(dx, dy, 1);
+      const o = (y * W + x) * 4;
+      img.data[o] = ((-dx / len) * 0.5 + 0.5) * 255;
+      img.data[o + 1] = ((dy / len) * 0.5 + 0.5) * 255;
+      img.data[o + 2] = (1 / len) * 255;
+      img.data[o + 3] = 255;
+    }
+  nctx.putImageData(img, 0, 0);
+  return { roughness: texture(rc, false), normal: texture(nc, false), aspect: W / H, dot };
+}

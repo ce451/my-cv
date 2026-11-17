@@ -1,0 +1,19 @@
+Scene assets, all CC0 (public domain) from Poly Haven, https://polyhaven.com
+
+backdrop.webp, env.webp
+  derived from the HDRI "Warm Restaurant Night"
+  photography Greg Zaal, processing Jarod Guest
+  https://polyhaven.com/a/warm_restaurant_night
+  made with env/backplate.py (projection, disc blur, grading)
+
+desk-color.webp, desk-rough.webp, desk-normal.webp
+  texture "Wood Table 001"
+  photography Dimitrios Savva, processing Rico Cilliers
+  https://polyhaven.com/a/wood_table_001
+
+transformer/*.webp
+  FIG 1 of the US patent US 12,230,429 B2 "Transportable power transformer
+  unit", Siemens Energy Global GmbH & Co. KG, inventor Christian Ettl (Weiz)
+  https://patents.google.com/patent/US12230429B2/en
+  reference numerals and leader lines removed, split into parts and
+  recoloured with drawing/transformer.py
