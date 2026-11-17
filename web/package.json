@@ -1,0 +1,21 @@
+{
+  "name": "elstner-web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 5461 --strictPort",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --port 5462 --strictPort",
+    "model": "blender -b -P model/thinkpad.py -- --glb public/models/thinkpad.glb --layout src/scene/keyboard-layout.json",
+    "terminal": "python3 terminal/capture.py"
+  },
+  "dependencies": {
+    "gsap": "^3.15.1",
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.187.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8"
+  }
+}

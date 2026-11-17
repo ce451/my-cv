@@ -1,0 +1,467 @@
+@font-face {
+  font-family: 'Archivo';
+  src: url('/fonts/archivo-latin-wdth-normal.woff2') format('woff2');
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Hack';
+  src: url('/fonts/hack-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: block;
+}
+@font-face {
+  font-family: 'Hack';
+  src: url('/fonts/hack-bold.woff2') format('woff2');
+  font-weight: 700;
+  font-display: block;
+}
+/* Konsole falls back to DejaVu Sans Mono for symbols Hack lacks (git status) */
+@font-face {
+  font-family: 'Term Symbols';
+  src: url('/fonts/dejavu-mono-symbols.woff2') format('woff2');
+  unicode-range: U+2716, U+2719-2739, U+272D, U+279C;
+  font-display: block;
+}
+@font-face {
+  font-family: 'Noto Sans';
+  src: url('/fonts/noto-sans-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: block;
+}
+@font-face {
+  font-family: 'Hanken Grotesk';
+  src: url('/fonts/hanken-grotesk-latin-wght-normal.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: dark;
+  --scene-bg: #0d0c0b;
+  --floor: #121110;
+  --screen-bg: #1b1815;
+  --text: #ede6dc;
+  --muted: #a69c8f;
+  --line: #2c2823;
+  --copper: #c9814f;
+  --font-display: 'Archivo', system-ui, sans-serif;
+  --font-text: 'Hanken Grotesk', system-ui, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--scene-bg);
+  color: var(--text);
+  font-family: var(--font-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+}
+
+/* ---------- screen: hero first, display content later ---------- */
+
+.screen {
+  position: relative;
+  background: var(--screen-bg);
+  overflow: hidden;
+}
+
+.screen__view {
+  position: relative;
+  min-height: 100vh;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  padding: clamp(28px, 5.5vw, 104px);
+}
+
+.slide--hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto 1fr;
+  column-gap: clamp(24px, 4vw, 80px);
+  opacity: var(--hero-o, 1);
+}
+
+.hero__place {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--muted);
+  font-size: clamp(15px, 1.05vw, 18px);
+}
+
+.hero__main {
+  align-self: end;
+  min-width: 0;
+}
+
+.hero__name {
+  margin: 0 0 0.4em;
+  font-family: var(--font-display);
+  font-stretch: 125%;
+  font-weight: 800;
+  font-size: clamp(48px, 6.6vw, 150px);
+  line-height: 0.9;
+  letter-spacing: -0.012em;
+}
+
+.hero__role {
+  margin: 0 0 0.3em;
+  font-size: clamp(18px, 1.5vw, 27px);
+  font-weight: 500;
+}
+
+.hero__past {
+  margin: 0;
+  color: var(--muted);
+  font-size: clamp(16px, 1.2vw, 21px);
+}
+
+.hero__photo {
+  align-self: end;
+  width: clamp(200px, 25vw, 470px);
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.slide--now {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  opacity: var(--now-o, 0);
+}
+
+/* Konsole (Kubuntu profile, Breeze colours) in a maximised window on Breeze Dark */
+.slide--term {
+  display: none;
+  padding: 0;
+  overflow: hidden;
+  opacity: var(--term-o, 0);
+  background: #232627;
+}
+
+.kde {
+  --row: 18.78px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  transform-origin: 0 0;
+  transform: scale(var(--kde-scale, 1));
+  background: #292c30;
+  color: #fcfcfc;
+  font: 13.333px/1 'Noto Sans', sans-serif;
+}
+
+.kde__bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 30px;
+  flex: none;
+}
+
+.kde__icon {
+  display: flex;
+  width: 16px;
+  height: 16px;
+  margin-left: 7px;
+}
+
+.kde__caption {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kde__btns {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+  margin-right: 7px;
+}
+
+.kde svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.kde__btns svg {
+  width: 18px;
+  height: 18px;
+}
+
+.kde__menu {
+  display: flex;
+  align-items: center;
+  height: 26px;
+  flex: none;
+  padding-left: 1px;
+  border-bottom: 1px solid #3a3e43;
+}
+
+.kde__menu span {
+  padding: 0 8px;
+}
+
+.kde__term {
+  position: relative;
+  flex: 1;
+  padding: 3px;
+  background: #232627;
+  font: 13.333px/var(--row) Hack, 'Term Symbols', monospace;
+  color: #fcfcfc;
+  font-variant-ligatures: none;
+}
+
+.term__grid div {
+  height: var(--row);
+  white-space: pre;
+}
+
+/* cell backgrounds fill the whole line height, as Konsole paints them */
+.term__grid span {
+  padding: 1.7px 0;
+}
+
+.term__cursor {
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: 1ch;
+  height: var(--row);
+  background: #00ff00;
+  animation: term-blink-a 1s steps(1, end) infinite;
+}
+
+.term__sb {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  bottom: 4px;
+  width: 3px;
+  border-radius: 2px;
+  background: #4d5257;
+}
+
+.now__label {
+  margin: 0 0 1.2em;
+  color: var(--muted);
+  font-size: clamp(16px, 1.3vw, 22px);
+}
+
+.now__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-stretch: 112%;
+  font-weight: 700;
+  font-size: clamp(40px, 5vw, 100px);
+  line-height: 0.95;
+}
+
+.now__lines span {
+  display: block;
+  height: clamp(10px, 0.9vw, 16px);
+  margin-top: clamp(14px, 1.3vw, 24px);
+  background: var(--line);
+}
+
+.now__lines span:nth-child(1) {
+  width: 62%;
+  margin-top: clamp(32px, 3vw, 56px);
+}
+.now__lines span:nth-child(2) {
+  width: 48%;
+}
+.now__lines span:nth-child(3) {
+  width: 55%;
+}
+
+/* ---------- story text ---------- */
+
+.chapter--hero {
+  display: none;
+}
+
+.chapter {
+  padding: 18vh clamp(24px, 7vw, 128px);
+}
+
+.chapter__text {
+  max-width: 30rem;
+}
+
+.chapter__when {
+  margin: 0 0 0.7rem;
+  color: var(--copper);
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.chapter__title {
+  margin: 0 0 1rem;
+  font-family: var(--font-display);
+  font-stretch: 112%;
+  font-weight: 700;
+  font-size: clamp(34px, 3.4vw, 62px);
+  line-height: 1;
+}
+
+.chapter__body {
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.15rem;
+  line-height: 1.55;
+}
+
+/* ---------- staged mode: fixed 3D stage, story scrolls over it ---------- */
+
+html.stage-on .stage {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+.stage__gl {
+  display: none;
+}
+
+html.stage-on .stage__gl {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+html.stage-on .screen {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: max(100%, 160vh);
+  aspect-ratio: 16 / 10;
+  translate: -50% -50%;
+}
+
+html.stage-on .screen__view {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--view-w, 100%);
+  height: var(--view-h, 100%);
+  min-height: 0;
+  translate: -50% -50%;
+}
+
+html.is-staged .screen {
+  left: 0;
+  top: 0;
+  translate: none;
+  aspect-ratio: auto;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+/* matte anti-glare panel: faint diffuse sheen and backlight falloff towards the edges */
+html.is-staged .screen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: var(--glare, 0);
+  background:
+    linear-gradient(118deg, rgb(255 255 255 / 0.055) 0%, rgb(255 255 255 / 0.015) 32%, rgb(255 255 255 / 0) 50%),
+    radial-gradient(130% 100% at 50% 45%, rgb(0 0 0 / 0) 62%, rgb(0 0 0 / 0.16) 100%);
+}
+
+html.is-staged .slide--now {
+  display: flex;
+}
+
+html.is-staged .slide--term {
+  display: block;
+}
+
+html.stage-on .story {
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+
+html.stage-on .chapter--hero {
+  display: block;
+  height: 135vh; /* 100vh pull-back, then a short hold on the laptop */
+  padding: 0;
+}
+
+html.stage-on .chapter--now {
+  min-height: 220vh;
+  padding-top: 30vh;
+}
+
+html.stage-on .chapter--dev {
+  min-height: 480vh;
+  padding-top: 30vh;
+}
+
+.term__cursor.is-b {
+  animation-name: term-blink-b;
+}
+
+/* Konsole blinks every 500 ms; two identical keyframes so a class swap restarts it */
+@keyframes term-blink-a {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes term-blink-b {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* no scrolling while the terminal session plays; the gutter keeps the layout still */
+html.is-staged {
+  scrollbar-gutter: stable;
+}
+html.is-locked {
+  overflow: hidden;
+}
+
+html.is-staged .chapter--now .chapter__text {
+  opacity: var(--p-now, 1);
+  translate: 0 calc((1 - var(--p-now, 1)) * 28px);
+}
+
+html.stage-on .chapter--dev .chapter__text {
+  max-width: min(30rem, 25vw);
+}
+
+html.is-staged .chapter--dev .chapter__text {
+  opacity: var(--p-dev, 1);
+  translate: 0 calc((1 - var(--p-dev, 1)) * 28px);
+}
+
+html.stage-on .chapter__text {
+  position: sticky;
+  top: 32vh;
+  pointer-events: auto;
+}

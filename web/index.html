@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Christopher Elstner</title>
+    <meta name="description" content="Christopher Elstner, Digitalisierungsbeauftragter bei Siemens Energy in Weiz, davor Softwareentwickler." />
+    <meta name="theme-color" content="#0d0c0b" />
+    <link rel="preload" href="/fonts/archivo-latin-wdth-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/hanken-grotesk-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <script>
+      (function (d) {
+        d.classList.add('js');
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        try {
+          if (document.createElement('canvas').getContext('webgl2')) d.classList.add('stage-on');
+        } catch (e) {}
+      })(document.documentElement);
+    </script>
+  </head>
+  <body>
+    <div class="stage">
+      <canvas class="stage__gl" aria-hidden="true"></canvas>
+      <div class="screen" id="screen">
+        <div class="screen__view">
+          <header class="slide slide--hero">
+            <p class="hero__place">Weiz, Steiermark</p>
+            <div class="hero__main">
+              <h1 class="hero__name">Christopher<br />Elstner</h1>
+              <p class="hero__role">Digitalisierungsbeauftragter bei Siemens Energy</p>
+              <p class="hero__past">Davor 12 Jahre Code, Projekt- und Teamarbeit.</p>
+            </div>
+            <img class="hero__photo" src="/portrait-800.webp" width="800" height="800" alt="Porträt von Christopher Elstner" />
+          </header>
+        </div>
+        <div class="slide slide--now" aria-hidden="true">
+          <p class="now__label">Siemens Energy · Weiz</p>
+          <p class="now__title">Platzhalter:<br />aktuelle Tätigkeit</p>
+          <div class="now__lines"><span></span><span></span><span></span></div>
+        </div>
+        <div class="slide slide--term" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <main class="story">
+      <section class="chapter chapter--hero" id="ch-hero" aria-hidden="true"></section>
+      <section class="chapter chapter--now" id="ch-now">
+        <div class="chapter__text">
+          <p class="chapter__when">Seit Oktober 2026</p>
+          <h2 class="chapter__title">Digitalisierungs&shy;beauftragter</h2>
+          <p class="chapter__body">Platzhalter: Was ich bei Siemens Energy in Weiz mache, in zwei bis drei Sätzen.</p>
+        </div>
+      </section>
+      <section class="chapter chapter--dev" id="ch-dev">
+        <div class="chapter__text">
+          <p class="chapter__when">Davor</p>
+          <h2 class="chapter__title">Software&shy;entwicklung</h2>
+          <p class="chapter__body">Platzhalter: zwei bis drei Sätze zu zwölf Jahren Softwareentwicklung.</p>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
