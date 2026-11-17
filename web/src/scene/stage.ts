@@ -12,6 +12,7 @@ import { legendTextures, shadowTexture, wordmarkTextures, type KeyboardLayout } 
 import { quadToMatrix3d, type Quad } from './screen-map';
 import { buildTerminal, DESKTOP_W } from './terminal';
 import { buildTransformer } from './transformer';
+import { buildMail } from './mail';
 import { studioScene } from './studio';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -26,6 +27,15 @@ interface Pose {
   az: number;
   el: number;
   up: THREE.Vector3;
+}
+
+/** the contact address, decoded from the page (base64 in the HTML, as content/cv.de.json has it) */
+function contactAddress(): string {
+  try {
+    return atob(document.querySelector<HTMLElement>('[data-mail]')?.dataset.mail ?? '');
+  } catch {
+    return '';
+  }
 }
 
 const css = (name: string) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -302,6 +312,7 @@ export async function initStage(canvas: HTMLCanvasElement, screenEl: HTMLElement
   const termSlide = screenEl.querySelector<HTMLElement>('.slide--term')!;
   const terminal = buildTerminal(termSlide);
   const explode = buildTransformer(screenEl.querySelector<HTMLElement>('.slide--now')!);
+  const mailUpdate = buildMail(termSlide.querySelector<HTMLElement>('.kde')!, contactAddress());
   // the CV opens in the close view, then the camera pulls back to the reading view
   const panFrom = terminal.timeOf('cv-open') + 500;
   const panTo = panFrom + 1600;
@@ -373,22 +384,104 @@ export async function initStage(canvas: HTMLCanvasElement, screenEl: HTMLElement
   const pull = ScrollTrigger.create({ trigger: '#ch-hero', start: 'top top', end: () => `+=${window.innerHeight}` });
   const now = ScrollTrigger.create({ trigger: '#ch-now', start: 'top top', end: 'top -60%' });
   const dev = ScrollTrigger.create({ trigger: '#ch-dev', start: 'top top', end: 'bottom bottom' });
-  // right before the next chapter the drawing on the display comes apart on its own;
-  // scrolled back above that point it goes back together
+  // right before the next chapter the hand-over plays on its own, scroll locked: the
+  // drawing on the display comes apart, then the page travels on to the terminal,
+  // whose session follows; scrolled back above that point the drawing reassembles
   const apart = ScrollTrigger.create({ trigger: '#ch-dev', start: 'top 80%', end: 'top top' });
-  const EXPLODE_MS = 1700;
+  // after the CV: micro closes, a new message to Christopher opens on the display,
+  // then the page travels on until the contact text is in place
+  const reach = ScrollTrigger.create({ trigger: '#ch-contact', start: 'top 85%', end: 'top top' });
+  const EXPLODE_MS = 1100;
+  const EXPLODE_DRIFT = 4;
+  const TRAVEL_MS = 1600;
+  const MAIL_MS = 1900;
+  const MAIL_TRAVEL_AT = 0.55;
   let exploded = 0;
+  let handOver = false;
+  let mail = 0;
+  let mailRun = false;
+  let pendingPlay = false;
+  let travel: { from: number; to: number; t0: number; ms: number; done: () => void } | null = null;
   const tracks = [pull, now, dev];
   const shown = tracks.map(() => 0);
 
-  // the page does not scroll while the session plays, so it cannot be skipped
+  // scrolling: the story moves on at a limited speed however fast the input, so
+  // nothing is skipped. Wheel and keys scroll smoothly towards a target, touch and
+  // the scrollbar natively, both under the same limit. While a sequence plays the
+  // page is locked; scrolling up breaks it off, scrolling down does nothing.
+  const MAX_DOWN = 0.9; // viewport heights per second
+  const MAX_UP = 3;
   const root = document.documentElement;
-  let prevDev = dev.progress;
   let locked = false;
   const lockScroll = (on: boolean) => {
     locked = on;
     root.classList.toggle('is-locked', on);
   };
+  let y = window.scrollY; // position the story follows
+  let prevY = y;
+  let target: number | null = null;
+  const maxScroll = () => root.scrollHeight - root.clientHeight;
+  const jump = (to: number) => {
+    y = to;
+    window.scrollTo({ top: to, behavior: 'instant' });
+  };
+  const prog = (tr: ScrollTrigger) => clamp01((y - tr.start) / Math.max(1, tr.end - tr.start));
+  let prevDev = prog(dev); // a reload further down does not count as crossing PLAY_AT
+
+  /** scrolled up during a sequence: it stops, the page follows the input again */
+  function breakOff(dy: number) {
+    handOver = false;
+    mailRun = false;
+    travel = null;
+    if (pendingPlay || (playStart !== null && performance.now() - playStart < sessionEnd)) playStart = null;
+    pendingPlay = false;
+    lockScroll(false);
+    target = Math.max(0, y + Math.min(dy, -60));
+    dirty = true;
+  }
+  function nudge(dy: number) {
+    if (locked) {
+      if (dy < 0) breakOff(dy);
+      return;
+    }
+    target = Math.max(0, Math.min(maxScroll(), y + vh, (target ?? y) + dy));
+    dirty = true;
+  }
+  window.addEventListener(
+    'wheel',
+    (e) => {
+      if (e.ctrlKey) return; // pinch zoom
+      e.preventDefault();
+      nudge(e.deltaY * (e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? vh : 1));
+    },
+    { passive: false },
+  );
+  const KEYS: Record<string, number> = { ArrowDown: 0.1, ArrowUp: -0.1, PageDown: 0.85, PageUp: -0.85, ' ': 0.85 };
+  window.addEventListener('keydown', (e) => {
+    if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
+    if ((e.target as HTMLElement).closest?.('input, textarea, select, button, [contenteditable]')) return;
+    let dy: number;
+    if (e.key === 'Home') dy = -y;
+    else if (e.key === 'End') dy = maxScroll() - y;
+    else if (e.key in KEYS) dy = KEYS[e.key] * vh * (e.key === ' ' && e.shiftKey ? -1 : 1);
+    else return;
+    e.preventDefault();
+    nudge(dy);
+  });
+  let touchY: number | null = null;
+  window.addEventListener('touchstart', (e) => (touchY = e.touches[0].clientY), { passive: true });
+  window.addEventListener(
+    'touchmove',
+    (e) => {
+      if (!locked || touchY === null) return;
+      const d = e.touches[0].clientY - touchY;
+      if (d > 12) {
+        breakOff(-d);
+        touchY = null;
+      }
+    },
+    { passive: true },
+  );
 
   let dirty = true;
   let last = performance.now();
@@ -406,40 +499,124 @@ export async function initStage(canvas: HTMLCanvasElement, screenEl: HTMLElement
     last = t;
     const k = 1 - Math.exp(-dt * 6);
     let moving = dirty;
+    // speed limit; programmatic moves (travel) go through jump() while locked
+    if (locked) {
+      target = null;
+      y = window.scrollY;
+    } else {
+      const native = window.scrollY;
+      let next = native;
+      if (target !== null) {
+        const d = target - y;
+        next = Math.abs(d) < 0.5 ? target : y + d * (1 - Math.exp(-dt * 10));
+        if (Math.abs(d) < 0.5) target = null;
+        next = Math.max(next, y - MAX_UP * vh * dt);
+        moving = true;
+      }
+      next = Math.min(next, y + MAX_DOWN * vh * dt);
+      if (Math.abs(next - native) > 0.5) window.scrollTo({ top: next, behavior: 'instant' });
+      y = next;
+    }
+    const down = y > prevY + 0.01;
+
+    // hand-over: moving down into the zone above the dev chapter starts it
+    const a = prog(apart);
+    let raw = prog(dev);
+    if (!locked && down && a > 0 && raw < PLAY_AT && playStart === null && !pendingPlay) {
+      lockScroll(true);
+      handOver = true;
+    }
+    // dev chapter: crossing PLAY_AT downwards locks the page; the recorded session
+    // plays once the camera is on the display, after it the CV scrolls
+    if (!locked && playStart === null && prevDev < PLAY_AT && raw >= PLAY_AT && raw < 1) {
+      lockScroll(true);
+      jump(dev.start + PLAY_AT * (dev.end - dev.start));
+      raw = PLAY_AT;
+      pendingPlay = true;
+    }
+    prevDev = raw;
     tracks.forEach((tr, i) => {
-      const d = tr.progress - shown[i];
+      const d = prog(tr) - shown[i];
       if (Math.abs(d) > 1e-5) {
         shown[i] += d * k;
         moving = true;
-      } else shown[i] = tr.progress;
+      } else shown[i] = prog(tr);
     });
-    // dev chapter: zoom onto the display by scrolling, then the recorded session
-    // plays on its own with scrolling locked; after it the CV scrolls
-    const raw = dev.progress;
-    if (!locked && playStart === null && prevDev < PLAY_AT && raw >= PLAY_AT && raw < 1) {
-      lockScroll(true);
-      window.scrollTo({ top: dev.start + PLAY_AT * (dev.end - dev.start), behavior: 'instant' });
-    }
-    prevDev = dev.progress;
     const pDevNow = shown[2];
     const cvScroll = span(pDevNow, CV_FROM, 0.97);
-    if (pDevNow < RESET_AT) playStart = null;
-    else if (playStart === null && pDevNow >= PLAY_AT - 0.002) playStart = t;
-    if (playStart !== null && cvScroll > 0 && t - playStart < sessionEnd) playStart = t - sessionEnd;
+    if (pDevNow < RESET_AT && !pendingPlay) playStart = null;
+    if (pendingPlay && pDevNow >= PLAY_AT - 0.002) {
+      playStart = t;
+      pendingPlay = false;
+    }
+    // reached the CV some other way (reload further down): the session counts as played
+    if (cvScroll > 0 && !pendingPlay && (playStart === null || t - playStart < sessionEnd)) playStart = t - sessionEnd;
     const playT = playStart === null ? 0 : t - playStart;
     const panTarget = ease(span(playT, panFrom, panTo));
     if (Math.abs(panTarget - pan) > 1e-4) {
       pan += (panTarget - pan) * k;
       moving = true;
     } else pan = panTarget;
-    if (locked && playStart !== null && playT >= sessionEnd) lockScroll(false);
+    if (locked && !handOver && !mailRun && !pendingPlay && playStart !== null && playT >= sessionEnd) lockScroll(false);
     if (playStart !== null && playT < sessionEnd + 100) moving = true;
-    const explodeTo = apart.progress > 0 ? 1 : 0;
+
+    // during the hand-over the parts keep drifting apart (past 1) until the terminal replaces the drawing
+    const explodeTo = handOver ? EXPLODE_DRIFT : a > 0 ? 1 : 0;
     if (exploded !== explodeTo) {
       const step = (dt * 1000) / EXPLODE_MS;
-      exploded = explodeTo > exploded ? Math.min(1, exploded + step) : Math.max(0, exploded - step);
+      exploded = explodeTo > exploded ? Math.min(explodeTo, exploded + step) : Math.max(explodeTo, exploded - step);
       moving = true;
     }
+    if (handOver && exploded >= 1 && !travel) {
+      travel = {
+        from: y,
+        to: dev.start + PLAY_AT * (dev.end - dev.start),
+        t0: t,
+        ms: TRAVEL_MS,
+        // the lock stays on: the session starts at the end of the way and unlocks when done
+        done: () => {
+          handOver = false;
+          pendingPlay = true;
+        },
+      };
+    }
+
+    // contact: moving down past the end of the CV closes micro and opens the message
+    const r = prog(reach);
+    if (!locked && down && r > 0 && mail < 1) {
+      lockScroll(true);
+      mailRun = true;
+    }
+    const mailTo = mailRun || r > 0 ? 1 : 0;
+    if (mail !== mailTo) {
+      const step = (dt * 1000) / MAIL_MS;
+      mail = mailTo > mail ? Math.min(1, mail + step) : Math.max(0, mail - step);
+      moving = true;
+    }
+    if (mailRun && mail >= MAIL_TRAVEL_AT && !travel) {
+      travel = {
+        from: y,
+        to: Math.min(reach.end, maxScroll()),
+        t0: t,
+        ms: 1300,
+        done: () => {
+          mailRun = false;
+          lockScroll(false);
+        },
+      };
+    }
+
+    if (travel) {
+      const u = Math.min(1, (t - travel.t0) / travel.ms);
+      jump(travel.from + (travel.to - travel.from) * ease(u));
+      if (u === 1) {
+        const done = travel.done;
+        travel = null;
+        done();
+      }
+      moving = true;
+    }
+    prevY = y;
     if (moving) {
       const [pPull, pNow, pDev] = shown;
       const zoomIn = ease(span(pDev, 0, ZOOM_TO));
@@ -451,8 +628,9 @@ export async function initStage(canvas: HTMLCanvasElement, screenEl: HTMLElement
       applyPose(camera, pose);
       camera.updateMatrixWorld();
       if (keysMat) keysMat.emissiveIntensity = 0.9 * ease(span(pDev, 0.04, 0.2));
-      terminal.update(playT, cvScroll);
+      terminal.update(playT, cvScroll, mail > 0.06);
       explode(exploded);
+      mailUpdate(mail);
       // slides change one after another: old fades out, then the new one fades in
       const devSwap = ease(span(pDev, 0.0, 0.025));
       screenEl.style.setProperty('--glare', ease(pPull).toFixed(4));
@@ -467,6 +645,7 @@ export async function initStage(canvas: HTMLCanvasElement, screenEl: HTMLElement
       screenEl.style.setProperty('--term-o', ease(span(pDev, 0.012, 0.04)).toFixed(4));
       document.documentElement.style.setProperty('--p-now', ease(span(pNow, 0.4, 1)).toFixed(4));
       document.documentElement.style.setProperty('--p-dev', ease(span(panOut, 0.5, 1)).toFixed(4));
+      document.documentElement.style.setProperty('--p-contact', ease(span(prog(reach), 0.35, 1)).toFixed(4));
       composer.render();
       mapScreen();
       dirty = false;

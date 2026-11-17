@@ -63,8 +63,8 @@ const icon = {
 };
 
 export interface Terminal {
-  /** ms: time since the session started playing, doc: 0..1 scrolling through the CV in micro */
-  update(ms: number, doc: number): void;
+  /** ms: time since the session started playing, doc: 0..1 scrolling through the CV in micro, quit: micro closed again */
+  update(ms: number, doc: number, quit?: boolean): void;
   /** ms after the start at which the frame with this mark appears */
   timeOf(mark: string): number;
 }
@@ -85,6 +85,7 @@ export function buildTerminal(host: HTMLElement): Terminal {
   const docHtml = term.doc.lines.map((l) => lineHtml(term.doc.styles, l));
 
   const cvOpen = term.frames.findIndex((f) => f.mark === 'cv-open');
+  const cvClose = term.frames.findIndex((f) => f.mark === 'cv-close');
   const docTravel = Math.max(0, term.doc.rows.length - MICRO_TEXT_ROWS);
   // the session plays in real time once started: times[i] is when frame i appears
   const times = [0];
@@ -115,9 +116,10 @@ export function buildTerminal(host: HTMLElement): Terminal {
     caption.textContent = `${f.title} – Konsole`;
   }
 
-  function update(ms: number, doc: number) {
+  function update(ms: number, doc: number, quit = false) {
     let i = 0;
-    if (doc > 0 || ms >= times[cvOpen]) i = cvOpen;
+    if (quit) i = cvClose;
+    else if (doc > 0 || ms >= times[cvOpen]) i = cvOpen;
     else {
       let hi = cvOpen;
       while (i < hi) {
@@ -126,7 +128,7 @@ export function buildTerminal(host: HTMLElement): Terminal {
         else hi = mid - 1;
       }
     }
-    const o = doc > 0 ? Math.round(doc * docTravel) : 0;
+    const o = doc > 0 && !quit ? Math.round(doc * docTravel) : 0;
     if (i !== current || o !== offset) {
       current = i;
       offset = o;

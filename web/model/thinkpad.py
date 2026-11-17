@@ -91,8 +91,10 @@ def ortho_outline(corners, r, inset=0.0, seg=6):
         nb = Vector((-b.y, b.x))
         convex = a.x * b.y - a.y * b.x > 0
         if convex:
-            c = p + (na + nb) * r
-            s, e, rad = -na, -nb, r - inset
+            # past the fillet radius the arc would turn inside out: keep a small one
+            rad = max(r - inset, 0.3 * MM)
+            c = p + (na + nb) * (inset + rad)
+            s, e = -na, -nb
         else:
             c = p - (na + nb) * r
             s, e, rad = na, nb, r + inset
@@ -105,12 +107,13 @@ def ortho_outline(corners, r, inset=0.0, seg=6):
 
 def key_outline(w, h, r, inset, smile=0.0, cx=0.0, cy=0.0, seg=4):
     """ThinkPad keycap: rounded rectangle whose front edge sags into a 'smile'."""
-    pts = rrect(w - 2 * inset, h - 2 * inset, r - inset, seg, cx, cy)
+    rr = max(r - inset, 0.6 * MM)  # deep insets (the dish) keep rounded corners instead of inverting them
+    pts = rrect(w - 2 * inset, h - 2 * inset, rr, seg, cx, cy)
     if smile <= 0:
         return pts
     # insert points along the front edge, between the two front corner arcs
     front_y = cy - (h / 2 - inset)
-    half = w / 2 - inset - (r - inset)
+    half = w / 2 - inset - rr
     i = 3 * (seg + 1)  # first point of the front-right arc
     edge = []
     for k in range(1, 8):
@@ -446,7 +449,9 @@ def build():
         dish = [(0.55 + m * f, zt - depth * d) for f, d in ((0.3, 0.38), (0.62, 0.78), (1.0, 1.0))]
         loops = loft_rings(bm, [(ring(0.0), z0), (ring(0.08), zt - 0.9 * MM), (ring(0.3), zt - 0.2 * MM),
                                 (ring(0.55), zt)] + [(ring(i), z) for i, z in dish], cap_top=False)
-        bm.faces.new(loops[-1])  # untagged: the dish shades smoothly into its floor
+        # untagged: the dish shades smoothly into its floor; poked into a fan around the
+        # centre, since a corner fan smears the tilted rim normals into a diagonal crease
+        bmesh.ops.poke(bm, faces=[bm.faces.new(loops[-1])])
         out_keys.append({
             "u": (x0 - u0) / (u1 - u0), "v": (v1 - y1) / (v1 - v0),
             "w": w / (u1 - u0), "h": h / (v1 - v0),

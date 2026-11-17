@@ -4,12 +4,13 @@
 The patent (Siemens Energy, "Transportable power transformer unit", inventor
 from Weiz) has an isometric line drawing of a power transformer. This removes
 the reference numerals and their leader lines, splits the drawing into parts
-(three bushings, conservator, two coolers, tank), bridges the conservator's
+(terminals, bushings and sockets, lid, conservator, device box, coolers, fans,
+pipes, control unit, tank), bridges the conservator's
 edges that the bushings hide, and writes each part as a transparent WebP with
 light lines over an opaque silhouette in the panel colour.
 
     curl -o fig1.png https://patentimages.storage.googleapis.com/12/51/82/9576254a61848a/US12230429-20250218-D00001.png
-    python3 web/drawing/transformer.py fig1.png
+    python3 web/drawing/transformer.py fig1.png [preview.png]  # optional: who owns which line
 
 Needs numpy, scipy, scikit-image and opencv-python-headless (a venv will do).
 Writes web/public/scene/transformer/*.webp and src/scene/transformer-parts.json.
@@ -45,7 +46,11 @@ ink = cv2.morphologyEx(ink, cv2.MORPH_CLOSE, np.ones((3, 3), np.uint8))
 n, lab, st, _ = cv2.connectedComponentsWithStats(ink, 8)
 main = 1 + np.argmax(st[1:, cv2.CC_STAT_AREA])
 body = (lab == main).astype(np.uint8)
-numerals = [i for i in range(1, n) if i != main and st[i, 1] > 120]
+# numerals and arrows are under 100 px tall; the nameplate on cooler 8 is not
+numerals = [i for i in range(1, n) if i != main and st[i, 1] > 120 and st[i, cv2.CC_STAT_HEIGHT] < 100]
+for i in range(1, n):
+    if i != main and i not in numerals and st[i, 1] > 120:
+        body[lab == i] = 1
 
 sk = skeletonize(body > 0)
 P = np.pad(sk, 1)
@@ -220,24 +225,47 @@ for i in range(1, n):
     if st[i, cv2.CC_STAT_AREA] < 60:
         img[lab == i] = False
 
-# ---- 4. parts: first polygon that contains a pixel owns it, the rest is tank --
+# ---- 4. parts: first shape that contains a pixel owns it, the rest is tank ---
+# polygons, or ('e', cx, cy, rx, ry) for an ellipse
 PARTS = {
-    'b16': [(495, 190), (590, 190), (590, 945), (584, 945), (584, 988), (506, 988), (506, 945), (495, 945)],
-    'b17': [(910, 715), (1006, 715), (1006, 1268), (1003, 1268), (1003, 1299), (926, 1299), (926, 1268), (910, 1268)],
-    'b18': [(1256, 785), (1354, 785), (1354, 1360), (1350, 1360), (1350, 1394), (1274, 1394), (1274, 1360), (1256, 1360)],
-    'coolL': [(90, 1035), (432, 1035), (442, 1186), (367, 1238), (367, 1655), (396, 1690), (396, 1768), (90, 1768)],
+    # outdoor terminals 19 on the bushing heads, cut above the cylinder's top rim
+    't16': [(480, 190), (605, 190), (605, 297), (480, 297)],
+    't17': [(895, 715), (1020, 715), (1020, 783), (895, 783)],
+    't18': [(1240, 780), (1370, 780), (1370, 874), (1240, 874)],
+    # bushings 16-18, down to the bottom of the porcelain
+    'b16': [(495, 297), (592, 297), (592, 958), (495, 958)],
+    'b17': [(910, 783), (1006, 783), (1006, 1270), (910, 1270)],
+    'b18': [(1256, 874), (1354, 874), (1354, 1362), (1256, 1362)],
+    # bushing sockets 15: neck and bolted flange
+    's16': ('e', 540, 1008, 80, 54),
+    's17': ('e', 952, 1310, 96, 46),
+    's18': ('e', 1312, 1410, 110, 50),
+    'fanR': [(1786, 1430), (1955, 1430), (1955, 1888), (1786, 1888)],
+    'ctl': [(1735, 1888), (1870, 1888), (1870, 1995), (1735, 1995)],
     'coolR': [(1398, 1452), (1545, 1382), (1662, 1382), (1662, 1340), (1760, 1335), (1975, 1335), (1975, 2015),
               (1398, 2015)],
+    'box': [(1628, 1115), (1880, 1115), (1880, 1335), (1760, 1335), (1662, 1340), (1628, 1340)],
     'cons': [(596, 700), (1900, 700), (1900, 1335), (1760, 1335), (1662, 1340), (1662, 1382), (1545, 1382),
              (1352, 1318), (1352, 1312), (1262, 1302), (998, 1230),
              (915, 1214), (873, 1206), (596, 1108)],
+    'fanL': [(95, 1150), (131, 1150), (131, 1575), (95, 1575)],
+    # inlet 11 down the tank's end face, outlet 12 under the cooler
+    'pipe': [(290, 1290), (300, 1240), (318, 1205), (345, 1188), (378, 1192), (380, 1240), (340, 1262),
+             (340, 1640), (392, 1650), (392, 1775), (190, 1775), (190, 1690), (290, 1640)],
+    'coolL': [(90, 1035), (432, 1035), (442, 1186), (367, 1238), (367, 1655), (396, 1690), (396, 1768), (90, 1768)],
+    'lid': [(285, 1215), (400, 1120), (470, 1080), (596, 1108), (873, 1206), (915, 1214), (998, 1230),
+            (1262, 1302), (1352, 1312), (1352, 1318), (1545, 1382), (1398, 1452), (1405, 1531),
+            (600, 1316), (420, 1281), (285, 1264)],
 }
 ink = img.copy()
 owner = np.zeros(ink.shape, np.int8)
 names = list(PARTS) + ['tank']
-for k, (name, poly) in enumerate(PARTS.items(), 1):
+for k, (name, shape) in enumerate(PARTS.items(), 1):
     m = np.zeros(ink.shape, np.uint8)
-    cv2.fillPoly(m, [np.array(poly, np.int32)], 1)
+    if shape[0] == 'e':
+        cv2.ellipse(m, shape[1:3], shape[3:5], 0, 0, 360, 1, -1)
+    else:
+        cv2.fillPoly(m, [np.array(shape, np.int32)], 1)
     owner[(owner == 0) & (m > 0)] = k
 owner[owner == 0] = len(names)
 # the conservator's long edges run on behind the bushings: bridge each gap
@@ -258,6 +286,16 @@ for gl, gr in GAPS:
             cv2.line(m, (xl, int(round(yl))), (xr, int(round(yr))), 1, 3)
             ink |= m > 0
             owner[(m > 0)] = cons
+
+if len(sys.argv) > 2:  # preview of who owns what
+    pal = np.array([[0, 0, 0]] + [[(37 * k) % 200 + 40, (91 * k) % 200 + 40, (151 * k) % 200 + 40] for k in range(1, len(names) + 1)], np.uint8)
+    prev = np.full(ink.shape + (3,), 255, np.uint8)
+    prev[ink] = pal[owner[ink]]
+    for k, name in enumerate(names, 1):
+        ys, xs = np.nonzero(ink & (owner == k))
+        if len(xs):
+            cv2.putText(prev, name, (int(xs.mean()), int(ys.mean())), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0, 0, 255), 3)
+    cv2.imwrite(sys.argv[2], prev)
 
 # ---- 5. one WebP per part at half size --------------------------------------
 LINE = np.array([0xe6, 0xe6, 0xe6], np.float32) / 255  # light lines on the dark CAD canvas

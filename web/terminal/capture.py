@@ -285,7 +285,7 @@ def main():
         tall, _, _ = rec.settle(rec.raw(), quiet=0.6)
         tmux("resize-window", "-t", "c", "-y", str(ROWS))
         rec.settle(None, quiet=0.4)
-        rec.keys("C-q", quiet=0.4)
+        rec.keys("C-q", mark="cv-close", quiet=0.4)  # back at the prompt, for the contact scene
     finally:
         subprocess.run(["tmux", "-L", SOCK, "kill-server"], capture_output=True)
 
