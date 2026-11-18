@@ -31,6 +31,12 @@
   font-display: block;
 }
 @font-face {
+  font-family: 'Caveat';
+  src: url('/fonts/caveat-latin-wght-normal.woff2') format('woff2');
+  font-weight: 400 700;
+  font-display: block;
+}
+@font-face {
   font-family: 'Hanken Grotesk';
   src: url('/fonts/hanken-grotesk-latin-wght-normal.woff2') format('woff2');
   font-weight: 100 900;
@@ -271,100 +277,6 @@ body {
   background: #4d5257;
 }
 
-/* contact scene: a new message on the terminal's desktop */
-.mail {
-  position: absolute;
-  left: 176px;
-  top: 92px;
-  width: 500px;
-  height: 330px;
-  display: flex;
-  flex-direction: column;
-  border-radius: 5px 5px 0 0;
-  background: #292c30;
-  box-shadow:
-    0 0 0 1px rgb(0 0 0 / 0.45),
-    0 16px 44px rgb(0 0 0 / 0.6);
-  opacity: 0;
-  transform-origin: 50% 40%;
-  pointer-events: none;
-}
-
-.mail.is-open {
-  pointer-events: auto;
-}
-
-.mail__tools {
-  display: flex;
-  gap: 4px;
-  padding: 5px 7px;
-  border-bottom: 1px solid #3a3e43;
-}
-
-.mail__tools > * {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  height: 26px;
-  padding: 0 10px;
-  border-radius: 3px;
-  color: inherit;
-  text-decoration: none;
-}
-
-.mail__tools svg {
-  width: 16px;
-  height: 16px;
-}
-
-.mail__send {
-  background: #c9814f;
-  color: #1c1612 !important;
-  font-weight: 600;
-}
-
-.mail__fields {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: center;
-  gap: 7px 10px;
-  margin: 0;
-  padding: 10px 12px;
-  border-bottom: 1px solid #3a3e43;
-}
-
-.mail__fields dt {
-  color: #a1a9b1;
-  text-align: right;
-}
-
-.mail__fields dd {
-  margin: 0;
-  padding: 6px 8px;
-  border: 1px solid #3a3e43;
-  border-radius: 3px;
-  background: #1b1e20;
-}
-
-.mail__body {
-  flex: 1;
-  padding: 12px 14px;
-  background: #1b1e20;
-  color: #fcfcfc;
-  line-height: 1.55;
-  white-space: pre-wrap;
-  text-decoration: none;
-}
-
-.mail__cursor {
-  display: inline-block;
-  width: 1.5px;
-  height: 1.25em;
-  vertical-align: text-bottom;
-  background: #fcfcfc;
-  animation: term-blink-a 1s steps(1, end) infinite;
-}
-
 /* CAD window with the patent drawing of a Siemens Energy transformer; neutral,
    not the Breeze look of the terminal scene */
 .cad {
@@ -516,6 +428,10 @@ body {
   text-align: right;
 }
 
+.cad__bom tr.is-sub td:nth-child(2) {
+  padding-left: 18px;
+}
+
 .cad__bom tr.is-sel td {
   background: rgb(201 129 79 / 0.3);
 }
@@ -609,6 +525,25 @@ html.stage-on .stage__gl {
   inset: 0;
   width: 100%;
   height: 100%;
+}
+
+/* film grain over the rendered scene and the display (stage.ts draws the tile) */
+.stage__grain {
+  position: absolute;
+  inset: -40px;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.55;
+  animation: grain 0.5s steps(1) infinite;
+}
+
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  17% { transform: translate(-23px, 11px); }
+  33% { transform: translate(17px, -29px); }
+  50% { transform: translate(-31px, -7px); }
+  67% { transform: translate(9px, 27px); }
+  83% { transform: translate(29px, 3px); }
 }
 
 /* darkens the room behind the chapter text on the left */
@@ -705,10 +640,43 @@ html.stage-on .chapter--dev {
   padding-top: 30vh;
 }
 
-/* tall enough that the page can come to rest with the contact text in place */
-html.stage-on .chapter--contact {
-  min-height: 130vh;
-  padding-top: 30vh;
+/* staged, the contact note is handwritten on the notepad on the desk */
+html.is-staged .chapter--contact {
+  display: none;
+}
+
+/* the links on the notepad: invisible anchors over the handwriting, mapped onto the sheet */
+.note-links {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.note-links.is-on {
+  visibility: visible;
+}
+
+.note-links__turn {
+  position: absolute;
+  inset: 0;
+}
+
+.note-links a {
+  position: absolute;
+  border-radius: 18px;
+  color: transparent;
+  font-size: 1px;
+  pointer-events: auto;
+  transition: background-color 0.2s;
+}
+
+.note-links a:hover,
+.note-links a:focus-visible {
+  background: rgb(28 42 104 / 0.07);
+  outline: none;
 }
 
 .chapter__links {
@@ -732,11 +700,8 @@ html.stage-on .chapter--contact {
   }
 }
 
-/* no scrolling while the terminal session plays; the gutter keeps the layout still */
+/* staged, the story moves in steps driven by the scene, never by native scrolling */
 html.is-staged {
-  scrollbar-gutter: stable;
-}
-html.is-locked {
   overflow: hidden;
 }
 
@@ -749,14 +714,6 @@ html.stage-on .chapter--dev .chapter__text {
   max-width: min(30rem, 25vw);
 }
 
-html.stage-on .chapter--contact .chapter__text {
-  max-width: min(30rem, 25vw);
-}
-
-html.is-staged .chapter--contact .chapter__text {
-  opacity: var(--p-contact, 1);
-  translate: 0 calc((1 - var(--p-contact, 1)) * 28px);
-}
 
 html.is-staged .chapter--dev .chapter__text {
   opacity: var(--p-dev, 1);

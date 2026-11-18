@@ -44,27 +44,24 @@ const MOVE: Record<Part, { d: [number, number]; from: number; to: number }> = {
   tank: { d: [0, 0], from: 0, to: 1 },
 };
 
-/** parts list with the patent's reference numerals; the parts that move with each row */
-const BOM: [string, string, number, Part[]][] = [
-  ['2', 'Kessel', 1, []],
-  ['3', 'Seitenwand', 1, []],
-  ['7', 'Deckel', 1, ['lid']],
-  ['8', 'Kühleinheit', 1, ['coolR']],
-  ['9', 'Kühleinheit', 1, ['coolL']],
-  ['10', 'Lüfter', 4, ['fanL', 'fanR']],
-  ['11', 'Zulauf', 1, ['pipe']],
-  ['12', 'Ablauf', 1, ['pipe']],
-  ['13', 'Ausdehnungsgefäß', 1, ['cons']],
-  ['14', 'Verbindungsleitung', 1, ['lid']],
-  ['15', 'Durchführungsbuchse', 3, ['s16', 's17', 's18']],
-  ['16', 'HS-Durchführung', 1, ['b16']],
-  ['17', 'HS-Durchführung', 1, ['b17']],
-  ['18', 'HS-Durchführung', 1, ['b18']],
-  ['19', 'Freiluftanschluss', 3, ['t16', 't17', 't18']],
-  ['21', 'Gerätekasten', 1, ['box']],
-  ['22', 'Steuereinheit', 1, ['ctl']],
-  ['23', 'Ausbuchtung', 1, []],
+/** parts list as structured by Christopher; the parts that move with each row, sub-items one level in */
+const BOM: { pos: string; name: string; qty: number; parts: Part[]; sub?: boolean }[] = [
+  { pos: '1', name: 'Kessel', qty: 1, parts: [] },
+  { pos: '2', name: 'Deckel', qty: 1, parts: ['lid'] },
+  { pos: '3', name: 'Kühlblock', qty: 2, parts: ['coolL', 'coolR', 'fanL', 'fanR', 'pipe'] },
+  { pos: '4', name: 'Dom', qty: 3, parts: ['s16', 's17', 's18'] },
+  { pos: '5', name: 'Durchführung', qty: 1, parts: ['b16', 't16'] },
+  { pos: '6', name: 'Durchführung', qty: 1, parts: ['b17', 't17'] },
+  { pos: '7', name: 'Durchführung', qty: 1, parts: ['b18', 't18'] },
+  { pos: '8', name: 'Dehngefäß', qty: 1, parts: ['cons'] },
+  { pos: '8.1', name: 'Rohrleitung', qty: 1, parts: ['cons'], sub: true },
+  { pos: '8.2', name: 'Flansch', qty: 2, parts: ['cons'], sub: true },
+  { pos: '8.3', name: 'Rohrbogen', qty: 1, parts: ['cons'], sub: true },
+  { pos: '8.4', name: 'Dichtung', qty: 2, parts: ['cons'], sub: true },
+  { pos: '8.5', name: 'Schraubverbindung', qty: 8, parts: ['cons'], sub: true },
 ];
+/** rows the panel holds; the rest stay as empty lines of the table */
+const BOM_ROWS = 18;
 
 const MENU = ['Datei', 'Bearbeiten', 'Ansicht', 'Einfügen', 'Baugruppe', 'Extras', 'Hilfe'];
 
@@ -109,7 +106,8 @@ export function buildTransformer(host: HTMLElement): (p: number) => void {
     `<div class="cad__tools">${TOOLS.map((d, i) => (d ? `<i${i === EXPLODE_TOOL ? ' data-explode' : ''}>${svgIcon(d)}</i>` : '<b></b>')).join('')}</div>` +
     `<div class="cad__body"><div class="cad__bom"><p>Stückliste</p><table>` +
     `<tr><th>Pos.</th><th>Benennung</th><th>Menge</th></tr>` +
-    BOM.map(([pos, name, qty]) => `<tr><td>${pos}</td><td>${name}</td><td>${qty}</td></tr>`).join('') +
+    BOM.map((r) => `<tr${r.sub ? ' class="is-sub"' : ''}><td>${r.pos}</td><td>${r.name}</td><td>${r.qty}</td></tr>`).join('') +
+    '<tr><td></td><td></td><td></td></tr>'.repeat(Math.max(0, BOM_ROWS - BOM.length)) +
     `</table></div><div class="cad__canvas"><div class="cad__sheet"></div></div></div>` +
     `<div class="cad__status"><span>Vorlage US 12,230,429 B2, Fig. 1 · ${BOM.length} Positionen</span><span class="cad__state"></span></div>` +
     `</div>`;
@@ -155,7 +153,7 @@ export function buildTransformer(host: HTMLElement): (p: number) => void {
       if (raw > 0 && raw < 1) moving.add(el.name);
     }
     // the rows of the parts on the move light up in the parts list
-    BOM.forEach(([, , , ps], i) => rows[i].classList.toggle('is-sel', ps.some((q) => moving.has(q))));
+    BOM.forEach((r, i) => rows[i].classList.toggle('is-sel', r.parts.some((q) => moving.has(q))));
     explodeTool.classList.toggle('is-on', p > 0.001);
     state.textContent = p > 0.001 ? `Explosionsansicht ${Math.round(Math.min(p, 1) * 100)} %` : 'Zusammenbau';
   };

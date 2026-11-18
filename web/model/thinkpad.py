@@ -506,7 +506,8 @@ def build():
                         (convex_inset(pts, 0.3 * MM), (BASE_H + 0.17) * MM)])
     to_object(bm, "TrackPointButtons", m_touch, root)
 
-    # red accents: along the front of the outer buttons and the middle button's sides
+    # red accents: only along the front of the outer buttons (notebookcheck photo
+    # of the P16s G2); the middle button has none
     bm = bmesh.new()
     zr = (BASE_H + 0.02) * MM
 
@@ -519,8 +520,6 @@ def build():
 
     strip((pad_x0 + 1.5, pad_back), (mid - 10.6, pad_back))
     strip((mid + 10.6, pad_back), (pad_x1 - 1.5, pad_back))
-    strip((mid - 9.4, btn_y0), (mid - 12.3, btn_back - 0.3))
-    strip((mid + 9.4, btn_y0), (mid + 12.3, btn_back - 0.3))
     to_object(bm, "ButtonStripes", m_red, root)
 
     # power button with fingerprint reader: dark gap ring, cap just proud of the deck

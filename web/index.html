@@ -12,9 +12,7 @@
       (function (d) {
         d.classList.add('js');
         if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-        try {
-          if (document.createElement('canvas').getContext('webgl2')) d.classList.add('stage-on');
-        } catch (e) {}
+        d.classList.add('stage-on');
       })(document.documentElement);
     </script>
   </head>

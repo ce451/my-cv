@@ -24,7 +24,9 @@ function setViewSize() {
 if (root.classList.contains('stage-on') && canvas && screen) {
   setViewSize();
   window.addEventListener('resize', setViewSize);
-  import('./scene/stage')
+  // dev only: /?gl shows the real-time three.js scene the camera poses are set up in
+  const gl = import.meta.env.DEV && new URLSearchParams(location.search).has('gl');
+  (gl ? import('./scene/stage-gl') : import('./scene/stage'))
     .then(({ initStage }) => initStage(canvas, screen))
     .catch((err) => {
       console.error(err);
