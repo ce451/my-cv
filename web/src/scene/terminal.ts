@@ -54,6 +54,18 @@ function delay(i: number): number {
   return 22 + ((i * 37) % 31);
 }
 
+/**
+ * The prompt shows when it was drawn (zsh, de_AT): the recorded stamps become the
+ * visitor's own clock. Each stamp belongs to the frame it first appears in.
+ */
+const TIME = /\d\d:\d\d:\d\d/;
+const DATE = /[A-Z][a-z],[A-Z][a-zä]{2}\d\d/;
+const DAYS = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+const MONTHS = ['Jän', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
+const two = (n: number) => String(n).padStart(2, '0');
+const clock = (d: Date) => `${two(d.getHours())}:${two(d.getMinutes())}:${two(d.getSeconds())}`;
+const day = (d: Date) => `${DAYS[d.getDay()]},${MONTHS[d.getMonth()]}${two(d.getDate())}`;
+
 const icon = {
   konsole:
     '<svg viewBox="0 0 16 16"><rect x="1" y="2" width="14" height="12" rx="1.5" fill="#31363b" stroke="#7f8c8d" stroke-width=".8"/><path d="M4 6l2.2 2L4 10" stroke="#fcfcfc" stroke-width="1.2" fill="none"/><path d="M7.5 10.5h4" stroke="#fcfcfc" stroke-width="1.2"/></svg>',
@@ -84,6 +96,17 @@ export function buildTerminal(host: HTMLElement): Terminal {
   const html = term.lines.map((l) => lineHtml(term.styles, l));
   const docHtml = term.doc.lines.map((l) => lineHtml(term.doc.styles, l));
 
+  const text = term.lines.map((l) => l.map(([t]) => t).join(''));
+  const lineTime = text.map((t) => t.match(TIME)?.[0]);
+  const lineDate = text.map((t) => t.match(DATE)?.[0]);
+  const firstFrame = new Map<string, number>();
+  term.frames.forEach((f, k) =>
+    f.rows.forEach((r) => {
+      const st = lineTime[r];
+      if (st && !firstFrame.has(st)) firstFrame.set(st, k);
+    }),
+  );
+
   const cvOpen = term.frames.findIndex((f) => f.mark === 'cv-open');
   const cvClose = term.frames.findIndex((f) => f.mark === 'cv-close');
   const docTravel = Math.max(0, term.doc.rows.length - MICRO_TEXT_ROWS);
@@ -96,16 +119,33 @@ export function buildTerminal(host: HTMLElement): Terminal {
   let offset = 0;
   // the cursor blinks while idle; every keystroke restarts the blink with the cursor on
   let blinkPhase = false;
+  // wall clock at ms 0 of the playing session, and when micro was quit
+  let begun: number | null = null;
+  let quitAt: number | null = null;
 
-  function render() {
+  function stamped(line: number): string {
+    const st = lineTime[line];
+    if (!st) return html[line];
+    const k = firstFrame.get(st)!;
+    const d = new Date(k > cvOpen ? (quitAt ?? Date.now()) : (begun ?? Date.now()) + times[k]);
+    const h = html[line].replace(st, clock(d));
+    return lineDate[line] ? h.replace(lineDate[line]!, day(d)) : h;
+  }
+
+  function rows() {
     const f = term.frames[current];
     for (let r = 0; r < term.rows; r++) {
-      const h = offset && r < MICRO_TEXT_ROWS ? docHtml[term.doc.rows[r + offset]] ?? '' : html[f.rows[r]];
+      const h = offset && r < MICRO_TEXT_ROWS ? docHtml[term.doc.rows[r + offset]] ?? '' : stamped(f.rows[r]);
       if (shown[r] !== h) {
         rowEls[r].innerHTML = h;
         shown[r] = h;
       }
     }
+  }
+
+  function render() {
+    const f = term.frames[current];
+    rows();
     const cur = offset ? null : f.cur;
     cursor.hidden = !cur;
     if (cur) {
@@ -117,6 +157,10 @@ export function buildTerminal(host: HTMLElement): Terminal {
   }
 
   function update(ms: number, doc: number, quit = false) {
+    if (ms > 0) begun ??= Date.now() - ms;
+    else begun = null;
+    if (quit) quitAt ??= Date.now();
+    else quitAt = null;
     let i = 0;
     if (quit) i = cvClose;
     else if (doc > 0 || ms >= times[cvOpen]) i = cvOpen;
@@ -133,7 +177,7 @@ export function buildTerminal(host: HTMLElement): Terminal {
       current = i;
       offset = o;
       render();
-    }
+    } else rows();
   }
 
   render();

@@ -8,7 +8,6 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import {
   FRAMES,
-  LAPTOP_BACK,
   SEGMENTS,
   type Poses,
   backlight,
@@ -39,9 +38,8 @@ for (const seg of SEGMENTS) {
       up: v5(p.up),
       focus: v5(p.f),
       shut: r5(c.shut),
-      back: r5(c.back * LAPTOP_BACK),
       dark: r5(c.dark),
-      screen: v5([m.hero, m.now, m.term]),
+      screen: v5([m.hero, m.now, m.prompt, m.cv]),
       backlight: r5(backlight(s)),
     };
   });

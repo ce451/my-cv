@@ -33,15 +33,15 @@ LID_T = 5.9
 CORNER_R = 4.0  # measured on the Lenovo top photo: 3.5 to 4 mm
 OPEN_TILT = -18.0  # degrees; negative leans the lid back
 
+HINGE_Y = 240.6  # photo mm from the front edge
+HINGE_Z = BASE_H - 2.6
+
 PANEL_W = 344.6  # 16" at 16:10, active area
 PANEL_H = 215.4
-LID_TOP = 236.5  # lid top edge above the hinge axis
+LID_TOP = HINGE_Y  # lid top edge above the hinge axis: closed, the lid is flush with the front
 LID_BOTTOM = -7.0  # lid bottom edge below the hinge axis (drops into the base)
 TOP_BEZEL = 8.4
 PANEL_CZ = LID_TOP - TOP_BEZEL - PANEL_H / 2
-
-HINGE_Y = 240.6  # photo mm from the front edge
-HINGE_Z = BASE_H - 2.6
 
 TRAY_DEPTH = 1.3  # keyboard sits in a shallow well
 KEY_TOP = BASE_H + 0.9

@@ -725,3 +725,91 @@ html.stage-on .chapter__text {
   top: 32vh;
   pointer-events: auto;
 }
+
+/* ---------- legal notice ---------- */
+
+/* the link: at the end of the page; staged, only in the last view, below the card */
+.legal {
+  padding: 48px clamp(28px, 5.5vw, 104px) 40px;
+  font: 400 13px / 1.6 var(--font-text);
+}
+
+.legal a,
+.legal-page a {
+  color: var(--muted);
+  text-decoration: underline;
+  text-decoration-color: rgb(201 129 79 / 0.55);
+  text-underline-offset: 0.25em;
+}
+
+.legal a:hover,
+.legal-page a:hover {
+  color: var(--text);
+}
+
+html.is-staged .legal {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  padding: 0 16px clamp(14px, 2.2vh, 26px);
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.6s, visibility 0s 0.6s;
+}
+
+html.is-staged .legal a {
+  color: rgb(237 230 220 / 0.82);
+  text-shadow: 0 1px 10px rgb(0 0 0 / 0.75);
+}
+
+html.is-staged .legal.is-on {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.6s;
+}
+
+.legal-page {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: clamp(48px, 10vh, 120px) 24px 64px;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.legal-page h1 {
+  margin: 0 0 0.3em;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-stretch: 125%;
+  font-weight: 800;
+  font-size: clamp(30px, 4.4vw, 52px);
+  line-height: 1;
+}
+
+.legal-page h2 {
+  margin: 2.2em 0 0.6em;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-stretch: 110%;
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+.legal-page__kicker,
+.legal-page__stand {
+  margin: 0 0 0.6em;
+  color: var(--copper);
+  font: 400 13px / 1.6 Hack, monospace;
+}
+
+.legal-page__stand {
+  color: var(--muted);
+}
+
+.legal-page__back {
+  margin-top: 3em;
+}

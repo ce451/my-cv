@@ -447,14 +447,16 @@ export async function initStage(canvas: HTMLCanvasElement, screenEl: HTMLElement
     const d0 = (screenH * vh) / sh / (2 * Math.tan(THREE.MathUtils.degToRad(FOV / 2)));
     coverPose = { target: center.clone(), r: d0, az: screenAz, el: screenEl0, up: up.clone() };
     // close on the display, bezel just visible; then the reading view with the text on the left
-    const fit = Math.min(0.9, (0.9 * vh * SCREEN_ASPECT) / vw);
+    // the frames are 16:10 and get cropped top and bottom in wider windows: at 0.8
+    // of the width the display stays whole up to about 16:9 plus the browser bars
+    const fit = Math.min(0.8, (0.8 * vh * SCREEN_ASPECT) / vw);
     zoomPose = framePose(screenAz - 0.07, screenEl0 + 0.04, 0.5, 0.5, fit, up);
     readPose = framePose(screenAz + 0.14, screenEl0 + 0.14, 0.665, 0.46, Math.min(0.56, (0.62 * vh * SCREEN_ASPECT) / vw), new THREE.Vector3(0, 1, 0));
     // the notepad from above, a little from the left, filling most of the height
     notePose = frameBox(noteCorners, note.center(), -0.1, 0.98, 0.5, 0.5, 0.86, 0.84, new THREE.Vector3(0, 1, 0));
     // dev only: the Cycles renders (web/render) take their cameras from these poses
     if (import.meta.env.DEV)
-      (window as unknown as { __poses: Record<string, Pose> }).__poses = { laptopPose, nowPose, coverPose, zoomPose, readPose, notePose, shutPose };
+      Object.assign(window, { __poses: { laptopPose, nowPose, coverPose, zoomPose, readPose, notePose, shutPose }, __screenMid: center });
     dirty = true;
   }
 

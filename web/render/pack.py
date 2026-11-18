@@ -1,11 +1,11 @@
 """Page assets from the rendered sequences (scene.py --seq): vignetting, WebP
-frames and the corner metadata the page maps the display and the note with.
+frames and the corner metadata the page maps the display and the business card with.
 
   python web/render/pack.py web/render/out/seq web/public/seq [--quality 72] [--width 1920]
 (frame counts from path.json next to the sequence folder)
 
 Writes <dst>/<seg>/NNN.webp and <dst>/meta.json:
-  {"w", "h", "segs": {seg: [[screen x,y * 4, note x,y * 4] | null per frame]}}
+  {"w", "h", "segs": {seg: [[screen x,y * 4, card x,y * 4] | null per frame]}}
 Corners are fractions of the frame from the top left (tl, tr, br, bl). Frames
 not rendered yet (drafts with --step) are null; the page shows the nearest one.
 """
@@ -52,7 +52,7 @@ def main():
             png = src / seg / f"{i:03d}.png"
             c = corners.get(str(i))
             if c and png.exists():
-                frames.append([round(v, 4) for v in c["screen"] + c["note"]])
+                frames.append([round(v, 4) for v in c["screen"] + c["card"]])
                 jobs.append((png, dst / seg / f"{i:03d}.webp", a.width, a.quality))
             else:
                 frames.append(None)

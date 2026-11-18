@@ -9,8 +9,8 @@
  *   zoom   -> close on the display (terminal)
  *   pan    close view -> reading view of the CV
  *   close  lean towards the next view, then micro closes, the display goes dark,
- *          the lid comes down, the laptop is pushed back and the camera turns to
- *          the notepad
+ *          the lid comes down and the camera turns to the business card, which
+ *          lies on the desk only in this sequence
  *
  * Poses are three.js coordinates (Y up, laptop front towards +Z), framed for a
  * 16:10 view (1600 x 1000) with a vertical field of view of FOV degrees.
@@ -31,8 +31,6 @@ export const LEAN = 0.12;
 export const LEAN_PART = 0.1;
 /** the hinge rises as the lid comes down onto the deck (m) */
 export const LID_LIFT = 0.0061;
-/** the laptop is pushed back before the camera turns to the notepad (m) */
-export const LAPTOP_BACK = 0.11;
 
 export const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
 /** quick start, soft landing: a step answers the gesture at once */
@@ -51,7 +49,7 @@ export interface Pose {
   up: Vec;
   f: Vec;
 }
-export type PoseName = 'coverPose' | 'laptopPose' | 'nowPose' | 'zoomPose' | 'readPose' | 'shutPose' | 'notePose';
+export type PoseName = 'coverPose' | 'laptopPose' | 'nowPose' | 'zoomPose' | 'readPose' | 'shutPose' | 'cardPose';
 export type Poses = Record<PoseName, Pose>;
 
 /**
@@ -81,9 +79,7 @@ export function closeParts(closing: number) {
     toShut: ease(span(closing, 0, 0.32)),
     /** the lid comes down */
     shut: ease(span(closing, 0.18, 0.5)),
-    /** the laptop is pushed back */
-    back: ease(span(closing, 0.46, 0.78)),
-    /** camera turns to the notepad */
+    /** camera turns to the business card */
     turn: ease(span(closing, 0.5, 0.92)),
   };
 }
@@ -140,7 +136,7 @@ export function poseOf(s: StoryState, P: Poses): Pose {
   pose = lerpPose(pose, P.zoomPose, clamp01(s.dev));
   pose = lerpPose(pose, P.readPose, clamp01(s.dev - 1));
   pose = lerpPose(pose, P.shutPose, 1 - (1 - LEAN * s.lean) * (1 - c.toShut));
-  return lerpPose(pose, P.notePose, c.turn);
+  return lerpPose(pose, P.cardPose, c.turn);
 }
 
 /** camera position of a pose */
@@ -149,13 +145,23 @@ export function eye(p: Pose): Vec {
   return [p.t[0] + p.r * c * Math.sin(p.az), p.t[1] + p.r * Math.sin(p.el), p.t[2] + p.r * c * Math.cos(p.az)];
 }
 
-/** what the display shows, as weights of the slides (the rest is the empty screen) */
+/**
+ * What the display shows, as weights of the slides (the rest is the empty
+ * screen). It lights the keyboard and glows past the edge of the page's display
+ * a little, so it has to match it: during the zoom the empty prompt (the session
+ * starts once the camera is there), from the pan on the CV in micro, the prompt
+ * again once micro quits.
+ */
 export function screenMix(s: StoryState) {
   const swap = ease(span(s.dev, 0, 0.03));
+  const term = ease(span(s.dev, 0.005, 0.09));
+  // micro quits as the last sequence starts: back to the prompt
+  const cv = span(s.dev, 1, 1.02) * (1 - span(s.closing, 0, 0.01));
   return {
     hero: 1 - ease(span(s.now, 0.1, 0.4)),
     now: ease(span(s.now, 0.45, 0.8)) * (1 - swap),
-    term: ease(span(s.dev, 0.005, 0.09)),
+    prompt: term * (1 - cv),
+    cv: term * cv,
   };
 }
 

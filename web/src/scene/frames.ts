@@ -5,7 +5,7 @@ import type { Quad } from './screen-map';
  * Plays the pre-rendered sequences (web/render, public/seq) on a 2D canvas: the
  * frame for a point of the camera path, cover-scaled like a background image.
  * Between two frames it cross-fades, which reads like a little motion blur.
- * Each frame carries the corners of the display and the note, so the page can
+ * Each frame carries the corners of the display and the business card, so the page can
  * map its DOM onto them.
  *
  * Frames load coarse to fine (every 16th, then every 8th, ...): the sequence the
@@ -21,7 +21,7 @@ interface Meta {
 
 export interface Shown {
   screen: Quad;
-  note: Quad;
+  card: Quad;
 }
 
 export interface Frames {
@@ -140,7 +140,7 @@ export async function loadFrames(canvas: HTMLCanvasElement, base: string, onFram
         const m = meta.segs[seg];
         let k = -1;
         for (let i = 0; i < n; i++) if (m[i] && (k < 0 || Math.abs(i - f) < Math.abs(k - f))) k = i;
-        return k < 0 ? null : { screen: corners(m[k]!, 0), note: corners(m[k]!, 8) };
+        return k < 0 ? null : { screen: corners(m[k]!, 0), card: corners(m[k]!, 8) };
       }
     }
     if (t < 0.02) t = 0;
@@ -162,7 +162,7 @@ export async function loadFrames(canvas: HTMLCanvasElement, base: string, onFram
         ctx.globalAlpha = 1;
       }
     }
-    return { screen: corners(c, 0), note: corners(c, 8) };
+    return { screen: corners(c, 0), card: corners(c, 8) };
   }
 
   return { resize, draw, want };

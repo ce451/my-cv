@@ -5,7 +5,7 @@ import { buildTerminal, DESKTOP_W } from './terminal';
 import { buildTransformer } from './transformer';
 import { loadFrames } from './frames';
 import poseData from './poses.json';
-import noteData from './note-links.json';
+import cardData from './card-links.json';
 import { ASPECT, clamp01, closeParts, ease, easeOut, locate, poseOf, span, type Poses, type Segment, type StoryState } from './timeline';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -13,12 +13,12 @@ gsap.registerPlugin(ScrollTrigger);
 /**
  * The scene: the desk with the ThinkPad as pre-rendered Cycles sequences
  * (frames.ts, web/render), the page's display content as real DOM mapped onto
- * the rendered display, the contact links laid over the rendered note.
+ * the rendered display, the contact links laid over the rendered business card.
  */
 
 const poses = poseData as unknown as Poses;
-/** pixels per mm of the link layer over the note */
-const NOTE_PX = 8;
+/** pixels per mm of the link layer over the business card */
+const CARD_PX = 16;
 
 /** the contact address, decoded from the page (base64 in the HTML, as content/cv.de.json has it) */
 function contactAddress(): string {
@@ -55,29 +55,31 @@ export async function initStage(canvas: HTMLCanvasElement, screenEl: HTMLElement
   });
   const stageEl = screenEl.parentElement!;
 
-  // the links on the note: invisible anchors over the handwriting (render/note_texture.py)
-  const noteLinks = document.createElement('div');
-  noteLinks.className = 'note-links';
-  const NOTE_W = noteData.w * NOTE_PX;
-  const NOTE_H = noteData.h * NOTE_PX;
-  noteLinks.style.width = `${NOTE_W}px`;
-  noteLinks.style.height = `${NOTE_H}px`;
+  // the links on the business card: invisible anchors over the print (render/card_texture.py)
+  const cardLinks = document.createElement('div');
+  cardLinks.className = 'note-links';
+  const CARD_W = cardData.w * CARD_PX;
+  const CARD_H = cardData.h * CARD_PX;
+  cardLinks.style.width = `${CARD_W}px`;
+  cardLinks.style.height = `${CARD_H}px`;
   const address = contactAddress();
   const links: { box: number[]; href: string; label: string }[] = [
-    { box: noteData.links.mail, href: `mailto:${address}`, label: address },
-    { box: noteData.links.linkedin, href: 'https://www.linkedin.com/in/christopher-elstner/', label: 'linkedin.com/in/christopher-elstner' },
-    { box: noteData.links.github, href: 'https://github.com/ce451', label: 'github.com/ce451' },
+    { box: cardData.links.mail, href: `mailto:${address}`, label: address },
+    { box: cardData.links.linkedin, href: 'https://www.linkedin.com/in/christopher-elstner/', label: 'linkedin.com/in/christopher-elstner' },
+    { box: cardData.links.github, href: 'https://github.com/ce451', label: 'github.com/ce451' },
   ];
   for (const l of links) {
     if (!l.label) continue;
-    const a = noteLinks.appendChild(document.createElement('a'));
+    const a = cardLinks.appendChild(document.createElement('a'));
     a.href = l.href;
     a.textContent = l.label;
     if (!l.href.startsWith('mailto:')) a.rel = 'me noopener';
-    const [x, y, w, h] = l.box.map((v) => v * NOTE_PX);
+    const [x, y, w, h] = l.box.map((v) => v * CARD_PX);
     Object.assign(a.style, { left: `${x}px`, top: `${y}px`, width: `${w}px`, height: `${h}px` });
   }
-  stageEl.appendChild(noteLinks);
+  stageEl.appendChild(cardLinks);
+  // the legal notice, below the card in the last view
+  const legal = document.querySelector<HTMLElement>('.legal');
   grain(stageEl);
 
   let vw = 0;
@@ -135,7 +137,7 @@ export async function initStage(canvas: HTMLCanvasElement, screenEl: HTMLElement
   const EXPLODE_DRIFT = 4;
   const TRAVEL_MS = 1600;
   // last sequence: micro closes, the display goes dark, the lid closes, the laptop
-  // is pushed back and the camera turns to the notepad with the note on it
+  // stays where it is and the camera turns to the business card
   const CLOSE_MS = 3600;
   const OPEN_MS = 2400;
   /** extra scrolling at the end of the CV, in viewport heights, before the last sequence starts */
@@ -200,7 +202,7 @@ export async function initStage(canvas: HTMLCanvasElement, screenEl: HTMLElement
   };
   function arrive() {
     at = busy!.to;
-    // back from the notepad the camera is still leaning towards it: the buffer
+    // back from the card the camera is still leaning towards it: the buffer
     // counts as full and drains, so the lean eases out instead of jumping
     if (busy!.close && at === CV) {
       over = overShown = 1;
@@ -371,7 +373,8 @@ export async function initStage(canvas: HTMLCanvasElement, screenEl: HTMLElement
     const pDevNow = shown[2];
     const cvScroll = span(pDevNow, CV_FROM, 0.97);
     if (pDevNow < RESET_AT && !pendingPlay) playStart = null;
-    if (pendingPlay && pDevNow >= PLAY_AT - 0.002) {
+    // the session starts once the camera has arrived at the display
+    if (pendingPlay && pDevNow >= PLAY_AT - 0.002 && devCam >= 0.97) {
       playStart = t;
       pendingPlay = false;
     }
@@ -477,7 +480,7 @@ export async function initStage(canvas: HTMLCanvasElement, screenEl: HTMLElement
       const view = frames.draw(seg, u);
       if (import.meta.env.DEV) (window as unknown as { __view: unknown }).__view = { seg, u, t };
 
-      // closing: micro has closed, the display goes dark (the lid and the laptop move in the frames)
+      // closing: micro has closed, the display goes dark (the lid moves in the frames)
       const { dark } = closeParts(closing);
       screenEl.style.opacity = (1 - dark).toFixed(4);
       screenEl.style.visibility = dark >= 1 ? 'hidden' : '';
@@ -501,9 +504,10 @@ export async function initStage(canvas: HTMLCanvasElement, screenEl: HTMLElement
       document.documentElement.style.setProperty('--p-dev', devText.toFixed(4));
       if (view) {
         if (dark < 1) mapScreen(view.screen);
-        // the links on the note follow the sheet; usable once the camera is there
-        noteLinks.classList.toggle('is-on', closing >= 1);
-        if (closing > 0.5) noteLinks.style.transform = quadToMatrix3d(NOTE_W, NOTE_H, view.note);
+        // the links on the card follow it; usable once the camera is there
+        cardLinks.classList.toggle('is-on', closing >= 1);
+        legal?.classList.toggle('is-on', closing >= 1);
+        if (closing > 0.5) cardLinks.style.transform = quadToMatrix3d(CARD_W, CARD_H, view.card);
       }
     }
     requestAnimationFrame(frame);
