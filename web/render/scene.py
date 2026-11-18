@@ -11,14 +11,15 @@ The assets folder holds CC0 downloads and exports from the dev server:
   hdri/fireplace_4k.hdr, tex/kitchen_wood_{diff,rough,nor_gl}_8k.jpg (Poly Haven),
   tex/Fingerprints006/, tex/Fingerprints009/ (ambientCG 4K-JPG),
   laptop/legend.png, laptop/legend-glow.png (textures.ts, drawn in the browser),
-  laptop/thinkpad-logo.ttf, laptop/logo-lenovo.png (render/logo_texture.py),
+  laptop/thinkpad-logo.ttf, laptop/logo-lenovo.png, laptop/logo-p16s.png
+  (render/logo_texture.py),
   laptop/screen-{hero,now,prompt,term}.png (the display content at 2880x1800: hero,
   CAD drawing, empty prompt, CV in micro; they light the keyboard, the page lays
   its DOM over the panel),
   The camera poses come from src/scene/poses.json (window.__poses of /?gl).
 
 Shots: --shot laptopPose|nowPose|coverPose|zoomPose|readPose|shutPose|cardPose
-(web cameras), ref (studio check against the notebookcheck photos), macro, lid.
+(web cameras), ref (studio check against the notebookcheck photos), macro, palm, bar, barback, lid.
 Finish with render/post.py (vignetting, grain).
 
 Sequences for the page: --seq path.json (render/path.ts) --seqdir <folder>
@@ -201,6 +202,7 @@ def laptop_materials():
     # palm rest and the lid; its i-dot and the Lenovo badge on the lid are drawn
     # into the part's own material, so no decal edge can show
     font = bpy.data.fonts.load(f"{lap}/thinkpad-logo.ttf", check_existing=True)
+    WORDMARK_RATIO = 3.05  # length : height of the lettering, on nbc-deckel straightened
 
     def glyphs(body):
         """the text set flat in the wordmark's typeface, as a mesh (font units)"""
@@ -230,13 +232,16 @@ def laptop_materials():
         me = glyphs("Th\u0131nkPad")
         xs = [v.co.x for v in me.vertices]
         ys = [v.co.y for v in me.vertices]
-        k = text_mm * MM / (max(xs) - min(xs))
+        # the ThinkPad logotype is taller than any width of the typeface: set the
+        # letters text_mm long and as high as WORDMARK_RATIO says
+        kx = text_mm * MM / (max(xs) - min(xs))
+        ky = text_mm * MM / WORDMARK_RATIO / (max(ys) - min(ys))
         mid = Vector(((max(xs) + min(xs)) / 2, (max(ys) + min(ys)) / 2))
         normal = right.cross(up)
         hit, at, _, _ = ob.ray_cast(centre + normal * 0.1, -normal)  # from well above the part
         assert hit, f"no face of {ob.name} under the wordmark"
         dx, dy = frame(right, up, angle)
-        place = lambda x, y: at + dx * ((x - mid.x) * k) + dy * ((y - mid.y) * k)
+        place = lambda x, y: at + dx * ((x - mid.x) * kx) + dy * ((y - mid.y) * ky)
         # the i-dot: the one piece of a dotted "Thi" that lies wholly above the baseline
         bm = bmesh.new()
         dotted = glyphs("Thi")
@@ -260,7 +265,7 @@ def laptop_materials():
         dot = dot[0]
         area = sum(f.calc_area() for f in dot)
         c = sum((f.calc_center_median() * f.calc_area() for f in dot), Vector()) / area
-        dot_at, dot_r = place(c.x, c.y), (area / math.pi) ** 0.5 * k
+        dot_at, dot_r = place(c.x, c.y), (area * kx * ky / math.pi) ** 0.5
         bm.free()
         bm = bmesh.new()
         bm.from_mesh(me)
@@ -373,19 +378,24 @@ def laptop_materials():
 
     base.materials[0] = coating("chassis-base", root, red_dot, palm=True)
 
-    # lid, measured on Lenovo's top view: seen from behind the open lid, the
-    # wordmark sits up left (centre 38 mm from the side, 31 mm below the top edge,
-    # rising at 35 degrees) with the i-dot as a red LED; the aluminium badge
-    # (37 x 12.5 mm) sits low right, 7.8 mm from the side, reading upwards
+    # lid, measured on the notebookcheck photo nbc-deckel straightened to mm: seen
+    # from behind the open lid, the wordmark sits up left (38.3 mm long, centre
+    # 34.5 mm from the side, 36.7 mm below the top edge, rising at 36 degrees) with
+    # the i-dot as a red LED; the aluminium badge (plate 33.6 x 11.3 mm, lettering
+    # 27.8 x 6 mm) sits low right, centre 8.4 mm from the side and 34.4 mm above
+    # the bottom edge, reading upwards
     shell_ob = bpy.data.objects["LidShell"]
     shell = shell_ob.data
     side = max(v.co.x for v in shell.vertices)
     top = max(v.co.z for v in shell.vertices)
     behind = lambda co: Vector((-co.x, co.z))
-    mark = Vector((-side + 38 * MM, top - 31 * MM))
+    mark = Vector((-side + 34.5 * MM, top - 36.7 * MM))
     # seen from behind, right is -x and up is +z; the outside faces +y
-    lid_dot = deboss(shell_ob, Vector((-mark.x, 0.0, mark.y)), Vector((-1, 0, 0)), Vector((0, 0, 1)), 35, 40.0)
-    project(shell, "Badge", behind, (side - 7.8 * MM, 27.9 * MM), 90, (37 * MM, 12.5 * MM))
+    lid_dot = deboss(shell_ob, Vector((-mark.x, 0.0, mark.y)), Vector((-1, 0, 0)), Vector((0, 0, 1)), 36, 38.3)
+    badge = bpy.data.images.load(f"{lap}/logo-lenovo.png", check_existing=True)
+    bottom = min(v.co.z for v in shell.vertices)
+    project(shell, "Badge", behind, (side - 8.4 * MM, bottom + 34.4 * MM), 90,
+            (badge.size[0] / 40 * MM, badge.size[1] / 40 * MM))  # logo_texture.py: 40 px per mm
 
     def lid_marks(m, nt, p, rough_around, n):
         # only on the outside of the lid (its normal is +y in lid space)
@@ -400,11 +410,12 @@ def laptop_materials():
         nt.links.new(tex.outputs["Color"], rgb.inputs["Color"])
         plate = math_node(nt, "MULTIPLY", rgb.outputs["Red"], outside)
         text = math_node(nt, "MULTIPLY", rgb.outputs["Green"], plate)
-        col = mix(nt, plate, chassis_col, lin("c6c7c9"))
+        col = mix(nt, plate, chassis_col, lin(A.get("badge_col", "c8cbd0")))
         col = mix(nt, text, col, lin("2e2f31"))
         nt.links.new(mix(nt, dot, col, lin("ff2a22")), p.inputs["Base Color"])
-        nt.links.new(math_node(nt, "MULTIPLY", plate, math_node(nt, "SUBTRACT", 1.0, text)), p.inputs["Metallic"])
-        r = mix(nt, plate, rough_around, (0.32, 0.32, 0.32, 1.0))
+        metal = math_node(nt, "MULTIPLY", plate, num("badge_metal", 1.0))
+        nt.links.new(math_node(nt, "MULTIPLY", metal, math_node(nt, "SUBTRACT", 1.0, text)), p.inputs["Metallic"])
+        r = mix(nt, plate, rough_around, (num("badge_rough", 0.55),) * 3 + (1.0,))
         nt.links.new(mix(nt, text, r, (0.5, 0.5, 0.5, 1.0)), p.inputs["Roughness"])
         nt.links.new(mix(nt, dot, (0, 0, 0, 1.0), lin("ff1a10")), p.inputs["Emission Color"])
         p.inputs["Emission Strength"].default_value = num("led", 30.0)
@@ -442,12 +453,32 @@ def laptop_materials():
     principled("port", **{"Base Color": lin("040405"), "Roughness": 0.7})
     principled("panel", **{"Base Color": lin("09090b"), "Roughness": 0.42, "Specular IOR Level": 0.5})
     principled("lens", **{"Base Color": lin("020203"), "Roughness": 0.05, "Coat Weight": 1.0})
+    principled("lens-iris", **{"Base Color": lin("3a1c0e"), "Roughness": 0.12, "Coat Weight": 1.0})
+    principled("shutter", **{"Base Color": lin("020203"), "Roughness": 0.5, "Specular IOR Level": 0.3})  # darker than the bar
     m, nt, p = principled("trackpoint", **{"Base Color": lin(A.get("red", "7a1015")), "Roughness": 0.9})
     nt.links.new(bump(nt, noise(nt, coords(nt), 9000, detail=2), 0.5, 0.0001), p.inputs["Normal"])
     principled("led", **{"Base Color": lin("ffffff"), "Emission Color": lin("eef2ff"), "Emission Strength": 30.0})
 
-    # the display side is black throughout, the camera bar included (his call)
-    bpy.data.objects["CommBar"].data.materials[0] = bpy.data.materials["panel"]
+    # the display side is black throughout, the camera bar included (his call);
+    # the back of the bar is a lighter grey part with "P16s" printed on it, at
+    # the end that is on the left seen from behind, reading from behind (his photo)
+    bar = bpy.data.objects["CommBar"].data
+    bar.materials[0] = bpy.data.materials["panel"]
+    m, nt, p = principled("commbar-back", **{"Roughness": 0.7, "Specular IOR Level": 0.4})
+    tex = image(nt, f"{lap}/logo-p16s.png", "Non-Color", "CLIP")
+    nt.links.new(uv_map(nt, "Model"), tex.inputs["Vector"])
+    rgb = nt.nodes.new("ShaderNodeSeparateColor")
+    nt.links.new(tex.outputs["Color"], rgb.inputs["Color"])
+    nt.links.new(mix(nt, rgb.outputs["Red"], lin("2b2c2f"), lin("141516")), p.inputs["Base Color"])
+    bar.materials.append(m)
+    for f in bar.polygons:
+        if f.normal.y > 0.9:
+            f.material_index = 1
+    name = bpy.data.images.load(f"{lap}/logo-p16s.png", check_existing=True)
+    end = max(v.co.x for v in bar.vertices)
+    zs = [v.co.z for v in bar.vertices]
+    project(bar, "Model", behind, (-end + 9.6 * MM, (max(zs) + min(zs)) / 2), 0,
+            (name.size[0] / 40 * MM, name.size[1] / 40 * MM))  # the P 5.3 mm from the end
     # lid parts get the lid's own coating, so their pattern moves with the lid
     for o in lid.children_recursive:
         if o.type == "MESH" and o.data.materials and o.data.materials[0].name == "chassis":
@@ -821,6 +852,21 @@ elif shot == "lid":  # the closed lid from above, front at the bottom, like nbc-
     camera((0.0, -0.12, 0.62), (0.0, -0.01, 0.0), 11.0, up=(0, 1, 0))
 elif shot == "macro":  # keyboard and palm rest up close
     camera((-0.02, -0.33, 0.2), (0.05, -0.04, 0.012), fstop)
+elif shot in ("bar", "barback"):  # the camera bar up close: front on the open lid, back on the closed one
+    if shot == "barback":
+        close_laptop()
+    bpy.context.view_layer.update()
+    lid_m = bpy.data.objects["Lid"].matrix_world
+    if shot == "bar":  # from in front of the display, the bar's front 4.65 mm before the lid's middle plane
+        at = lid_m @ Vector((0.004, -0.0047, 0.2380))
+        camera(tuple(lid_m @ Vector((0.004, -0.16, 0.226))), tuple(at), 8.0, up=tuple(lid_m.to_3x3() @ Vector((0, 0, 1))))
+    else:  # from in front of the closed laptop and above, like his photo
+        at = lid_m @ Vector((0.004, 0.003, 0.2383))
+        camera(tuple(lid_m @ Vector((0.004, 0.11, 0.2383 + 0.12))), tuple(at), 8.0)
+elif shot == "palm":  # the wordmark on the palm rest up close, in focus
+    base_ob = bpy.data.objects["Base"]
+    at = base_ob.matrix_world @ Vector((0.1475, -(0.1243 - 0.0312), max(v.co.z for v in base_ob.data.vertices)))
+    camera(tuple(at + Vector((-0.04, -0.10, 0.08))), tuple(at), 8.0)
 
 def span(t, a, b):
     return min(1.0, max(0.0, (t - a) / (b - a)))

@@ -400,6 +400,8 @@ def build():
     m_screen = material("screen", srgb("000000"), 0.9)
     m_black = material("port", srgb("060607"), 0.9)
     m_lens = material("lens", srgb("020203"), 0.12)
+    m_iris = material("lens-iris", srgb("3a1c0e"), 0.15)  # the warm glint in the middle of the lens
+    m_shutter = material("shutter", srgb("030304"), 0.5)
     m_led = material("led", srgb("0b0b0c"), 0.6)
     m_floor = material("kbfloor", srgb("1c1d20"), 0.75)
 
@@ -579,14 +581,18 @@ def build():
         stand, cy=lid_cy * MM)
     to_object(bm, "LidShell", m_chassis, lid)
 
-    # communications bar: raised camera housing on the top edge
-    bar_w, bar_up, bar_down, bar_fwd = 98.0, 3.0, 7.5, 1.7
+    # communications bar, after his photos of the front and the back: a housing
+    # with round ends on the top edge, 98 x 10.5 mm; its back is flush with the lid
+    # behind a fine seam (scene.py prints "P16s" on it), its front is flush with
+    # the panel (just behind it, so the panel covers it below the lid edge)
+    bar_w, bar_up, bar_down, bar_fwd = 98.0, 3.0, 7.5, 0.1
+    bar_h = bar_up + bar_down
     bar_cy = LID_TOP + (bar_up - bar_down) / 2
     bm = bmesh.new()
-    loft(bm, bar_w * MM, (bar_up + bar_down) * MM, 3.2 * MM, [
-        (1.0 * MM, 0.4 * MM), (0.2 * MM, 1.0 * MM), (0.0, 1.8 * MM),
+    loft(bm, bar_w * MM, bar_h * MM, bar_h / 2 * MM, [
+        (0.25 * MM, -0.03 * MM), (0.0, 0.3 * MM),
         (0.0, (LID_T + bar_fwd - 0.5) * MM), (0.35 * MM, (LID_T + bar_fwd - 0.1) * MM), (0.8 * MM, (LID_T + bar_fwd) * MM)],
-        stand, cy=bar_cy * MM)
+        stand, seg=12, cy=bar_cy * MM)
     to_object(bm, "CommBar", m_chassis, lid)
 
     # the whole front face is one black surface, like the real bezel and panel
@@ -598,16 +604,30 @@ def build():
         stand, seg=6, cy=(face_top + face_bot) / 2 * MM)
     to_object(bm, "Panel", m_panel, lid)
 
-    # camera window on the bar: dark pill with lens, IR and sensor
-    cam_z = (LID_T + bar_fwd + 0.02) * MM
+    # on the front of the bar, measured on his photo from the camera outwards:
+    # the lens in a black ring, the privacy shutter (open) to its right with its
+    # slider on the top edge, a sensor to the left, the microphones further out
+    cam_z = (LID_T + 0.12) * MM  # on the panel's front
     cam_y = (LID_TOP - 2.6) * MM
+    face = lambda a, b: [(0.0, cam_z + a * MM), (0.0, cam_z + b * MM)]
     bm = bmesh.new()
-    loft(bm, 30.0 * MM, 4.6 * MM, 2.3 * MM, [(0.0, cam_z - 0.05 * MM), (0.0, cam_z)], stand, seg=6, cy=cam_y)
-    to_object(bm, "CameraWindow", m_panel, lid)
+    loft(bm, 12.0 * MM, 5.5 * MM, 2.75 * MM, face(-0.05, 0.06), stand, seg=8, cx=10.0 * MM, cy=cam_y)
+    to_object(bm, "Shutter", m_shutter, lid)
     bm = bmesh.new()
-    for dx, rad in ((-8.0, 1.0), (0.0, 1.4), (8.0, 0.9)):
-        circle_loft(bm, rad * MM, [(0.0, cam_z), (0.0, cam_z + 0.06 * MM)], stand, seg=4, cx=dx * MM, cy=cam_y)
+    for dx, rad in ((-9.6, 0.6), (-24.2, 0.65), (24.2, 0.65)):
+        circle_loft(bm, rad * MM, face(-0.05, 0.01), stand, seg=4, cx=dx * MM, cy=cam_y)
+    to_object(bm, "BarHoles", m_black, lid)
+    bm = bmesh.new()
+    circle_loft(bm, 3.25 * MM, face(-0.05, 0.05), stand, seg=8, cy=cam_y)
+    loft(bm, 11.6 * MM, 0.8 * MM, 0.35 * MM, [(0.0, 2.5 * MM), (0.0, (LID_T + bar_fwd - 0.4) * MM)], stand, seg=4,
+         cx=4.2 * MM, cy=(LID_TOP + bar_up + 0.1) * MM)
+    to_object(bm, "CameraRing", m_panel, lid)
+    bm = bmesh.new()
+    circle_loft(bm, 2.0 * MM, face(0.05, 0.08), stand, seg=8, cy=cam_y)
     to_object(bm, "Camera", m_lens, lid, smooth_angle=60)
+    bm = bmesh.new()
+    circle_loft(bm, 0.75 * MM, face(0.08, 0.09), stand, seg=6, cy=cam_y)
+    to_object(bm, "CameraIris", m_iris, lid, smooth_angle=60)
 
     # the screen: a plain quad whose local bounds are the active area
     bm = bmesh.new()
