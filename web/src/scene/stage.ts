@@ -753,25 +753,75 @@ export async function initStage(canvas: HTMLCanvasElement, screenEl: HTMLElement
   }
   requestAnimationFrame(frame);
 
-  // the splash (index.html) stays until the fonts are there and the sequence the story
-  // starts in has loaded; on a slow line until most of it has, at most a few seconds
   const splash = document.querySelector<HTMLElement>('.splash');
-  const splashBar = splash?.querySelector<HTMLElement>('i');
   started = !splash;
-  if (splash) {
-    const t0 = performance.now();
-    let fonts = false;
-    document.fonts.ready.then(() => (fonts = true));
-    const check = () => {
-      const share = frames.loaded(wanted ?? 'pull');
-      splashBar?.style.setProperty('--p', (0.1 * Number(fonts) + 0.9 * share).toFixed(3));
-      const waited = performance.now() - t0;
-      if ((fonts && share >= 1) || (waited > 3500 && share >= 0.5) || waited > 9000) {
-        started = true;
-        splash.classList.add('is-done');
-        setTimeout(() => splash.remove(), 800);
-      } else setTimeout(check, 100);
-    };
-    check();
+  if (splash) runSplash(splash, screenEl.querySelector('.hero__photo'), () => frames.loaded(wanted ?? 'pull'), () => (started = true));
+}
+
+/** the splash's ring fills at most this fast, so even a quick load reads as an animation (ms) */
+const FILL_MS = 1400;
+const FLY_MS = 950;
+const FADE_MS = 700;
+const EASE = 'cubic-bezier(0.65, 0, 0.35, 1)';
+
+/**
+ * The splash (index.html): the photo, its ring filling as the fonts and the sequence the
+ * story starts in load (on a slow line until most of it has, at most a few seconds). Then
+ * the photo flies to its place in the hero, the scene fades in around it, and the story
+ * starts (done).
+ */
+function runSplash(splash: HTMLElement, target: HTMLElement | null, share: () => number, done: () => void) {
+  const disc = splash.querySelector<HTMLElement>('.splash__disc')!;
+  const photo = splash.querySelector<HTMLElement>('.splash__photo')!;
+  const ring = splash.querySelector<SVGElement>('.splash__ring')!;
+  const fill = splash.querySelector<SVGElement>('.splash__fill')!;
+  const bg = splash.querySelector<HTMLElement>('.splash__bg')!;
+  const t0 = performance.now();
+  let fonts = false;
+  document.fonts.ready.then(() => (fonts = true));
+  let shown = 0;
+  let fullAt = 0;
+  const tick = (now: number) => {
+    const s = share();
+    const waited = now - t0;
+    const ready = (fonts && s >= 1) || (waited > 3500 && s >= 0.5) || waited > 9000;
+    // short of full until ready; never faster than FILL_MS (eased), never backwards
+    const goal = Math.min(ready ? 1 : 0.1 * Number(fonts) + 0.85 * s, ease(Math.min(1, waited / FILL_MS)));
+    shown = Math.max(shown, shown + (goal - shown) * 0.2);
+    if (!fullAt && goal >= 1 && shown > 0.995) {
+      shown = 1;
+      fullAt = now;
+    }
+    fill.style.strokeDashoffset = String(1 - shown);
+    if (fullAt && now - fullAt > 180) fly();
+    else requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+
+  function fly() {
+    const to = target?.getBoundingClientRect();
+    const from = photo.getBoundingClientRect();
+    if (!target || !to || to.width < 8) return reveal(0);
+    const k = to.width / from.width;
+    const dx = to.left + to.width / 2 - (from.left + from.width / 2);
+    const dy = to.top + to.height / 2 - (from.top + from.height / 2);
+    // the border ends as thick as the hero photo's
+    const border = parseFloat(getComputedStyle(target).borderTopWidth) || 3;
+    const opts = { duration: FLY_MS, easing: EASE, fill: 'forwards' as const };
+    disc.animate([{ transform: 'none' }, { transform: `translate(${dx}px, ${dy}px) scale(${k})` }], opts);
+    photo.animate([{ borderWidth: getComputedStyle(photo).borderTopWidth }, { borderWidth: `${border / k}px` }], opts);
+    ring.animate([{ opacity: 1 }, { opacity: 0 }], { duration: FLY_MS * 0.6, easing: 'ease-in', fill: 'forwards' });
+    reveal(FLY_MS * 0.82);
+  }
+  // the scene fades in once the photo is nearly there; the splash's photo lies over the
+  // hero's until then, and goes last
+  function reveal(delay: number) {
+    splash.style.pointerEvents = 'none';
+    bg.animate([{ opacity: 1 }, { opacity: 0 }], { duration: FADE_MS, delay, easing: 'ease-out', fill: 'forwards' })
+      .finished.then(() => disc.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 250, fill: 'forwards' }).finished)
+      .then(() => {
+        splash.remove();
+        done();
+      });
   }
 }
