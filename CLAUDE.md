@@ -97,9 +97,11 @@ TS-Typen in `content-model` (danach `npx ng build content-model`) →
 Studio-Editorformulare → Tests nachziehen (der Visibility-Leak-Test in
 `PublishMapperTests` ist Pflicht) → Studio-Publish → commit/push.
 
-Deploy: Push auf `main` → CI (frontend + backend) → nur bei Grün Deploy auf das
-Cloudflare-Pages-Projekt `elstner-cv` → https://elstner.ch (GitHub-Secrets:
-`CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`). PRs/Branches deployen nicht.
+Deploy: Push auf `main` → CI → nur bei Grün Deploy auf das Cloudflare-Pages-Projekt
+`elstner-cv` → https://elstner.ch (GitHub-Secrets: `CLOUDFLARE_API_TOKEN`,
+`CLOUDFLARE_ACCOUNT_ID`). PRs/Branches deployen nicht. Seit 19.11.2026 ist die Repo-Variable
+`SITE=web` gesetzt: live ist die Scroll-Story aus `web/` (Job `deploy-web`), die alte
+Angular-Seite nur noch eingefroren unter /v1/ (Job `deploy` wird übersprungen).
 
 Sonderdateien in `frontend/projects/site/public/` (landen 1:1 im Deploy-Root):
 `_headers` (Security- und Cache-Header inkl. CSP — die script-src-Hashes decken
@@ -206,13 +208,12 @@ Neue Route? Dann immer: in `app.routes.ts` eintragen, im Komponenten-Konstruktor
 
 ## Offene Punkte
 
-- Makeover `web/` (Branch `makeover`, Stand 19.11.2026): Launch-Vorbereitung liegt
-  bereit, Deploy ist AUS. Sonderdateien in `web/public/`: `_headers` (CSP mit Hash des
+- Makeover `web/`: LIVE seit 19.11.2026 (main 20caf05). Sonderdateien in `web/public/`: `_headers` (CSP mit Hash des
   Inline-Skripts in index.html, geprüft von `web/tools/verify-csp.mjs`), `_redirects`
   (/making-of → /), `robots.txt`, `sitemap.xml`, `404.html`, `og-image.png` und Icons
   (erzeugt mit `web/tools/brand/brand.sh` aus og.html/favicon.svg). CI-Job `web` baut
-  und prüft die CSP. Umschalten auf die neue Seite: Repo-Variable `SITE=web` (Actions >
-  Variables), dann deployt `deploy-web` statt `deploy`. Die Frames (`web/public/seq`,
+  und prüft die CSP. Zurück auf die alte Seite: Repo-Variable `SITE` löschen (Actions >
+  Variables) und neu deployen. Die Frames (`web/public/seq`,
   `web/public/seq-portrait`, WebP, zusammen ~30 MB) liegen direkt im Repo (User-Entscheid
   19.11.2026); jedes Neu-Rendern vergrößert die Historie. `deploy-web` bricht ohne sie ab.
   Die alte Seite bleibt als eingefrorener Build unter elstner.ch/v1/ (User-Entscheid
@@ -225,6 +226,10 @@ Neue Route? Dann immer: in `app.routes.ts` eintragen, im Komponenten-Konstruktor
   liegen, falls das Thema wiederkommt. Headless-Rendering funktioniert auf
   dieser Maschine nicht (Playwright-Chromium rendert keinen Text, Vivaldi-
   CLI-Print hängt); PDFs druckt der User selbst.
+- Cloudflare spielt auf allen Seiten das Web-Analytics-Beacon
+  (static.cloudflareinsights.com) ein; die CSP blockt es (Konsolenfehler, keine Daten).
+  Passt zur Datenschutzerklärung („keine Analysedienste"), sauberer: Web Analytics im
+  Cloudflare-Dashboard für elstner.ch abschalten (User).
 - GitHub Actions bei Gelegenheit auf checkout/setup-node v5 (Node-20-Deprecation).
 - Google zeigt das Favicon in den Suchergebnissen erst nach dem nächsten
   Favicon-Crawl (kann Tage dauern); seit 13.08.2026 liegen icon-96.png und ein
