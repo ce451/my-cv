@@ -58,7 +58,7 @@ def month(ym):
 def cv_markdown():
     """Public CV as the markdown file shown in micro (same data as the site)."""
     cv = json.loads((REPO / "content" / "cv.de.json").read_text(encoding="utf-8"))
-    out = ["# Lebenslauf", "", "Christopher Elstner · Weiz, Steiermark", "", "## Softwareentwicklung", ""]
+    out = ["## Softwareentwicklung", ""]
     for e in cv["experiences"]:
         end = e["end"] or "2026-09"  # last developer job ended before Siemens Energy (10/2026)
         title = e["position"] + (f" ({e['positionNote']})" if e.get("positionNote") else "")
