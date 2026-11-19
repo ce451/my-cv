@@ -206,6 +206,15 @@ Neue Route? Dann immer: in `app.routes.ts` eintragen, im Komponenten-Konstruktor
 
 ## Offene Punkte
 
+- Makeover `web/` (Branch `makeover`, Stand 19.11.2026): Launch-Vorbereitung liegt
+  bereit, Deploy ist AUS. Sonderdateien in `web/public/`: `_headers` (CSP mit Hash des
+  Inline-Skripts in index.html, geprüft von `web/tools/verify-csp.mjs`), `_redirects`
+  (/making-of → /), `robots.txt`, `sitemap.xml`, `404.html`, `og-image.png` und Icons
+  (erzeugt mit `web/tools/brand/brand.sh` aus og.html/favicon.svg). CI-Job `web` baut
+  und prüft die CSP. Umschalten auf die neue Seite: Repo-Variable `SITE=web` (Actions >
+  Variables), dann deployt `deploy-web` statt `deploy`. Die Frames (`web/public/seq`,
+  `web/public/seq-portrait`, WebP, zusammen ~30 MB) liegen direkt im Repo (User-Entscheid
+  19.11.2026); jedes Neu-Rendern vergrößert die Historie. `deploy-web` bricht ohne sie ab.
 - Lebenslauf-PDF: Entscheidung 11.08.2026 (spätabends): Es gibt bewusst KEINE
   PDF-Option auf der Seite (Buttons entfernt). Die bereinigte Vorlage
   `~/nas/Beruf/01_Unterlagen/lebenslauf-public.html` bleibt auf der NAS

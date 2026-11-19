@@ -25,6 +25,16 @@ export type Segment = (typeof SEGMENTS)[number];
 /** frames per sequence: about 30 per second of the time-driven steps */
 export const FRAMES: Record<Segment, number> = { pull: 72, now: 48, zoom: 60, pan: 48, close: 120 };
 
+/**
+ * The portrait frames (phones held upright) have one more sequence: scrolling the
+ * CV moves the camera from the reading view into the display until micro's window
+ * fills the phone (divePose, stage.ts). It runs over u in 0..1 like the others.
+ */
+export const DIVE = 'dive';
+export const DIVE_FRAMES = 48;
+export type Sequence = Segment | typeof DIVE;
+export const SEQUENCES: readonly Sequence[] = [...SEGMENTS, DIVE];
+
 /** how far the camera leans towards the next view while the buffer at the end of the CV fills */
 export const LEAN = 0.12;
 /** share of the close sequence that belongs to the lean, before micro closes */
@@ -50,7 +60,7 @@ export interface Pose {
   f: Vec;
 }
 export type PoseName = 'coverPose' | 'laptopPose' | 'nowPose' | 'zoomPose' | 'readPose' | 'shutPose' | 'cardPose';
-export type Poses = Record<PoseName, Pose>;
+export type Poses = Record<PoseName, Pose> & { divePose?: Pose };
 
 /**
  * State of the story as far as the camera is concerned.

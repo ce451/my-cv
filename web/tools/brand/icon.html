@@ -1,0 +1,10 @@
+<!doctype html>
+<!-- the favicon at the size of the window (brand.sh); ?square: no rounded corners (apple-touch-icon, iOS rounds itself) -->
+<html><head><meta charset="utf-8"><style>
+  html, body { margin: 0; background: transparent; }
+  img { display: block; width: 100vw; height: 100vh; }
+  .square { background: #1b1815; }
+</style></head>
+<body><img id="i" src="favicon.svg" alt="">
+<script>if (location.search === '?square') { document.body.className = 'square'; document.getElementById('i').style.clipPath = 'inset(0)'; }</script>
+</body></html>

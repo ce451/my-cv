@@ -6,8 +6,9 @@ Lenovo's orthographic product shots; the keyboard is the German/Austrian ISO
 variant of that geometry. No logos on purpose.
 
 Run headless:
-  blender -b -P web/model/thinkpad.py -- --glb web/public/models/thinkpad.glb \
-      --layout web/src/scene/keyboard-layout.json [--preview /tmp/p.png --view three|top|front]
+  blender -b -P web/model/thinkpad.py -- --layout web/src/scene/keyboard-layout.json \
+      [--glb /tmp/thinkpad.glb] [--preview /tmp/p.png --view three|top|front]
+(the page no longer loads the glTF; render/scene.py builds the model with this script)
 
 Blender is Z-up with the laptop front facing -Y; the glTF exporter converts to
 Y-up, so in three.js the front faces +Z.

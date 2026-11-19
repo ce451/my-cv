@@ -16,7 +16,8 @@ The assets folder holds CC0 downloads and exports from the dev server:
   laptop/screen-{hero,now,prompt,term}.png (the display content at 2880x1800: hero,
   CAD drawing, empty prompt, CV in micro; they light the keyboard, the page lays
   its DOM over the panel),
-  The camera poses come from src/scene/poses.json (window.__poses of /?gl).
+  The camera poses come from src/scene/poses.json (set up in the former three.js scene /?gl,
+  removed 19.11.2026; now edited by hand).
 
 Shots: --shot laptopPose|nowPose|coverPose|zoomPose|readPose|shutPose|cardPose
 (web cameras), ref (studio check against the notebookcheck photos), macro, palm, bar, barback, lid.
@@ -24,9 +25,10 @@ Finish with render/post.py (vignetting, grain).
 
 Sequences for the page: --seq path.json (render/path.ts) --seqdir <folder>
 [--segs pull,now] [--step 1] [--force 0] renders every frame of the camera path
-to <seqdir>/<seg>/NNN.png and writes the display and card corners of each frame
-(viewport fractions) to <seqdir>/<seg>.json. Finished frames are skipped, so an
-interrupted run resumes. Then render/pack.py makes the page assets.
+to <seqdir>/<seg>/NNN.png and writes the display and card corners and the
+laptop's box of each frame (viewport fractions) to <seqdir>/<seg>.json. Finished
+frames are skipped, so an interrupted run resumes and a run over a finished
+folder only rewrites the corners. Then render/pack.py makes the page assets.
 
 Coordinates: Blender is Z-up with the laptop front facing -Y. The web scene
 (three.js, Y-up, front +Z) maps as blender (x, y, z) = three (x, -z, y).
@@ -890,6 +892,16 @@ def outline(obj):
     return [(min(xs), max(ys)), (max(xs), max(ys)), (max(xs), min(ys)), (min(xs), min(ys))]
 
 
+def extent(objs):
+    """box of the objects in the frame: x0, y0, x1, y1 (fractions from the top left),
+    from the corners of their bounding boxes; None if a corner is behind the camera"""
+    ps = [world_to_camera_view(sc, sc.camera, o.matrix_world @ Vector(c)) for o in objs for c in o.bound_box]
+    if min(p.z for p in ps) <= 0:
+        return None
+    xs, ys = [p.x for p in ps], [1 - p.y for p in ps]
+    return [round(min(xs), 5), round(min(ys), 5), round(max(xs), 5), round(max(ys), 5)]
+
+
 def sequence():
     """every frame of the page's camera path (render/path.ts)"""
     path = json.load(open(A["seq"]))
@@ -901,8 +913,13 @@ def sequence():
     scr = bpy.data.objects["Screen"]
     crd = bpy.data.objects["Card"]
     scr_q, card_q = outline(scr), outline(crd)
+    laptop = [bpy.data.objects[n] for n in ("Base", "LidShell", "CommBar")]  # Lid is an empty
     keys = bpy.data.materials["keys"].node_tree.nodes["Principled BSDF"]
     glow = num("glow", 2.0)
+    # --fstop-ramp close:11: the aperture closes over that sequence, from --fstop to 11 (the
+    # card view sharp from the card to the lid's logo, the start as the sequence before)
+    ramp = dict((k, float(v)) for k, v in (r.split(":") for r in A.get("fstop-ramp", "").split(",") if r))
+    f0 = cam.data.dof.aperture_fstop
     sc.render.use_persistent_data = True
     for seg in A.get("segs", ",".join(path)).split(","):
         (outdir / seg).mkdir(parents=True, exist_ok=True)
@@ -912,6 +929,8 @@ def sequence():
             if i % step and i != len(path[seg]) - 1:
                 continue
             aim(cam, three(fr["eye"]), three(fr["target"]), three(fr["up"]), three(fr["focus"]))
+            k = i / max(1, len(path[seg]) - 1)
+            cam.data.dof.aperture_fstop = f0 + (ramp[seg] - f0) * k * k * (3 - 2 * k) if seg in ramp else f0
             theta = lid0 + (math.radians(90) - lid0) * fr["shut"]
             lid.rotation_euler.x = theta
             s = span(math.degrees(theta), 50, 90)
@@ -921,7 +940,7 @@ def sequence():
             set_screen(fr["screen"], glow * (1 - fr["dark"]))
             keys.inputs["Emission Strength"].default_value = BACKLIT * fr["backlight"]
             bpy.context.view_layer.update()
-            meta[str(i)] = {"screen": quad(scr, scr_q), "card": quad(crd, card_q)}
+            meta[str(i)] = {"screen": quad(scr, scr_q), "card": quad(crd, card_q), "laptop": extent(laptop)}
             png = outdir / seg / f"{i:03d}.png"
             if A.get("force", "0") == "1" or not png.exists():
                 sc.render.filepath = str(png)

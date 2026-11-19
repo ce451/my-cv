@@ -1,15 +1,11 @@
-Scene assets, all CC0 (public domain) from Poly Haven, https://polyhaven.com
+Scene assets
 
-backdrop.webp, env.webp
+backdrop-blur.webp (the room mirrored in the display, desktop only)
+  CC0 (public domain) from Poly Haven, https://polyhaven.com
   derived from the HDRI "Warm Restaurant Night"
   photography Greg Zaal, processing Jarod Guest
   https://polyhaven.com/a/warm_restaurant_night
   made with env/backplate.py (projection, disc blur, grading)
-
-desk-color.webp, desk-rough.webp, desk-normal.webp
-  texture "Wood Table 001"
-  photography Dimitrios Savva, processing Rico Cilliers
-  https://polyhaven.com/a/wood_table_001
 
 transformer/*.webp
   FIG 1 of the US patent US 12,230,429 B2 "Transportable power transformer

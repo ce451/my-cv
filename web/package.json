@@ -6,7 +6,7 @@
     "dev": "vite --port 5461 --strictPort",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --port 5462 --strictPort",
-    "model": "blender -b -P model/thinkpad.py -- --glb public/models/thinkpad.glb --layout src/scene/keyboard-layout.json",
+    "model": "blender -b -P model/thinkpad.py -- --layout src/scene/keyboard-layout.json",
     "terminal": "python3 terminal/capture.py"
   },
   "dependencies": {

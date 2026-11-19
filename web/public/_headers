@@ -1,0 +1,44 @@
+# Cloudflare Pages headers for the scroll story (web/). The script-src hash covers the
+# inline script in index.html (the js / stage-on classes before the first paint);
+# tools/verify-csp.mjs checks it against the build in CI. blob: in img-src: the frame
+# player's fallback for browsers without createImageBitmap (frames.ts).
+
+/*
+  ! Access-Control-Allow-Origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-DwjAvZAzj83c8OQ6Lc0MfWoAGZzzviO5Z4jTnXDw9+w='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), geolocation=(), microphone=()
+
+# Vite's content-hashed builds and the fonts never change under the same name.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# The rendered frames keep their names when a sequence is rendered again, and the
+# corners in meta.json have to match them: the frames a day, meta.json (no rule
+# here) revalidates on every load (the Pages default). After a render that moves
+# the geometry, expect up to a day of old frames with new corners, or rename the folder.
+/seq/:seg/:frame
+  Cache-Control: public, max-age=86400
+/seq-portrait/:seg/:frame
+  Cache-Control: public, max-age=86400
+/scene/*
+  Cache-Control: public, max-age=86400
+
+# Stable names that rarely change.
+/favicon.svg
+  Cache-Control: public, max-age=604800
+/favicon.ico
+  Cache-Control: public, max-age=604800
+/icon-96.png
+  Cache-Control: public, max-age=604800
+/apple-touch-icon.png
+  Cache-Control: public, max-age=604800
+/og-image.png
+  Cache-Control: public, max-age=86400
+/portrait-800.webp
+  Cache-Control: public, max-age=86400

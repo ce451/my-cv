@@ -28,7 +28,7 @@ W_MM, H_MM = 85, 55
 W, H = W_MM * PX, H_MM * PX
 PAPER = (241, 237, 229)
 INK = (27, 24, 21)  # --screen-bg
-GREY = (92, 86, 79)
+GREY = (70, 65, 60)  # the contact lines: dark enough to read in the dim room
 COPPER = (201, 129, 79)  # --copper
 rng = np.random.default_rng(3)
 
@@ -70,8 +70,9 @@ def main(out: pathlib.Path):
     card = Image.fromarray(np.clip(img, 0, 255).astype(np.uint8))
     d = ImageDraw.Draw(card)
 
-    # portrait: round, with the copper ring a little apart from it
-    cx, cy, r = 20.5 * PX, 27.5 * PX, 13.5 * PX
+    # portrait: round, with the copper ring a little apart from it (a little smaller than it
+    # was, so the contact lines get the room to be read on a phone)
+    cx, cy, r = 17.5 * PX, 27.5 * PX, 11.5 * PX
     photo = Image.open(WEB / "public/portrait-800.webp").convert("RGB").resize((2 * round(r), 2 * round(r)), Image.LANCZOS)
     mask = Image.new("L", (8 * round(r), 8 * round(r)), 0)
     ImageDraw.Draw(mask).ellipse((0, 0, mask.width - 1, mask.height - 1), fill=255)
@@ -81,20 +82,20 @@ def main(out: pathlib.Path):
     d.ellipse((cx - r - ring, cy - r - ring, cx + r + ring, cy + r + ring), outline=COPPER, width=round(0.4 * PX))
 
     # name like the start page: Archivo, wide and heavy, on two lines
-    x0, room = 40.0, 85 - 40.0 - 5.0
+    x0, room = 34.0, 85 - 34.0 - 4.5
     name = lambda s: font("archivo-latin-wdth-normal.woff2", s, [800, 125])
     f_name = fit("Christopher", name, 5.4, room)
-    d.text((x0 * PX, 20.0 * PX), "Christopher", font=f_name, fill=INK, anchor="ls")
-    d.text((x0 * PX, 25.6 * PX), "Elstner", font=f_name, fill=INK, anchor="ls")
-    d.line((x0 * PX, 29.2 * PX, (x0 + 9) * PX, 29.2 * PX), fill=COPPER, width=round(0.35 * PX))
+    d.text((x0 * PX, 18.6 * PX), "Christopher", font=f_name, fill=INK, anchor="ls")
+    d.text((x0 * PX, 24.2 * PX), "Elstner", font=f_name, fill=INK, anchor="ls")
+    d.line((x0 * PX, 27.8 * PX, (x0 + 9) * PX, 27.8 * PX), fill=COPPER, width=round(0.35 * PX))
 
     # the ways to get in touch, in the terminal font of the page
     mono = lambda s: font("hack-regular.woff2", s)
     lines = [("mail", address()), ("linkedin", "linkedin/christopher-elstner"), ("github", "github/ce451")]
-    f_mono = min((fit(t, mono, 2.15, room) for _, t in lines), key=lambda f: f.size)
+    f_mono = min((fit(t, mono, 2.75, room) for _, t in lines), key=lambda f: f.size)
     links = {}
     for i, (key, text) in enumerate(lines):
-        y = 35.2 + i * 4.3
+        y = 33.8 + i * 5.0
         d.text((x0 * PX, y * PX), text, font=f_mono, fill=GREY, anchor="ls")
         size = f_mono.size / PX
         w = f_mono.getlength(text) / PX

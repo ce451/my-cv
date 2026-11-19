@@ -1,3 +1,8 @@
+/**
+ * Canvas textures of the former three.js scene (/?gl, removed 19.11.2026): key legends,
+ * backlight mask, wordmark. The page no longer imports this; it is the source the Cycles
+ * render's laptop/legend.png and legend-glow.png were drawn from (render/scene.py).
+ */
 import * as THREE from 'three';
 
 export type Legend = [text: string, rx: number, ry: number, sizeMm: number, align: 'l' | 'r' | 'c'];

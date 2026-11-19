@@ -6,6 +6,35 @@
     <title>Christopher Elstner</title>
     <meta name="description" content="Christopher Elstner, Digitalisierungsbeauftragter bei Siemens Energy in Weiz, davor Softwareentwickler." />
     <meta name="theme-color" content="#0d0c0b" />
+    <link rel="canonical" href="https://elstner.ch/" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/icon-96.png" type="image/png" sizes="96x96" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48 32x32 16x16" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta property="og:type" content="profile" />
+    <meta property="og:site_name" content="Christopher Elstner" />
+    <meta property="og:title" content="Christopher Elstner" />
+    <meta property="og:description" content="Christopher Elstner, Digitalisierungsbeauftragter bei Siemens Energy in Weiz, davor Softwareentwickler." />
+    <meta property="og:url" content="https://elstner.ch/" />
+    <meta property="og:image" content="https://elstner.ch/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="de_AT" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <!-- no email property on purpose: the address stays encoded (data-mail) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Christopher Elstner",
+        "jobTitle": "Digitalisierungsbeauftragter",
+        "url": "https://elstner.ch/",
+        "image": "https://elstner.ch/portrait-800.webp",
+        "address": { "@type": "PostalAddress", "addressLocality": "Weiz", "addressCountry": "AT" },
+        "worksFor": { "@type": "Organization", "name": "Siemens Energy" },
+        "sameAs": ["https://www.linkedin.com/in/christopher-elstner/", "https://github.com/ce451"]
+      }
+    </script>
     <link rel="preload" href="/fonts/archivo-latin-wdth-normal.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/hanken-grotesk-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
     <script>
@@ -13,10 +42,51 @@
         d.classList.add('js');
         if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
         d.classList.add('stage-on');
+        // the story's script never ran (blocked, offline, a browser without modules): the plain page, not an endless splash
+        setTimeout(function () {
+          if (!d.hasAttribute('data-boot')) d.classList.remove('stage-on');
+        }, 8000);
       })(document.documentElement);
     </script>
+    <style>
+      /* while the scene loads (stage.ts takes it away): the colour of the display the story starts on */
+      .splash {
+        display: none;
+      }
+      html.stage-on {
+        overflow: hidden; /* no scrollbar over the splash; the story never scrolls natively */
+      }
+      html.stage-on .splash {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: grid;
+        place-items: center;
+        background: #1b1815;
+        transition: opacity 0.6s ease, visibility 0s linear 0.6s;
+      }
+      html.stage-on .splash.is-done {
+        opacity: 0;
+        visibility: hidden;
+      }
+      .splash__bar {
+        width: 120px;
+        height: 2px;
+        overflow: hidden;
+        background: rgb(201 129 79 / 0.18);
+      }
+      .splash__bar i {
+        display: block;
+        height: 100%;
+        background: #c9814f;
+        transform: scaleX(var(--p, 0));
+        transform-origin: 0 50%;
+        transition: transform 0.3s ease;
+      }
+    </style>
   </head>
   <body>
+    <div class="splash" aria-hidden="true"><div class="splash__bar"><i></i></div></div>
     <div class="stage">
       <canvas class="stage__gl" aria-hidden="true"></canvas>
       <div class="screen" id="screen">

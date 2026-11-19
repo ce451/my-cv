@@ -25,6 +25,23 @@ jobs:
       - run: npx ng build studio
       - run: npm run test:ci
 
+  # the scroll story (web/), the successor of frontend/: build and CSP check
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm run build
+      - run: node tools/verify-csp.mjs
+
   backend:
     runs-on: ubuntu-latest
     defaults:
@@ -38,9 +55,11 @@ jobs:
       - run: dotnet build --configuration Release
       - run: dotnet test --configuration Release --no-build
 
+  # Which site goes live: the repository variable SITE (Settings > Secrets and variables >
+  # Actions > Variables). Unset: frontend/ as before; SITE=web: the scroll story (deploy-web).
   deploy:
     needs: [frontend, backend]
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && vars.SITE != 'web'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -71,3 +90,30 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy frontend/dist/site/browser --project-name=elstner-cv
+
+  deploy-web:
+    needs: [web]
+    if: github.ref == 'refs/heads/main' && vars.SITE == 'web'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+        working-directory: web
+      - run: npm run build
+        working-directory: web
+      - run: node tools/verify-csp.mjs
+        working-directory: web
+      # the rendered frames are part of the page: without them the story shows no laptop
+      - name: Frames present
+        run: test -f web/dist/seq/meta.json && test -f web/dist/seq-portrait/meta.json
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy web/dist --project-name=elstner-cv
