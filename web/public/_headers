@@ -1,12 +1,14 @@
-# Cloudflare Pages headers for the scroll story (web/). The script-src hash covers the
-# inline script in index.html (the js / stage-on classes before the first paint);
-# tools/verify-csp.mjs checks it against the build in CI. blob: in img-src: the frame
-# player's fallback for browsers without createImageBitmap (frames.ts).
+# Cloudflare Pages headers for the scroll story (web/) and the frozen first version
+# under /v1/ (tools/v1/build.sh). One CSP for both: the first hash is the inline script
+# in index.html (the js / stage-on classes before the first paint), the next three and
+# the 'unsafe-hashes' one are v1's (Angular hydration bootstrap, the stylesheet's onload
+# handler). tools/verify-csp.mjs checks them against the build in CI. blob: in img-src:
+# the frame player's fallback for browsers without createImageBitmap (frames.ts).
 
 /*
   ! Access-Control-Allow-Origin
   Strict-Transport-Security: max-age=31536000; includeSubDomains
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-DwjAvZAzj83c8OQ6Lc0MfWoAGZzzviO5Z4jTnXDw9+w='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-DwjAvZAzj83c8OQ6Lc0MfWoAGZzzviO5Z4jTnXDw9+w=' 'sha256-qR3LTg2JDV04/drjHDEYjnbqb2+q2UreAtLBeLooP8Q=' 'sha256-VM2mZqyEQZoLzoTrp5EigFvzQ0+f1wSeBuoOn95WHCg=' 'sha256-8sGKvDKC8crv9OBcqEMvqrNDWlm1/80h7NJpJzqOnLI=' 'unsafe-hashes' 'sha256-MhtPZXr7+LpJUY5qtMutB+qWfQtMaPccfe7QXtCcEYc='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
@@ -42,3 +44,13 @@
   Cache-Control: public, max-age=86400
 /portrait-800.webp
   Cache-Control: public, max-age=86400
+
+# The first version: an archive, kept out of search results.
+/v1/*
+  X-Robots-Tag: noindex
+/v1/*.js
+  Cache-Control: public, max-age=31536000, immutable
+/v1/*.css
+  Cache-Control: public, max-age=31536000, immutable
+/v1/fonts/*
+  Cache-Control: public, max-age=31536000, immutable

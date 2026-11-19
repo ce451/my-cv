@@ -215,6 +215,10 @@ Neue Route? Dann immer: in `app.routes.ts` eintragen, im Komponenten-Konstruktor
   Variables), dann deployt `deploy-web` statt `deploy`. Die Frames (`web/public/seq`,
   `web/public/seq-portrait`, WebP, zusammen ~30 MB) liegen direkt im Repo (User-Entscheid
   19.11.2026); jedes Neu-Rendern vergrößert die Historie. `deploy-web` bricht ohne sie ab.
+  Die alte Seite bleibt als eingefrorener Build unter elstner.ch/v1/ (User-Entscheid
+  19.11.2026, statt Subdomain): `web/public/v1/` aus `web/tools/v1/build.sh` (frontend/ mit
+  base-href /v1/, Fonts und Origin umgeschrieben), noindex per `_headers`, ihre CSP-Hashes
+  stehen mit in der gemeinsamen CSP. Nach dem Livegang braucht v1 frontend/ nicht mehr.
 - Lebenslauf-PDF: Entscheidung 11.08.2026 (spätabends): Es gibt bewusst KEINE
   PDF-Option auf der Seite (Buttons entfernt). Die bereinigte Vorlage
   `~/nas/Beruf/01_Unterlagen/lebenslauf-public.html` bleibt auf der NAS

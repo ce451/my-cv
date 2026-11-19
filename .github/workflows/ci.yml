@@ -108,9 +108,10 @@ jobs:
         working-directory: web
       - run: node tools/verify-csp.mjs
         working-directory: web
-      # the rendered frames are part of the page: without them the story shows no laptop
-      - name: Frames present
-        run: test -f web/dist/seq/meta.json && test -f web/dist/seq-portrait/meta.json
+      # the rendered frames are part of the page (without them the story shows no laptop),
+      # v1/ is the frozen first version (web/tools/v1/build.sh)
+      - name: Frames and v1 present
+        run: test -f web/dist/seq/meta.json && test -f web/dist/seq-portrait/meta.json && test -f web/dist/v1/index.html
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:

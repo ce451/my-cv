@@ -1,8 +1,8 @@
-// Fails when the inline scripts or handlers in the built pages no longer match the
-// script-src hashes in public/_headers (after an edit of the inline script in
-// index.html). Run after `npm run build`; wired into CI.
+// Fails when the inline scripts or handlers in the built pages (the story and the
+// frozen first version under /v1/) no longer match the script-src hashes in
+// public/_headers. Run after `npm run build`; wired into CI.
 import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 
 const hash = (value) => createHash('sha256').update(value).digest('base64');
 const dist = process.argv[2] ?? new URL('../dist/', import.meta.url).pathname;
@@ -10,7 +10,7 @@ const dist = process.argv[2] ?? new URL('../dist/', import.meta.url).pathname;
 const headers = readFileSync(new URL('../public/_headers', import.meta.url), 'utf8');
 const declared = new Set([...headers.matchAll(/'sha256-([A-Za-z0-9+/=]+)'/g)].map((m) => m[1]));
 
-const pages = ['index.html', 'datenschutz.html', '404.html'];
+const pages = readdirSync(dist, { recursive: true }).filter((f) => f.endsWith('.html'));
 const needed = new Map();
 for (const page of pages) {
   const html = readFileSync(`${dist}/${page}`, 'utf8');
